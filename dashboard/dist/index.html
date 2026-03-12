@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AuthorClaw Dashboard</title>
+<title>AuthorClaw 控制台</title>
 <style>
 /* ================================================================
    AuthorClaw Dashboard v4.0.0 — Single-file SPA
@@ -624,37 +624,37 @@ textarea { resize: vertical; min-height: 60px; }
   <div class="sidebar-nav">
     <div class="nav-item active" data-panel="home">
       <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
-      <span class="nav-label">Home</span>
+      <span class="nav-label">首页</span>
     </div>
     <div class="nav-item" data-panel="projects">
       <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
-      <span class="nav-label">Projects</span>
+      <span class="nav-label">项目</span>
     </div>
     <div class="nav-item" data-panel="personas">
       <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-      <span class="nav-label">Personas</span>
+      <span class="nav-label">作者人设</span>
     </div>
     <div class="nav-item" data-panel="library">
       <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
-      <span class="nav-label">Library</span>
+      <span class="nav-label">资料库</span>
     </div>
     <div class="nav-item" data-panel="settings">
       <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-      <span class="nav-label">Settings</span>
+      <span class="nav-label">设置</span>
     </div>
   </div>
   <div class="sidebar-footer">
     <div style="display:flex;align-items:center;gap:8px;width:100%;">
       <div class="heartbeat-dot" id="heartbeatDot"></div>
-      <span class="footer-label" id="heartbeatLabel">Connecting...</span>
-      <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">
+      <span class="footer-label" id="heartbeatLabel">连接中...</span>
+      <button class="theme-toggle" id="themeToggle" title="切换明暗主题">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </button>
     </div>
     <div class="footer-links">
       <a href="https://www.getwritingsecrets.com" target="_blank" rel="noopener" title="Writing Secrets Website">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span>Website</span>
+        <span>官网</span>
       </a>
       <a href="https://www.youtube.com/@WritingSecrets" target="_blank" rel="noopener" title="Writing Secrets YouTube">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.13C5.12 19.56 12 19.56 12 19.56s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
@@ -669,7 +669,7 @@ textarea { resize: vertical; min-height: 60px; }
      ═══════════════════════════════════════════════ -->
 <div class="main">
   <div class="main-header">
-    <h2 id="panelTitle">Home</h2>
+    <h2 id="panelTitle">首页</h2>
     <div class="header-right">
       <span id="headerStatus"></span>
     </div>
@@ -685,7 +685,7 @@ textarea { resize: vertical; min-height: 60px; }
       <div class="stats-bar">
         <div class="stat-card">
           <div class="stat-value" id="statProjects">0</div>
-          <div class="stat-label">Active Projects</div>
+          <div class="stat-label">进行中的项目</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statWords">0</div>
@@ -703,9 +703,9 @@ textarea { resize: vertical; min-height: 60px; }
 
       <!-- Active Project Cards -->
       <div class="card">
-        <div class="card-title">Active Projects</div>
+        <div class="card-title">进行中的项目</div>
         <div class="project-scroll" id="homeProjectScroll">
-          <div style="color:var(--muted);padding:20px;text-align:center;width:100%;">No active projects. Go to Projects to create one.</div>
+          <div style="color:var(--muted);padding:20px;text-align:center;width:100%;">暂无进行中的项目。前往“项目”创建。</div>
         </div>
       </div>
 
@@ -735,7 +735,7 @@ textarea { resize: vertical; min-height: 60px; }
       <div class="card" style="margin-bottom:16px;">
         <div class="card-title">Recent Activity</div>
         <div class="activity-feed" id="activityFeed" style="max-height:220px;overflow-y:auto;">
-          <div style="color:var(--muted);text-align:center;padding:16px;">Loading activity...</div>
+          <div style="color:var(--muted);text-align:center;padding:16px;">正在加载活动...</div>
         </div>
       </div>
 
@@ -743,15 +743,15 @@ textarea { resize: vertical; min-height: 60px; }
       <div class="card">
         <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
           <span>Chat with AuthorClaw</span>
-          <button id="btnChatClear" class="small secondary" title="Clear chat history" style="font-size:11px;padding:4px 10px;">Clear</button>
+          <button id="btnChatClear" class="small secondary" title="清空聊天记录" style="font-size:11px;padding:4px 10px;">清空</button>
         </div>
         <div class="chat-container">
           <div class="chat-messages" id="chatMessages">
-            <div class="chat-msg bot">Hello! I'm AuthorClaw, your AI writing partner. How can I help you today?</div>
+            <div class="chat-msg bot">你好！我是 AuthorClaw，你的 AI 写作伙伴。今天想让我帮你做什么？</div>
           </div>
           <div class="chat-input-row">
-            <input type="text" id="chatInput" placeholder="Type a message or /command... (Enter to send)">
-            <button id="btnChatSend">Send</button>
+            <input type="text" id="chatInput" placeholder="输入消息或 /命令...（回车发送）">
+            <button id="btnChatSend">发送</button>
           </div>
         </div>
         <div class="hint" style="margin-top:8px;">
@@ -775,7 +775,7 @@ textarea { resize: vertical; min-height: 60px; }
 
       <!-- Project List -->
       <div class="card" id="projectListCard">
-        <div class="card-title">Your Projects</div>
+        <div class="card-title">你的项目</div>
         <div class="filter-tabs" id="projectFilterTabs">
           <div class="filter-tab active" data-filter="all">All</div>
           <div class="filter-tab" data-filter="active">Active</div>
@@ -783,7 +783,7 @@ textarea { resize: vertical; min-height: 60px; }
           <div class="filter-tab" data-filter="completed">Completed</div>
         </div>
         <div id="projectList">
-          <div style="color:var(--muted);padding:20px;text-align:center;">Loading projects...</div>
+          <div style="color:var(--muted);padding:20px;text-align:center;">正在加载项目...</div>
         </div>
       </div>
 
@@ -814,14 +814,14 @@ textarea { resize: vertical; min-height: 60px; }
           <input type="file" id="fileUploadInput" style="display:none;" accept=".txt,.md,.docx,.pdf">
         </div>
         <div class="doc-list" id="docList">
-          <div style="color:var(--muted);text-align:center;padding:20px;">Loading documents...</div>
+          <div style="color:var(--muted);text-align:center;padding:20px;">正在加载文档...</div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-title">Compiled Outputs</div>
         <div id="compiledOutputs">
-          <div style="color:var(--muted);text-align:center;padding:20px;">No compiled outputs yet.</div>
+          <div style="color:var(--muted);text-align:center;padding:20px;">暂无已编译输出。</div>
         </div>
       </div>
     </div>
@@ -842,7 +842,7 @@ textarea { resize: vertical; min-height: 60px; }
       <!-- Telegram -->
       <div class="card">
         <div class="card-title">Telegram Integration</div>
-        <div id="telegramStatus" style="margin-bottom:12px;font-size:14px;color:var(--muted);">Loading...</div>
+        <div id="telegramStatus" style="margin-bottom:12px;font-size:14px;color:var(--muted);">加载中...</div>
         <div class="form-group-inline">
           <div class="form-group">
             <label>Bot Token</label>
@@ -865,7 +865,7 @@ textarea { resize: vertical; min-height: 60px; }
         <div class="form-group">
           <label>TTS Voice Preset</label>
           <select id="ttsVoiceSelect">
-            <option value="">Loading voices...</option>
+            <option value="">正在加载语音...</option>
           </select>
         </div>
         <button id="btnTestVoice" class="secondary">Test Voice</button>
@@ -878,7 +878,7 @@ textarea { resize: vertical; min-height: 60px; }
         <div class="form-group">
           <textarea id="researchDomains" rows="5" placeholder="wikipedia.org&#10;arxiv.org"></textarea>
         </div>
-        <button id="btnSaveDomains">Save Domains</button>
+        <button id="btnSaveDomains">保存域名</button>
       </div>
 
       <!-- Autonomous Mode -->
@@ -909,7 +909,7 @@ textarea { resize: vertical; min-height: 60px; }
             <span id="wordGoalProgress" style="font-size:12px;color:var(--text-secondary);margin-left:auto;"></span>
           </div>
         </div>
-        <button id="btnSaveAutonomous">Save Settings</button>
+        <button id="btnSaveAutonomous">保存设置</button>
       </div>
 
       <!-- Idle Task Queue (Editable) -->
@@ -926,7 +926,7 @@ textarea { resize: vertical; min-height: 60px; }
       <div class="card">
         <div class="card-title">Completed Idle Tasks</div>
         <div id="idleTaskHistory" style="max-height:400px;overflow-y:auto;">
-          <div style="color:var(--muted);">Loading...</div>
+          <div style="color:var(--muted);">加载中...</div>
         </div>
       </div>
     </div>
@@ -1031,7 +1031,7 @@ function initials(name) {
 // ================================================================
 // NAVIGATION
 // ================================================================
-var panelTitles = { home: 'Home', projects: 'Projects', personas: 'Personas', library: 'Library', settings: 'Settings' };
+var panelTitles = { home: '首页', projects: '项目', personas: '作者人设', library: '资料库', settings: '设置' };
 var navItems = document.querySelectorAll('.nav-item');
 
 function switchPanel(name) {
@@ -1086,7 +1086,7 @@ function loadStatus() {
     if (data.providers && data.providers.length > 0) {
       headerSt.textContent = data.providers.length + ' provider(s) active';
     } else {
-      headerSt.textContent = 'No AI providers';
+      headerSt.textContent = '无可用 AI 提供商';
     }
 
     // Home stats
@@ -1118,7 +1118,7 @@ function loadStatus() {
   }).catch(function() {
     document.getElementById('heartbeatDot').className = 'heartbeat-dot err';
     document.getElementById('heartbeatLabel').textContent = 'Offline';
-    document.getElementById('headerStatus').textContent = 'Disconnected';
+    document.getElementById('headerStatus').textContent = '未连接';
   });
 }
 
@@ -1147,7 +1147,7 @@ function renderHomeProjects() {
   var container = document.getElementById('homeProjectScroll');
   var active = allProjects.filter(function(p) { return p.status === 'active' || p.status === 'paused'; });
   if (active.length === 0) {
-    container.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;width:100%;">No active projects. Go to Projects to create one.</div>';
+    container.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;width:100%;">暂无进行中的项目。前往“项目”创建。</div>';
     return;
   }
   container.innerHTML = '';
@@ -1217,13 +1217,13 @@ function sendChat() {
   api('POST', '/api/chat', { message: text }).then(function(data) {
     removeTyping();
     chatWaiting = false;
-    addChatMsg(data.response || 'No response received.', 'bot');
+    addChatMsg(data.response || '未收到回复。', 'bot');
     // Refresh projects if a command might have created/changed one
     if (text.startsWith('/')) { loadProjects(); }
   }).catch(function(e) {
     removeTyping();
     chatWaiting = false;
-    addChatMsg('Error: ' + e.message, 'system');
+    addChatMsg('错误：' + e.message, 'system');
   });
 }
 
@@ -1338,7 +1338,7 @@ function openCreateProjectModal(template, serverTemplate) {
       extraFields +
       '<div class="modal-actions">' +
         '<button class="secondary" id="modalCancel">Cancel</button>' +
-        '<button class="success" id="modalCreate">Create Project</button>' +
+        '<button class="success" id="modalCreate">创建项目</button>' +
       '</div>' +
     '</div>';
 
@@ -1372,7 +1372,7 @@ function openCreateProjectModal(template, serverTemplate) {
     var endpoint = isPipeline ? '/api/pipeline/create' : '/api/projects/create';
 
     document.getElementById('modalCreate').disabled = true;
-    document.getElementById('modalCreate').textContent = 'Creating...';
+    document.getElementById('modalCreate').textContent = '创建中...';
 
     api('POST', endpoint, body).then(function(data) {
       overlay.remove();
@@ -1386,7 +1386,7 @@ function openCreateProjectModal(template, serverTemplate) {
       }
 
       if (projectId) {
-        showToast('Project created! Starting execution...', 'success');
+        showToast('项目已创建，开始执行...', 'success');
         loadProjects();
         // Auto-execute: fire in background, open detail view, poll for progress
         setTimeout(function() {
@@ -1414,9 +1414,9 @@ function openCreateProjectModal(template, serverTemplate) {
         loadProjects();
       }
     }).catch(function(e) {
-      showToast('Failed: ' + e.message, 'error');
+      showToast('失败：' + e.message, 'error');
       document.getElementById('modalCreate').disabled = false;
-      document.getElementById('modalCreate').textContent = 'Create Project';
+      document.getElementById('modalCreate').textContent = '创建项目';
     });
   });
 }
@@ -1483,7 +1483,7 @@ function renderProjectList() {
       '</div>' +
       '<div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill" style="width:' + (p.progress || 0) + '%">' + (p.progress || 0) + '%</div></div>' +
       '<div class="plc-info">' + completedSteps + '/' + totalSteps + ' steps' +
-        (p.createdAt ? ' &mdash; Created ' + esc(formatDate(p.createdAt)) : '') +
+        (p.createdAt ? ' &mdash; 创建于 ' + esc(formatDate(p.createdAt)) : '') +
       '</div>';
 
     // Action buttons
@@ -1501,7 +1501,7 @@ function renderProjectList() {
     if (p.status === 'paused') {
       actions.innerHTML += '<button class="success small btn-resume" data-id="' + esc(p.id) + '">Resume</button>';
     }
-    actions.innerHTML += '<button class="danger small btn-delete" data-id="' + esc(p.id) + '">Delete</button>';
+    actions.innerHTML += '<button class="danger small btn-delete" data-id="' + esc(p.id) + '">删除</button>';
 
     card.appendChild(actions);
     el.appendChild(card);
@@ -1544,7 +1544,7 @@ function projectAction(action, id) {
     loadProjects();
     if (currentDetailProject === id) openProjectDetail(id);
   }).catch(function(e) {
-    showToast('Failed: ' + e.message, 'error');
+    showToast('失败：' + e.message, 'error');
     loadProjects();
   });
 
@@ -1556,12 +1556,12 @@ function projectAction(action, id) {
 }
 
 function deleteProject(id) {
-  if (!confirm('Delete this project?')) return;
+  if (!confirm('确定删除该项目吗？')) return;
   api('DELETE', '/api/projects/' + id).then(function() {
     showToast('Project deleted', 'info');
     if (currentDetailProject === id) showProjectList();
     loadProjects();
-  }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 }
 
 // ── Project Detail View ──
@@ -1630,7 +1630,7 @@ function continueProjectToPhase(sourceProject, targetType) {
   api('POST', '/api/projects/create', body).then(function(data) {
     var projectId = data.project && data.project.id;
     if (projectId) {
-      showToast('Project created! Starting execution...', 'success');
+      showToast('项目已创建，开始执行...', 'success');
       loadProjects();
       setTimeout(function() {
         openProjectDetail(projectId);
@@ -1654,7 +1654,7 @@ function continueProjectToPhase(sourceProject, targetType) {
       loadProjects();
     }
   }).catch(function(e) {
-    showToast('Failed: ' + e.message, 'error');
+    showToast('失败：' + e.message, 'error');
   });
 }
 
@@ -1685,13 +1685,13 @@ function openProjectDetail(id) {
           '</div>' +
           '<span class="badge badge-' + esc(s.status) + '" style="font-size:10px;">' + esc(s.status) + '</span>' +
         '</div>' +
-        '<div class="step-output" id="stepOutput' + i + '">' + esc(s.output || s.result || 'No output available.') + '</div>';
+        '<div class="step-output" id="stepOutput' + i + '">' + esc(s.output || s.result || '暂无输出。') + '</div>';
     });
   }
 
   var actionsHtml = '';
   if (project.status === 'pending') {
-    actionsHtml += '<button class="success" id="pdStart">Start Project</button> ';
+    actionsHtml += '<button class="success" id="pdStart">启动项目</button> ';
   }
   if (project.status === 'active') {
     actionsHtml += '<button class="success" id="pdAuto">Auto-Execute All</button> ';
@@ -1719,11 +1719,11 @@ function openProjectDetail(id) {
     }
   }
 
-  actionsHtml += '<button class="danger" id="pdDelete">Delete Project</button>';
+  actionsHtml += '<button class="danger" id="pdDelete">删除项目</button>';
 
   detail.innerHTML =
     '<div class="project-detail">' +
-      '<div class="pd-back" id="pdBack">&#8592; Back to Projects</div>' +
+      '<div class="pd-back" id="pdBack">&#8592; 返回项目列表</div>' +
       '<div class="card">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">' +
           '<h3 style="font-size:20px;font-weight:700;">' + esc(project.title) + '</h3>' +
@@ -1743,7 +1743,7 @@ function openProjectDetail(id) {
       '</div>' +
       '<div class="card" id="pdFilePanel">' +
         '<div class="card-title">Project Files</div>' +
-        '<div id="pdFiles" style="color:var(--muted);">Loading files...</div>' +
+        '<div id="pdFiles" style="color:var(--muted);">正在加载文件...</div>' +
       '</div>' +
     '</div>';
 
@@ -1813,7 +1813,7 @@ function loadProjectFiles(id) {
   api('GET', '/api/projects/' + id + '/files').then(function(data) {
     var el = document.getElementById('pdFiles');
     if (!data.files || data.files.length === 0) {
-      el.innerHTML = '<div style="color:var(--muted);">No output files yet.</div>';
+      el.innerHTML = '<div style="color:var(--muted);">暂无输出文件。</div>';
       return;
     }
     el.innerHTML = '';
@@ -1828,7 +1828,7 @@ function loadProjectFiles(id) {
       var row = document.createElement('div');
       row.className = 'file-row';
       var docxBtn = isMd
-        ? '<button class="small secondary btn-export-docx" data-project="' + esc(id) + '" data-file="' + esc(f.name) + '" style="font-size:11px;padding:3px 8px;margin-right:6px;" title="Export as Word document">DOCX</button>'
+        ? '<button class="small secondary btn-export-docx" data-project="' + esc(id) + '" data-file="' + esc(f.name) + '" style="font-size:11px;padding:3px 8px;margin-right:6px;" title="导出为 Word 文档">DOCX</button>'
         : '';
       var thumbHtml = isImage
         ? '<div style="margin:6px 0;"><img src="/api/projects/' + encodeURIComponent(id) + '/download/' + encodeURIComponent(f.name) + '" style="max-width:200px;max-height:280px;border-radius:6px;border:1px solid var(--border);"></div>'
@@ -1852,7 +1852,7 @@ function loadProjectFiles(id) {
       btn.addEventListener('click', function() {
         var projectId = btn.getAttribute('data-project');
         var filename = btn.getAttribute('data-file');
-        btn.textContent = 'Exporting...';
+        btn.textContent = '导出中...';
         btn.disabled = true;
         api('POST', '/api/projects/' + encodeURIComponent(projectId) + '/export-docx', { filename: filename }).then(function(data) {
           if (data.downloadUrl) {
@@ -1864,7 +1864,7 @@ function loadProjectFiles(id) {
             a.remove();
             showToast('DOCX downloaded!', 'success');
           } else {
-            showToast(data.error || 'Export failed', 'error');
+            showToast(data.error || '导出失败', 'error');
           }
           btn.textContent = 'DOCX';
           btn.disabled = false;
@@ -1937,7 +1937,7 @@ function renderPersonas() {
       (p.ttsVoice ? '<div class="pa-voice">Voice: ' + esc(p.ttsVoice) + '</div>' : '') +
       '<div class="pa-actions">' +
         '<button class="small secondary btn-edit-persona" data-id="' + esc(p.id) + '">Edit</button>' +
-        '<button class="small danger btn-del-persona" data-id="' + esc(p.id) + '">Delete</button>' +
+        '<button class="small danger btn-del-persona" data-id="' + esc(p.id) + '">删除</button>' +
       '</div>';
     grid.appendChild(card);
   });
@@ -1945,7 +1945,7 @@ function renderPersonas() {
   // "Create New" card
   var newCard = document.createElement('div');
   newCard.className = 'persona-card persona-new';
-  newCard.innerHTML = '<div class="plus">+</div><div class="plus-label">Create New Persona</div>';
+  newCard.innerHTML = '<div class="plus">+</div><div class="plus-label">新建作者人设</div>';
   newCard.addEventListener('click', function() { openPersonaModal(null); });
   grid.appendChild(newCard);
 
@@ -1978,7 +1978,7 @@ function openPersonaModal(persona) {
 
   overlay.innerHTML =
     '<div class="modal">' +
-      '<div class="modal-title">' + (isEdit ? 'Edit Persona' : 'Create New Persona') + '</div>' +
+      '<div class="modal-title">' + (isEdit ? '编辑作者人设' : '新建作者人设') + '</div>' +
       '<div class="form-group">' +
         '<label>Pen Name</label>' +
         '<input type="text" id="pmName" value="' + esc(persona ? (persona.penName || persona.name || '') : '') + '" placeholder="Author pen name...">' +
@@ -2021,7 +2021,7 @@ function openPersonaModal(persona) {
       '<div class="modal-actions">' +
         '<button class="secondary" id="pmGenerate">Generate with AI</button>' +
         '<button class="secondary" id="pmCancel">Cancel</button>' +
-        '<button class="success" id="pmSave">' + (isEdit ? 'Update' : 'Create') + '</button>' +
+        '<button class="success" id="pmSave">' + (isEdit ? '更新' : '创建') + '</button>' +
       '</div>' +
     '</div>';
 
@@ -2068,16 +2068,16 @@ function openPersonaModal(persona) {
       overlay.remove();
       showToast(isEdit ? 'Persona updated!' : 'Persona created!', 'success');
       loadPersonas();
-    }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+    }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
   });
 }
 
 function deletePersona(id) {
-  if (!confirm('Delete this persona?')) return;
+  if (!confirm('确定删除该作者人设吗？')) return;
   api('DELETE', '/api/personas/' + id).then(function() {
     showToast('Persona deleted', 'info');
     loadPersonas();
-  }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 }
 
 // ================================================================
@@ -2096,7 +2096,7 @@ function loadDocuments() {
 function renderDocuments(docs) {
   var el = document.getElementById('docList');
   if (!docs || docs.length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">No documents uploaded yet.</div>';
+    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">尚未上传文档。</div>';
     return;
   }
   el.innerHTML = '';
@@ -2118,7 +2118,7 @@ function loadCompiledOutputs() {
   var completed = allProjects.filter(function(p) { return p.status === 'completed'; });
   var el = document.getElementById('compiledOutputs');
   if (completed.length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">No compiled outputs yet. Complete a project to generate one.</div>';
+    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">暂无已编译输出。 Complete a project to generate one.</div>';
     return;
   }
 
@@ -2200,7 +2200,7 @@ function renderKeyProviders() {
         showToast('Key saved and encrypted!', 'success');
         loadKeys();
         loadStatus();
-      }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+      }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
     });
   });
 }
@@ -2209,7 +2209,7 @@ function loadKeys() {
   api('GET', '/api/vault/keys').then(function(data) {
     var el = document.getElementById('keyList');
     if (!data.keys || data.keys.length === 0) {
-      el.innerHTML = '<span style="color:var(--muted);">No keys stored yet</span>';
+      el.innerHTML = '<span style="color:var(--muted);">暂无已保存密钥</span>';
       return;
     }
     el.innerHTML = '';
@@ -2222,12 +2222,12 @@ function loadKeys() {
     el.querySelectorAll('.del').forEach(function(d) {
       d.addEventListener('click', function() {
         var keyName = d.getAttribute('data-key');
-        if (!confirm('Delete ' + keyName + '?')) return;
+        if (!confirm('确定删除 ' + keyName + ' 吗？')) return;
         api('DELETE', '/api/vault/' + keyName).then(function() {
           showToast('Key deleted', 'info');
           loadKeys();
           loadStatus();
-        }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+        }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
       });
     });
   }).catch(function() {
@@ -2240,7 +2240,7 @@ function loadTelegramStatus() {
   api('GET', '/api/telegram/status').then(function(data) {
     var el = document.getElementById('telegramStatus');
     if (data.connected) {
-      el.innerHTML = '<span style="color:var(--success);font-weight:700;">Connected</span>';
+      el.innerHTML = '<span style="color:var(--success);font-weight:700;">已连接</span>';
     } else if (data.hasToken) {
       el.innerHTML = '<span style="color:var(--warn);font-weight:700;">Token stored, not connected</span>';
     } else {
@@ -2260,14 +2260,14 @@ document.getElementById('btnConnectTelegram').addEventListener('click', function
   api('POST', '/api/telegram/connect', body).then(function(data) {
     showToast(data.message || 'Telegram connected!', 'success');
     loadTelegramStatus();
-  }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
 
 document.getElementById('btnDisconnectTelegram').addEventListener('click', function() {
   api('POST', '/api/telegram/disconnect').then(function() {
     showToast('Telegram disconnected', 'info');
     loadTelegramStatus();
-  }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
 
 // ── Voice ──
@@ -2344,7 +2344,7 @@ document.getElementById('btnSaveDomains').addEventListener('click', function() {
   api('POST', '/api/research/domains', { domains: domains }).then(function(data) {
     showToast('Research domains saved! (' + (data.count || domains.length) + ' domains)', 'success');
     loadResearchDomains();
-  }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
 
 // ── Autonomous Mode ──
@@ -2387,7 +2387,7 @@ document.getElementById('autonomousToggle').addEventListener('change', function(
     showToast(enabled ? 'Autonomous mode enabled!' : 'Autonomous mode disabled', enabled ? 'success' : 'info');
     loadAutonomousStatus();
   }).catch(function(e) {
-    showToast('Failed: ' + e.message, 'error');
+    showToast('失败：' + e.message, 'error');
     loadAutonomousStatus();
   });
 });
@@ -2414,7 +2414,7 @@ document.getElementById('btnSaveAutonomous').addEventListener('click', function(
   Promise.all(saves).then(function() {
     showToast('Autonomous settings saved!', 'success');
     loadAutonomousStatus();
-  }).catch(function(e) { showToast('Failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
 
 // ================================================================
@@ -2438,7 +2438,7 @@ function renderIdleTaskQueue() {
   if (!queueEl) return;
   queueEl.innerHTML = '';
   if (idleTasksCache.length === 0) {
-    queueEl.innerHTML = '<div style="color:var(--muted);padding:8px 0;">No idle tasks configured. Click "+ Add Task" to create one.</div>';
+    queueEl.innerHTML = '<div style="color:var(--muted);padding:8px 0;">尚未配置空闲任务。点击“+ 添加任务”创建。</div>';
     return;
   }
   idleTasksCache.forEach(function(task, idx) {
@@ -2450,7 +2450,7 @@ function renderIdleTaskQueue() {
         '<label class="toggle" style="transform:scale(0.7);"><input type="checkbox" class="idle-toggle" data-idx="' + idx + '"' + (task.enabled !== false ? ' checked' : '') + '><span class="slider"></span></label>' +
         '<strong style="flex:1;font-size:13px;">' + esc(task.label) + '</strong>' +
         '<button class="small secondary btn-edit-idle" data-idx="' + idx + '" style="font-size:11px;padding:3px 8px;">Edit</button>' +
-        '<button class="small danger btn-del-idle" data-idx="' + idx + '" style="font-size:11px;padding:3px 8px;">Delete</button>' +
+        '<button class="small danger btn-del-idle" data-idx="' + idx + '" style="font-size:11px;padding:3px 8px;">删除</button>' +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-secondary);margin-top:4px;margin-left:42px;line-height:1.4;' + enabledStyle + '">' + esc((task.prompt || '').substring(0, 120)) + '...</div>';
     queueEl.appendChild(row);
@@ -2473,7 +2473,7 @@ function renderIdleTaskQueue() {
   queueEl.querySelectorAll('.btn-del-idle').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var idx = parseInt(btn.getAttribute('data-idx'));
-      if (!confirm('Delete idle task "' + idleTasksCache[idx].label + '"?')) return;
+      if (!confirm('确定删除空闲任务“' + idleTasksCache[idx].label + '”吗？')) return;
       idleTasksCache.splice(idx, 1);
       saveIdleTasks();
       renderIdleTaskQueue();
@@ -2484,7 +2484,7 @@ function renderIdleTaskQueue() {
 function saveIdleTasks() {
   api('PUT', '/api/autonomous/idle-tasks', { tasks: idleTasksCache }).then(function() {
     showToast('Idle tasks saved!', 'success');
-  }).catch(function(e) { showToast('Failed to save: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('保存失败：' + e.message, 'error'); });
 }
 
 function openIdleTaskEditor(task, idx) {
@@ -2493,7 +2493,7 @@ function openIdleTaskEditor(task, idx) {
   overlay.className = 'modal-overlay';
   overlay.innerHTML =
     '<div class="modal" style="max-width:600px;">' +
-      '<div class="modal-title">' + (isNew ? 'Add Idle Task' : 'Edit Idle Task') + '</div>' +
+      '<div class="modal-title">' + (isNew ? '添加空闲任务' : '编辑空闲任务') + '</div>' +
       '<div class="form-group">' +
         '<label>Task Name</label>' +
         '<input type="text" id="idleEditLabel" value="' + esc(task ? task.label || '' : '') + '" placeholder="e.g. Market trend analysis">' +
@@ -2504,7 +2504,7 @@ function openIdleTaskEditor(task, idx) {
       '</div>' +
       '<div class="modal-actions">' +
         '<button class="secondary" id="idleEditCancel">Cancel</button>' +
-        '<button class="success" id="idleEditSave">' + (isNew ? 'Add Task' : 'Save Changes') + '</button>' +
+        '<button class="success" id="idleEditSave">' + (isNew ? '添加任务' : '保存更改') + '</button>' +
       '</div>' +
     '</div>';
   document.body.appendChild(overlay);
@@ -2535,7 +2535,7 @@ function renderIdleTaskHistory(tasks) {
   var histEl = document.getElementById('idleTaskHistory');
   if (!histEl) return;
   if (!tasks || tasks.length === 0) {
-    histEl.innerHTML = '<div style="color:var(--muted);padding:8px 0;">No idle tasks completed yet. Enable autonomous mode to start generating.</div>';
+    histEl.innerHTML = '<div style="color:var(--muted);padding:8px 0;">暂无已完成空闲任务。启用自治模式后会开始生成。</div>';
     return;
   }
   histEl.innerHTML = '';
@@ -2557,7 +2557,7 @@ function renderIdleTaskHistory(tasks) {
     card.addEventListener('click', function() {
       api('GET', '/api/autonomous/idle-tasks/history/' + encodeURIComponent(t.file)).then(function(d) {
         showIdleTaskModal(t.title, d.content);
-      }).catch(function(e) { showToast('Failed to load: ' + e.message, 'error'); });
+      }).catch(function(e) { showToast('加载失败：' + e.message, 'error'); });
     });
     histEl.appendChild(card);
   });
@@ -2571,7 +2571,7 @@ function showIdleTaskModal(title, content) {
       '<div class="modal-title">' + esc(title) + '</div>' +
       '<div style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text-secondary);">' + esc(content) + '</div>' +
       '<div class="modal-actions">' +
-        '<button class="secondary" id="idleModalClose">Close</button>' +
+        '<button class="secondary" id="idleModalClose">关闭</button>' +
       '</div>' +
     '</div>';
   document.body.appendChild(overlay);
@@ -2632,7 +2632,7 @@ function loadHomeStats() {
     var countEl = document.getElementById('homeIdleCount');
     var compEl = document.getElementById('homeIdleCompleted');
     if (countEl) countEl.textContent = enabled;
-    if (compEl) compEl.textContent = history.length + ' completed';
+    if (compEl) compEl.textContent = history.length + ' 已完成';
   }).catch(function() {});
 }
 
@@ -2640,7 +2640,7 @@ function loadActivity() {
   api('GET', '/api/activity?count=15').then(function(data) {
     var feed = document.getElementById('activityFeed');
     var entries = data.entries || [];
-    if (!entries.length) { feed.innerHTML = '<div style="color:var(--muted);text-align:center;padding:16px;">No activity yet.</div>'; return; }
+    if (!entries.length) { feed.innerHTML = '<div style="color:var(--muted);text-align:center;padding:16px;">暂无活动。</div>'; return; }
     feed.innerHTML = '';
     entries.forEach(function(e) {
       var row = document.createElement('div');
@@ -2650,15 +2650,15 @@ function loadActivity() {
       feed.appendChild(row);
     });
   }).catch(function() {
-    document.getElementById('activityFeed').innerHTML = '<div style="color:var(--muted);text-align:center;padding:16px;">Could not load activity.</div>';
+    document.getElementById('activityFeed').innerHTML = '<div style="color:var(--muted);text-align:center;padding:16px;">无法加载活动。</div>';
   });
 }
 function formatTimeAgo(iso) {
   var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (diff < 60) return diff + 's ago';
-  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-  return Math.floor(diff/86400) + 'd ago';
+  if (diff < 60) return diff + '秒前';
+  if (diff < 3600) return Math.floor(diff/60) + '分钟前';
+  if (diff < 86400) return Math.floor(diff/3600) + '小时前';
+  return Math.floor(diff/86400) + '天前';
 }
 
 // ================================================================
