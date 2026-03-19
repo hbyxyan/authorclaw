@@ -47,6 +47,7 @@ export type ProjectType =
   | 'deep-revision'
   | 'format-export'
   | 'book-launch'
+  | 'keyword-book-mvp'
   | 'novel-pipeline'
   | 'pipeline'
   | 'custom';
@@ -97,6 +98,22 @@ export interface NovelPipelineConfig {
   targetWordsPerChapter?: number; // default 3000
   protagonistName?: string;
   antagonistName?: string;
+}
+
+export interface KeywordBookCandidate {
+  id: string;
+  title: string;
+  hook: string;
+  premise: string;
+  audience: string;
+  highlights: string[];
+}
+
+export interface KeywordBookProjectConfig {
+  keyword: string;
+  targetWords?: number;
+  targetWordsPerChapter?: number;
+  selectedCandidate: KeywordBookCandidate;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -963,6 +980,13 @@ Mark the recommended concept clearly. Focus on genre-appropriate design that wou
   // Novel Pipeline (kept from V3 — auto-generates 30+ steps)
   // ═══════════════════════════════════════════════════════════
   {
+    type: 'keyword-book-mvp',
+    label: 'Keyword Book MVP',
+    description: 'Keyword → 3 candidates → pick one → expand project → outline chapters → draft, revise, and complete',
+    steps: [],
+  },
+
+  {
     type: 'novel-pipeline',
     label: 'Full Novel Pipeline',
     description: 'Write a complete novel from premise to final manuscript — premise, characters, world, outline, chapters, revision, and assembly',
@@ -1050,6 +1074,232 @@ export class ProjectEngine {
   setAI(complete: AICompleteFunc, selectProvider: AISelectProviderFunc): void {
     this.aiComplete = complete;
     this.aiSelectProvider = selectProvider;
+  }
+
+  async generateKeywordBookCandidates(keyword: string): Promise<KeywordBookCandidate[]> {
+    const cleaned = keyword.trim();
+    if (!cleaned) return [];
+
+    if (!this.aiComplete || !this.aiSelectProvider) {
+      return this.buildFallbackKeywordCandidates(cleaned);
+    }
+
+    try {
+      const provider = this.aiSelectProvider('outline');
+      const prompt = `You are designing commercial long-form Chinese web novel / fiction concepts.
+
+Given a keyword or short topic, generate EXACTLY 3 distinct candidate book concepts.
+
+Output ONLY valid JSON:
+{"candidates":[
+  {"title":"", "hook":"", "premise":"", "audience":"", "highlights":["", "", ""]},
+  {"title":"", "hook":"", "premise":"", "audience":"", "highlights":["", "", ""]},
+  {"title":"", "hook":"", "premise":"", "audience":"", "highlights":["", "", ""]}
+]}
+
+Requirements:
+- Write in Simplified Chinese
+- Candidates must be clearly different in direction / tone / conflict
+- premise should be 120-220 Chinese characters
+- highlights must contain exactly 3 short bullets
+- Keep them production-friendly for a very long manuscript project
+
+Keyword: ${cleaned}`;
+
+      const result = await this.aiComplete({
+        provider: provider.id,
+        system: prompt,
+        messages: [{ role: 'user', content: cleaned }],
+        maxTokens: 2200,
+        temperature: 0.8,
+      });
+
+      const parsed = this.parseCandidatesResponse(result.text);
+      if (parsed.length === 3) return parsed;
+    } catch (error) {
+      console.error('  ⚠ Failed to generate keyword book candidates via AI:', error);
+    }
+
+    return this.buildFallbackKeywordCandidates(cleaned);
+  }
+
+  createKeywordBookProject(
+    title: string,
+    description: string,
+    config: KeywordBookProjectConfig
+  ): Project {
+    const id = `project-${this.nextId++}`;
+    const now = new Date().toISOString();
+    const targetWords = Math.max(config.targetWords || 500000, 10000);
+    const wordsPerChapter = Math.max(config.targetWordsPerChapter || 4000, 1000);
+    const chapterCount = Math.min(Math.max(Math.ceil(targetWords / wordsPerChapter), 1), 300);
+    const candidate = config.selectedCandidate;
+
+    const steps: ProjectStep[] = [];
+    let stepNum = 0;
+    const addStep = (
+      label: string,
+      phase: string,
+      taskType: string,
+      prompt: string,
+      opts: { skill?: string; wordCountTarget?: number; chapterNumber?: number } = {}
+    ) => {
+      stepNum++;
+      steps.push({
+        id: `${id}-step-${stepNum}`,
+        label,
+        phase,
+        taskType,
+        prompt,
+        status: 'pending',
+        skill: opts.skill,
+        wordCountTarget: opts.wordCountTarget,
+        chapterNumber: opts.chapterNumber,
+      });
+    };
+
+    addStep(
+      '项目扩展',
+      'expansion',
+      'outline',
+      `你现在要把一个已选题方案扩展成可执行的超长篇写作项目。
+
+项目标题：${title}
+关键词：${config.keyword}
+目标总字数：${targetWords}
+预计章节数：${chapterCount}
+单章目标字数：${wordsPerChapter}
+
+已选方案：
+- 标题：${candidate.title}
+- 核心钩子：${candidate.hook}
+- 核心设定：${candidate.premise}
+- 目标读者：${candidate.audience}
+- 卖点：${candidate.highlights.join('；')}
+
+请输出一份中文项目扩展稿，至少包含：
+1. 故事主线
+2. 主角/核心人物关系
+3. 世界观或主要舞台
+4. 长线冲突与升级节奏
+5. 适合长篇连载推进的内容抓手
+6. 分卷/阶段建议
+7. 风格与写作约束
+
+要求：可直接作为后续章节规划输入，内容具体、结构清晰。`,
+      { skill: 'outline' }
+    );
+
+    addStep(
+      '生成章节概要',
+      'outline',
+      'outline',
+      `基于已经扩展好的项目资料，为《${title}》生成完整的章节概要。
+
+硬性要求：
+- 总目标字数：${targetWords}
+- 章节数：${chapterCount}
+- 每章目标字数：${wordsPerChapter}
+- 必须覆盖全部章节，从第1章到第${chapterCount}章
+
+对每一章都给出：
+1. 章节标题
+2. 本章目标
+3. 关键情节推进
+4. 角色变化/冲突
+5. 章节结尾钩子
+6. 建议字数
+
+要求：
+- 使用中文
+- 保证章节之间有递进
+- 前中后期节奏明显
+- 适合后续逐章生成，便于引用。`,
+      { skill: 'outline' }
+    );
+
+    for (let ch = 1; ch <= chapterCount; ch++) {
+      addStep(
+        `生成第${ch}章`,
+        'draft',
+        'creative_writing',
+        `现在开始生成《${title}》第${ch}章正文。
+
+要求：
+- 依据既有项目扩展资料和章节概要
+- 本章写成完整正文，不要写成大纲或说明
+- 目标字数不少于${wordsPerChapter}
+- 强调情节推进、人物行动、对话与场景
+- 结尾保留推进下一章的钩子
+- 输出仅为正文内容`,
+        { skill: 'write', wordCountTarget: wordsPerChapter, chapterNumber: ch }
+      );
+
+      addStep(
+        `检查并修订第${ch}章`,
+        'revision',
+        'revision',
+        `对《${title}》第${ch}章进行基础检查与修订。
+
+请完成：
+1. 检查是否偏离本章概要
+2. 检查剧情是否连贯
+3. 检查角色行为和语气是否一致
+4. 检查是否存在明显重复、空话、概述化表达
+5. 在不改变主线的前提下，直接输出修订后的完整章节正文
+
+要求：
+- 保持本章为完整正文
+- 修订后尽量不低于${Math.round(wordsPerChapter * 0.9)}字
+- 输出仅为修订后的正文`,
+        { skill: 'revise', chapterNumber: ch }
+      );
+    }
+
+    addStep(
+      '完结与达标报告',
+      'assembly',
+      'general',
+      `请为《${title}》生成一份完结报告。
+
+目标总字数：${targetWords}
+预计章节数：${chapterCount}
+
+报告需要包含：
+1. 项目是否达到目标字数
+2. 实际完成章节数
+3. 全书主线是否闭环
+4. 还可继续优化的点
+5. 一段结项总结
+
+用中文输出，适合作为项目收尾说明。`
+    );
+
+    const project: Project = {
+      id,
+      type: 'keyword-book-mvp',
+      title,
+      description,
+      status: 'pending',
+      progress: 0,
+      steps,
+      createdAt: now,
+      updatedAt: now,
+      context: {
+        workflow: 'keyword-book-mvp',
+        keyword: config.keyword,
+        selectedCandidate: candidate,
+        targetWords,
+        targetWordsPerChapter: wordsPerChapter,
+        targetChapters: chapterCount,
+        estimatedTotalWords: chapterCount * wordsPerChapter,
+      },
+    };
+
+    this.projects.set(id, project);
+    this.persistState();
+    console.log(`  ✓ Keyword book MVP created: "${title}" — ${chapterCount} chapters, ~${targetWords.toLocaleString()} words target`);
+    return project;
   }
 
   // ── Novel Pipeline ──
@@ -1468,6 +1718,35 @@ Description: ${description}`;
     return projects;
   }
 
+  getProjectWordStats(projectId: string): {
+    totalWords: number;
+    targetWords: number;
+    completedChapters: number;
+    targetReached: boolean;
+  } {
+    const project = this.projects.get(projectId);
+    if (!project) {
+      return { totalWords: 0, targetWords: 0, completedChapters: 0, targetReached: false };
+    }
+
+    const revisedSteps = project.steps.filter(s => s.phase === 'revision' && s.status === 'completed' && s.result);
+    const sourceSteps = revisedSteps.length > 0
+      ? revisedSteps
+      : project.steps.filter(s => s.phase === 'draft' && s.status === 'completed' && s.result);
+
+    const totalWords = sourceSteps.reduce((sum, step) => {
+      return sum + (step.result ? step.result.trim().split(/\s+/).filter(Boolean).length : 0);
+    }, 0);
+    const targetWords = Number(project.context?.targetWords || project.context?.estimatedTotalWords || 0);
+
+    return {
+      totalWords,
+      targetWords,
+      completedChapters: sourceSteps.filter(s => s.chapterNumber).length,
+      targetReached: targetWords > 0 ? totalWords >= targetWords : false,
+    };
+  }
+
   /**
    * Start executing a project — marks it active and returns the first step
    */
@@ -1614,6 +1893,8 @@ Description: ${description}`;
     // Novel pipeline: phase-aware context accumulation
     if (project.type === 'novel-pipeline' && step.phase) {
       context += this.buildNovelPipelineContext(project, step);
+    } else if (project.type === 'keyword-book-mvp' && step.phase) {
+      context += this.buildKeywordBookContext(project, step);
     } else {
       // Default: add results from prior steps
       const completedSteps = project.steps.filter(s => s.status === 'completed' && s.result);
@@ -1668,6 +1949,82 @@ Description: ${description}`;
       if (instruction) {
         context += `**How to use**: ${instruction}\n`;
       }
+    }
+
+    return context;
+  }
+
+  private buildKeywordBookContext(project: Project, step: ProjectStep): string {
+    let context = '';
+    const completed = project.steps.filter(s => s.status === 'completed' && s.result);
+    const candidate = project.context?.selectedCandidate as KeywordBookCandidate | undefined;
+    const targetWords = Number(project.context?.targetWords || 500000);
+    const targetChapters = Number(project.context?.targetChapters || 0);
+    const wordsPerChapter = Number(project.context?.targetWordsPerChapter || 4000);
+
+    if (candidate) {
+      context += `## 已选方案\n\n`;
+      context += `- 标题：${candidate.title}\n`;
+      context += `- 核心钩子：${candidate.hook}\n`;
+      context += `- 核心设定：${candidate.premise}\n`;
+      context += `- 目标读者：${candidate.audience}\n`;
+      context += `- 卖点：${candidate.highlights.join('；')}\n\n`;
+    }
+
+    context += `## 项目目标\n\n`;
+    context += `- 目标总字数：${targetWords.toLocaleString()}\n`;
+    context += `- 目标章节数：${targetChapters}\n`;
+    context += `- 每章目标字数：${wordsPerChapter.toLocaleString()}\n\n`;
+
+    const truncate = (text: string, max: number) =>
+      text.length > max ? text.slice(0, max) + '\n\n[...truncated...]' : text;
+
+    const expansion = completed.find(s => s.phase === 'expansion');
+    const outline = completed.find(s => s.phase === 'outline');
+
+    switch (step.phase) {
+      case 'expansion':
+        break;
+      case 'outline':
+        if (expansion?.result) {
+          context += `## 项目扩展稿\n\n${truncate(expansion.result, 5000)}\n\n`;
+        }
+        break;
+      case 'draft': {
+        if (expansion?.result) context += `## 项目扩展稿\n\n${truncate(expansion.result, 3500)}\n\n`;
+        if (outline?.result) context += `## 章节概要\n\n${truncate(outline.result, 6000)}\n\n`;
+        const revisedChapters = completed
+          .filter(s => s.phase === 'revision' && s.chapterNumber)
+          .sort((a, b) => (a.chapterNumber || 0) - (b.chapterNumber || 0));
+        if (revisedChapters.length > 0) {
+          const recent = revisedChapters.slice(-2);
+          context += `## 最近已修订章节（连续性参考）\n\n`;
+          for (const ch of recent) {
+            context += `### ${ch.label}\n${truncate(ch.result || '', 2200)}\n\n`;
+          }
+        }
+        break;
+      }
+      case 'revision': {
+        if (outline?.result) context += `## 章节概要\n\n${truncate(outline.result, 5000)}\n\n`;
+        const currentDraft = completed.find(s => s.phase === 'draft' && s.chapterNumber === step.chapterNumber);
+        if (currentDraft?.result) {
+          context += `## 当前章节草稿\n\n${truncate(currentDraft.result, 12000)}\n\n`;
+        }
+        break;
+      }
+      case 'assembly': {
+        const stats = this.getProjectWordStats(project.id);
+        context += `## 完成统计\n\n`;
+        context += `- 已完成修订章节：${stats.completedChapters}\n`;
+        context += `- 当前累计字数：${stats.totalWords.toLocaleString()}\n`;
+        context += `- 是否达标：${stats.targetReached ? '是' : '否'}\n\n`;
+        break;
+      }
+      default:
+        for (const cs of completed.slice(-5)) {
+          context += `### ${cs.label}\n${truncate(cs.result || '', 1500)}\n\n`;
+        }
     }
 
     return context;
@@ -1825,6 +2182,10 @@ Description: ${description}`;
    */
   inferProjectType(description: string): ProjectType {
     const lower = description.toLowerCase();
+
+    if (lower.match(/\b(keyword|关键词|选题|长篇立项|网文|连载)\b/)) {
+      return 'keyword-book-mvp';
+    }
 
     // Novel pipeline signals — ONLY when explicitly asking for a full novel/book
     if (lower.match(/\b(novel|full book|write a book|write my book|entire book|complete novel|full manuscript|book from scratch|novel pipeline|write a complete)\b/)) {
@@ -2045,6 +2406,7 @@ Description: ${description}`;
       'deep-revision': 'revision',
       'format-export': 'general',
       'book-launch': 'marketing',
+      'keyword-book-mvp': 'outline',
       'novel-pipeline': 'creative_writing',
       pipeline: 'general',
       custom: 'general',
@@ -2064,6 +2426,65 @@ Description: ${description}`;
       }
       return step;
     });
+  }
+
+  private parseCandidatesResponse(text: string): KeywordBookCandidate[] {
+    let cleaned = text.trim();
+    cleaned = cleaned.replace(/^```(?:json)?\n?/i, '').replace(/\n?```$/i, '').trim();
+    let parsed: any = null;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch {
+      const jsonMatch = cleaned.match(/\{[\s\S]*"candidates"[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch {
+          parsed = null;
+        }
+      }
+    }
+
+    const candidates = Array.isArray(parsed?.candidates) ? parsed.candidates.slice(0, 3) : [];
+    return candidates.map((candidate: any, index: number) => ({
+      id: `candidate-${index + 1}`,
+      title: String(candidate?.title || `方案${index + 1}`),
+      hook: String(candidate?.hook || ''),
+      premise: String(candidate?.premise || ''),
+      audience: String(candidate?.audience || ''),
+      highlights: Array.isArray(candidate?.highlights)
+        ? candidate.highlights.slice(0, 3).map((item: any) => String(item))
+        : [],
+    })).filter((candidate: KeywordBookCandidate) => candidate.title && candidate.premise);
+  }
+
+  private buildFallbackKeywordCandidates(keyword: string): KeywordBookCandidate[] {
+    return [
+      {
+        id: 'candidate-1',
+        title: `${keyword}：逆袭主线版`,
+        hook: `围绕“${keyword}”打造强成长、强升级、强冲突的长篇故事。`,
+        premise: `主角因“${keyword}”卷入一个不断升级的局势，从个人生存问题一路推进到更大的阵营冲突与命运选择，适合长线连载扩写。`,
+        audience: '偏好成长、推进感和持续爽点的长篇读者',
+        highlights: ['强主线推进', '易做阶段升级', '适合长篇连载'],
+      },
+      {
+        id: 'candidate-2',
+        title: `${keyword}：悬念解谜版`,
+        hook: `用“${keyword}”做谜题核心，靠真相层层揭露驱动篇幅。`,
+        premise: `以“${keyword}”为核心秘密，主角在调查、误导、反转中不断接近真相，每次揭晓都会带来新的关系变化和更高风险，适合章节尾钩子结构。`,
+        audience: '喜欢反转、揭秘和悬念推进的读者',
+        highlights: ['章节钩子强', '适合分卷揭秘', '节奏容易控制'],
+      },
+      {
+        id: 'candidate-3',
+        title: `${keyword}：群像关系版`,
+        hook: `将“${keyword}”放进复杂人物关系网，靠阵营与情感冲突拉长篇幅。`,
+        premise: `围绕“${keyword}”构建多人物、多立场、多阶段目标的叙事体系，让人物关系与利益博弈不断重组，从而支撑超长篇持续展开。`,
+        audience: '偏爱人物群像、关系变化和世界展开的读者',
+        highlights: ['群像可扩展', '世界观延展性高', '适合长线关系戏'],
+      },
+    ];
   }
 
   private enrichWithPriorResults(prompt: string, project: Project): string {

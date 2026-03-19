@@ -526,6 +526,16 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
       return res.json({ project, planning: 'book-production' });
     }
 
+    if (inferredType === 'keyword-book-mvp') {
+      const cfg = config || context || {};
+      if (!cfg.keyword || !cfg.selectedCandidate) {
+        return res.status(400).json({ error: 'keyword and selectedCandidate are required for keyword-book-mvp' });
+      }
+      const project = engine.createKeywordBookProject(title, description, cfg);
+      applyProjectOptions(project);
+      return res.json({ project, planning: 'keyword-book-mvp' });
+    }
+
     // Dynamic planning: ask the AI to figure out the steps
     if (planning === 'dynamic') {
       const skillCatalog = services.skills.getSkillCatalog();
@@ -540,6 +550,77 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
     const project = engine.createProject(projectType, title, description, context);
     applyProjectOptions(project);
     res.json({ project, planning: 'template' });
+  });
+
+  // ── Keyword Book MVP: 关键词 -> 3候选方案 ──
+  app.post('/api/keyword-book/candidates', async (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const keyword = String(req.body?.keyword || '').trim();
+    if (!keyword) {
+      return res.status(400).json({ error: 'keyword required' });
+    }
+    try {
+      const candidates = await engine.generateKeywordBookCandidates(keyword);
+      res.json({ keyword, candidates });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to generate candidates: ' + String(err) });
+    }
+  });
+
+  // ── Keyword Book MVP: 创建项目（用户已选择候选） ──
+  app.post('/api/keyword-book/projects', async (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+
+    const keyword = String(req.body?.keyword || '').trim();
+    const selectedCandidate = req.body?.selectedCandidate;
+    const targetWords = Number(req.body?.targetWords || 500000);
+    const targetWordsPerChapter = Number(req.body?.targetWordsPerChapter || 4000);
+    const title = String(req.body?.title || selectedCandidate?.title || keyword || '').trim();
+    const description = String(req.body?.description || selectedCandidate?.premise || keyword || '').trim();
+
+    if (!keyword) return res.status(400).json({ error: 'keyword required' });
+    if (!selectedCandidate) return res.status(400).json({ error: 'selectedCandidate required' });
+    if (!title || !description) return res.status(400).json({ error: 'title and description required' });
+
+    try {
+      const project = engine.createKeywordBookProject(title, description, {
+        keyword,
+        targetWords: Number.isFinite(targetWords) ? targetWords : 500000,
+        targetWordsPerChapter: Number.isFinite(targetWordsPerChapter) ? targetWordsPerChapter : 4000,
+        selectedCandidate,
+      });
+      res.status(201).json({ project });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to create keyword book project: ' + String(err) });
+    }
+  });
+
+  app.get('/api/keyword-book/projects/:id/summary', (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const project = engine.getProject(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    const stats = engine.getProjectWordStats(req.params.id);
+    res.json({
+      projectId: project.id,
+      title: project.title,
+      type: project.type,
+      status: project.status,
+      progress: project.progress,
+      keyword: project.context?.keyword || null,
+      targetWords: stats.targetWords,
+      totalWords: stats.totalWords,
+      completedChapters: stats.completedChapters,
+      targetReached: stats.targetReached,
+    });
   });
 
   // ── Pipeline Creation (chains all 6 phases) ──
