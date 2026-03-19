@@ -926,7 +926,7 @@ textarea { resize: vertical; min-height: 60px; }
       <div class="card">
         <div class="card-title">已完成的空闲任务</div>
         <div id="idleTaskHistory" style="max-height:400px;overflow-y:auto;">
-          <div style="color:var(--muted);">加载中...</div>
+          <div style="color:var(--muted);">加载中……</div>
         </div>
       </div>
     </div>
@@ -976,6 +976,98 @@ function showToast(message, type) {
   setTimeout(function() { if (toast.parentNode) toast.remove(); }, 4500);
 }
 
+function localizeErrorMessage(message) {
+  var msg = String(message || '').trim();
+  if (!msg) return '发生未知错误。';
+  var known = [
+    ['Project engine not initialized', '项目引擎尚未初始化。'],
+    ['keyword required', '请输入关键词。'],
+    ['selectedCandidate required', '请先选择一个候选方案。'],
+    ['title and description required', '请填写标题和说明。'],
+    ['Project not found', '未找到对应项目。'],
+    ['Project or step not found', '未找到对应项目步骤。'],
+    ['Failed to generate candidates', '候选方案生成失败。'],
+    ['Failed to create keyword book project', '关键词长篇项目创建失败。'],
+    ['Failed to connect Telegram', 'Telegram 连接失败。'],
+    ['Failed to test token', 'Telegram Token 测试失败。'],
+    ['Failed to load idle tasks', '加载空闲任务失败。'],
+    ['Failed to save idle tasks', '保存空闲任务失败。'],
+    ['Failed to add idle task', '添加空闲任务失败。'],
+    ['Failed to delete idle task', '删除空闲任务失败。'],
+    ['Failed to read idle task', '读取空闲任务失败。'],
+    ['Failed to create pipeline', '创建流水线项目失败。'],
+    ['Failed to reset memory', '重置记忆失败。'],
+    ['Failed to store key', '保存密钥失败。'],
+    ['Failed to refresh providers', '刷新提供商失败。'],
+    ['HTTP 400', '请求参数有误。'],
+    ['HTTP 401', '认证失败。'],
+    ['HTTP 403', '没有权限执行该操作。'],
+    ['HTTP 404', '请求的资源不存在。'],
+    ['HTTP 409', '当前状态不允许执行该操作。'],
+    ['HTTP 500', '服务端执行失败。'],
+    ['HTTP 503', '服务暂不可用，请稍后重试。']
+  ];
+  for (var i = 0; i < known.length; i++) {
+    if (msg.indexOf(known[i][0]) !== -1) return known[i][1];
+  }
+  return msg;
+}
+
+function voicePresetLabel(key) {
+  var labels = {
+    narrator_female: '女声旁白（通用、富有表现力）',
+    narrator_male: '男声旁白（文学 / 悬疑）',
+    narrator_deep: '低沉旁白（史诗奇幻 / 科幻）',
+    narrator_warm: '温暖旁白（言情 / 回忆录）',
+    british_male: '英伦男声（年代文 / 温馨推理）',
+    british_female: '英伦女声（优雅文学风）',
+    storyteller: '故事讲述者（冒险 / 青少年）',
+    snarky_nerd: '机智学者（吐槽感 / 科幻）',
+    curious_kid: '好奇少年（童趣 / 轻奇幻）'
+  };
+  return labels[key] || key;
+}
+
+function providerLabel(key) {
+  var labels = {
+    gemini: 'Gemini（免费优先，适合轻量生成）',
+    deepseek: 'DeepSeek（性价比高，适合长文）',
+    claude: 'Claude（质量稳定，适合润色与结构）',
+    openai: 'OpenAI GPT（综合能力强，适合复杂任务）',
+    ollama: 'Ollama（本地运行，适合离线）'
+  };
+  return labels[key] || key;
+}
+
+function getProjectStatusLabel(project) {
+  if (!project) return '未知';
+  if (project.status === 'completed') {
+    if (project.context && project.context.finalizedManually) return '已完结';
+    return '已结束';
+  }
+  return formatProjectStatus(project.status);
+}
+
+function getActiveStepLabel(project) {
+  if (!project || !project.steps) return '';
+  var active = project.steps.find(function(s) { return s.status === 'active'; });
+  return active ? (active.label || '') : '';
+}
+
+function getNextPendingStepLabel(project) {
+  if (!project || !project.steps) return '';
+  var next = project.steps.find(function(s) { return s.status === 'pending'; });
+  return next ? (next.label || '') : '';
+}
+
+function getLatestCompletedStepLabel(project) {
+  if (!project || !project.steps) return '';
+  for (var i = project.steps.length - 1; i >= 0; i--) {
+    if (project.steps[i].status === 'completed') return project.steps[i].label || '';
+  }
+  return '';
+}
+
 function api(method, path, body) {
   var opts = { method: method, headers: { 'Content-Type': 'application/json' } };
   if (body) opts.body = JSON.stringify(body);
@@ -983,9 +1075,9 @@ function api(method, path, body) {
     var ct = res.headers.get('content-type') || '';
     if (!res.ok) {
       if (ct.indexOf('application/json') !== -1) {
-        return res.json().then(function(d) { throw new Error(d.error || ('HTTP ' + res.status)); });
+        return res.json().then(function(d) { throw new Error(localizeErrorMessage(d.error || ('HTTP ' + res.status))); });
       }
-      throw new Error('HTTP ' + res.status + ' ' + res.statusText);
+      throw new Error(localizeErrorMessage('HTTP ' + res.status + ' ' + res.statusText));
     }
     if (ct.indexOf('application/json') === -1) {
       throw new Error('Server returned non-JSON response');
@@ -998,7 +1090,7 @@ function apiRaw(method, path, body) {
   var opts = { method: method };
   if (body) { opts.body = body; }
   return fetch(API + path, opts).then(function(res) {
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) throw new Error(localizeErrorMessage('HTTP ' + res.status));
     return res.json();
   });
 }
@@ -1238,7 +1330,7 @@ function renderHomeProjects() {
       '<div class="psc-title">' + esc(p.title) + '</div>' +
       '<div class="psc-meta">' +
         '<span class="badge badge-type">' + esc(formatProjectType(p.type || 'general')) + '</span>' +
-        '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(formatProjectStatus(p.status)) + '</span>' +
+        '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(getProjectStatusLabel(p)) + '</span>' +
       '</div>' +
       '<div class="progress-bar"><div class="progress-fill" style="width:' + (p.progress || 0) + '%">' + (p.progress || 0) + '%</div></div>' +
       (currentStep ? '<div class="psc-step">当前步骤：' + esc(currentStep) + '</div>' : '') +
@@ -1270,7 +1362,7 @@ function showTyping() {
   var ind = document.createElement('div');
   ind.className = 'typing-indicator';
   ind.id = 'typingIndicator';
-  ind.innerHTML = '<span>.</span><span>.</span><span>.</span> AuthorClaw is thinking';
+  ind.innerHTML = '<span>.</span><span>.</span><span>.</span> AuthorClaw 正在思考';
   el.appendChild(ind);
   el.scrollTop = el.scrollHeight;
 }
@@ -1412,13 +1504,13 @@ function openCreateProjectModal(template, serverTemplate) {
         '<label>AI 模型</label>' +
         '<select id="modalProvider">' +
           '<option value="">自动选择（推荐）</option>' +
-          '<option value="gemini">Gemini（免费档）</option>' +
-          '<option value="deepseek">DeepSeek（性价比）</option>' +
-          '<option value="claude">Claude（高质量）</option>' +
-          '<option value="openai">OpenAI GPT（高质量）</option>' +
-          '<option value="ollama">Ollama（本地免费）</option>' +
+          '<option value="gemini">Gemini（免费优先，推荐轻量任务）</option>' +
+          '<option value="deepseek">DeepSeek（长文性价比高，推荐正文）</option>' +
+          '<option value="claude">Claude（高质量，推荐结构与润色）</option>' +
+          '<option value="openai">OpenAI GPT（综合能力强）</option>' +
+          '<option value="ollama">Ollama（本地离线）</option>' +
         '</select>' +
-        '<div style="font-size:11px;color:var(--muted);margin-top:4px;">默认会按任务类型自动选路由；也可以在这里强制指定同一个模型。</div>' +
+        '<div style="font-size:11px;color:var(--muted);margin-top:4px;">推荐：正文长篇优先选 DeepSeek，结构 / 润色优先选 Claude；若不确定，使用“自动选择”。</div>' +
       '</div>' +
       extraFields +
       '<div class="modal-actions">' +
@@ -1530,11 +1622,11 @@ function openKeywordBookModal(template, serverTemplate) {
       '</div>' +
       '<div class="form-group-inline">' +
         '<div class="form-group"><label>作者人设</label><select id="kbPersona">' + personaOpts + '</select></div>' +
-        '<div class="form-group"><label>AI 模型</label><select id="kbProvider"><option value="">自动选择（推荐）</option><option value="gemini">Gemini</option><option value="deepseek">DeepSeek</option><option value="claude">Claude</option><option value="openai">OpenAI GPT</option><option value="ollama">Ollama</option></select></div>' +
+        '<div class="form-group"><label>AI 模型</label><select id="kbProvider"><option value="">自动选择（推荐）</option><option value="gemini">Gemini（轻量免费）</option><option value="deepseek">DeepSeek（长文推荐）</option><option value="claude">Claude（结构 / 润色推荐）</option><option value="openai">OpenAI GPT（综合）</option><option value="ollama">Ollama（本地离线）</option></select><div style="font-size:11px;color:var(--muted);margin-top:4px;">不确定时直接用“自动选择”；若追求正文成本与篇幅平衡，推荐 DeepSeek。</div></div>' +
       '</div>' +
       '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">' +
         '<button class="secondary" id="kbGenerate">生成候选方案</button>' +
-        '<span class="hint">默认按 50 万字创建，可在这里修改。</span>' +
+        '<span class="hint">默认按 50 万字创建，可在这里修改。创建前会再进行一次确认，避免误操作。</span>' +
       '</div>' +
       '<div id="kbCandidateList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;max-height:380px;overflow-y:auto;">' +
         '<div style="color:var(--muted);padding:24px 0;text-align:center;grid-column:1/-1;">请先输入关键词并生成候选方案。</div>' +
@@ -1562,12 +1654,19 @@ function openKeywordBookModal(template, serverTemplate) {
       var card = document.createElement('button');
       card.type = 'button';
       card.style.cssText = 'text-align:left;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);cursor:pointer;';
+      var tags = (candidate.highlights || []).map(function(item) {
+        return '<span style="display:inline-block;padding:3px 8px;border-radius:999px;background:rgba(106,90,205,0.15);color:var(--accent);font-size:11px;margin:0 6px 6px 0;">' + esc(item) + '</span>';
+      }).join('');
       card.innerHTML =
         '<div style="font-size:16px;font-weight:700;margin-bottom:8px;">方案 ' + (index + 1) + '：' + esc(candidate.title || '') + '</div>' +
-        '<div style="font-size:12px;color:var(--accent);margin-bottom:8px;">钩子：' + esc(candidate.hook || '') + '</div>' +
-        '<div style="font-size:12px;line-height:1.6;color:var(--text-secondary);margin-bottom:8px;">' + esc(candidate.premise || '') + '</div>' +
-        '<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">目标读者：' + esc(candidate.audience || '未说明') + '</div>' +
-        '<div style="font-size:12px;color:var(--text-secondary);">卖点：' + esc((candidate.highlights || []).join(' / ')) + '</div>';
+        '<div style="font-size:12px;color:var(--accent);margin-bottom:8px;font-weight:600;">核心钩子：' + esc(candidate.hook || '') + '</div>' +
+        '<div style="font-size:12px;line-height:1.6;color:var(--text-secondary);margin-bottom:10px;">' + esc(candidate.premise || '') + '</div>' +
+        '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;">' +
+          '<span style="font-size:11px;color:var(--muted);min-width:52px;">目标读者</span>' +
+          '<strong style="font-size:12px;color:var(--text);line-height:1.5;">' + esc(candidate.audience || '未说明') + '</strong>' +
+        '</div>' +
+        '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">亮点标签</div>' +
+        '<div>' + tags + '</div>';
       card.addEventListener('click', function() {
         selectedCandidate = candidate;
         overlay.querySelectorAll('#kbCandidateList button').forEach(function(btn) {
@@ -1582,6 +1681,33 @@ function openKeywordBookModal(template, serverTemplate) {
     });
   }
 
+  function confirmKeywordBookCreation(payload) {
+    var confirmOverlay = document.createElement('div');
+    confirmOverlay.className = 'modal-overlay';
+    confirmOverlay.innerHTML =
+      '<div class="modal" style="max-width:620px;">' +
+        '<div class="modal-title">确认创建关键词长篇</div>' +
+        '<div style="font-size:13px;line-height:1.8;color:var(--text-secondary);">' +
+          '<div><strong>关键词：</strong>' + esc(payload.keyword) + '</div>' +
+          '<div><strong>书名：</strong>' + esc(payload.selectedCandidate.title || '') + '</div>' +
+          '<div><strong>目标总字数：</strong>' + formatNumberCN(payload.targetWords) + ' 字</div>' +
+          '<div><strong>每章目标字数：</strong>' + formatNumberCN(payload.targetWordsPerChapter) + ' 字</div>' +
+          '<div style="margin-top:8px;"><strong>选中方向：</strong>' + esc(payload.selectedCandidate.premise || '') + '</div>' +
+        '</div>' +
+        '<div class="hint" style="margin-top:12px;">确认后将立即创建项目并开始自动执行。</div>' +
+        '<div class="modal-actions">' +
+          '<button class="secondary" id="kbConfirmCancel">返回修改</button>' +
+          '<button class="success" id="kbConfirmOk">确认创建</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(confirmOverlay);
+    return new Promise(function(resolve) {
+      confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmOverlay) { confirmOverlay.remove(); resolve(false); } });
+      confirmOverlay.querySelector('#kbConfirmCancel').addEventListener('click', function() { confirmOverlay.remove(); resolve(false); });
+      confirmOverlay.querySelector('#kbConfirmOk').addEventListener('click', function() { confirmOverlay.remove(); resolve(true); });
+    });
+  }
+
   overlay.querySelector('#kbGenerate').addEventListener('click', function() {
     var keyword = overlay.querySelector('#kbKeyword').value.trim();
     if (!keyword) { showToast('请先输入关键词。', 'error'); return; }
@@ -1592,7 +1718,7 @@ function openKeywordBookModal(template, serverTemplate) {
     api('POST', '/api/keyword-book/candidates', { keyword: keyword }).then(function(data) {
       renderCandidates(data.candidates || []);
     }).catch(function(err) {
-      candidateList.innerHTML = '<div style="color:var(--danger);padding:24px 0;text-align:center;grid-column:1/-1;">候选方案生成失败：' + esc(err.message) + '</div>';
+      candidateList.innerHTML = '<div style="color:var(--danger);padding:24px 0;text-align:center;grid-column:1/-1;">候选方案生成失败：' + esc(localizeErrorMessage(err.message)) + '</div>';
     }).finally(function() {
       btn.disabled = false;
       btn.textContent = '生成候选方案';
@@ -1608,11 +1734,7 @@ function openKeywordBookModal(template, serverTemplate) {
     if (!keyword) { showToast('请先输入关键词。', 'error'); return; }
     if (!selectedCandidate) { showToast('请先选择一个候选方案。', 'error'); return; }
 
-    var btn = overlay.querySelector('#kbCreate');
-    btn.disabled = true;
-    btn.textContent = '创建中……';
-
-    api('POST', '/api/keyword-book/projects', {
+    var payload = {
       keyword: keyword,
       selectedCandidate: selectedCandidate,
       title: selectedCandidate.title,
@@ -1621,25 +1743,33 @@ function openKeywordBookModal(template, serverTemplate) {
       targetWordsPerChapter: wordsPerChapter,
       personaId: personaId || undefined,
       preferredProvider: preferredProvider || undefined
-    }).then(function(data) {
-      var projectId = data.project && data.project.id;
-      overlay.remove();
-      if (!projectId) {
-        showToast('项目已创建，但未返回项目 ID。', 'error');
+    };
+
+    confirmKeywordBookCreation(payload).then(function(confirmed) {
+      if (!confirmed) return;
+      var btn = overlay.querySelector('#kbCreate');
+      btn.disabled = true;
+      btn.textContent = '创建中……';
+      api('POST', '/api/keyword-book/projects', payload).then(function(data) {
+        var projectId = data.project && data.project.id;
+        overlay.remove();
+        if (!projectId) {
+          showToast('项目已创建，但未返回项目 ID。', 'error');
+          loadProjects();
+          return;
+        }
+        showToast('关键词长篇项目已创建，正在自动执行。', 'success');
         loadProjects();
-        return;
-      }
-      showToast('关键词长篇项目已创建，正在自动执行。', 'success');
-      loadProjects();
-      switchPanel('projects');
-      setTimeout(function() {
-        openProjectDetail(projectId);
-        projectAction('auto-execute', projectId, { silentStart: true, successMessage: '关键词长篇自动执行完成。' });
-      }, 300);
-    }).catch(function(err) {
-      showToast('创建失败：' + err.message, 'error');
-      btn.disabled = false;
-      btn.textContent = '创建并自动执行';
+        switchPanel('projects');
+        setTimeout(function() {
+          openProjectDetail(projectId);
+          projectAction('auto-execute', projectId, { silentStart: true, successMessage: '关键词长篇自动执行完成。' });
+        }, 300);
+      }).catch(function(err) {
+        showToast('创建失败：' + localizeErrorMessage(err.message), 'error');
+        btn.disabled = false;
+        btn.textContent = '创建并自动执行';
+      });
     });
   });
 }
@@ -1705,7 +1835,7 @@ function renderProjectList() {
         '<div class="plc-badges">' +
           '<span class="badge badge-type">' + esc(formatProjectType(p.type || 'general')) + '</span>' +
           (personaName ? '<span class="badge badge-persona">' + esc(personaName) + '</span>' : '') +
-          '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(formatProjectStatus(p.status)) + '</span>' +
+          '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(getProjectStatusLabel(p)) + '</span>' +
         '</div>' +
       '</div>' +
       '<div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill" style="width:' + (p.progress || 0) + '%">' + (p.progress || 0) + '%</div></div>' +
@@ -1776,9 +1906,14 @@ function projectAction(action, id, options) {
       var completed = (data.results || []).filter(function(r) { return r.success; }).length;
       showToast(options.successMessage || ('自动执行完成，已完成 ' + completed + ' 个步骤。'), 'success');
     } else if (action === 'pause') {
-      showToast('项目已暂停。暂停后可继续查看内容、添加人工干预说明，再点击“恢复”继续。', 'success');
+      var pauseProject = allProjects.find(function(p) { return p.id === id; });
+      var activeStep = getActiveStepLabel(pauseProject) || getNextPendingStepLabel(pauseProject) || '暂无待办';
+      showToast('项目已暂停。当前重点：' + activeStep + '。你可以先人工干预，再点击“恢复”继续。', 'success');
     } else if (action === 'resume') {
-      showToast('项目已恢复。', 'success');
+      var resumeProject = allProjects.find(function(p) { return p.id === id; });
+      var recentStep = getLatestCompletedStepLabel(resumeProject) || '暂无已完成章节';
+      var nextStep = getNextPendingStepLabel(resumeProject) || getActiveStepLabel(resumeProject) || '暂无待办';
+      showToast('项目已恢复。最近完成：' + recentStep + '；接下来：' + nextStep + '。', 'success');
     } else if (action === 'finalize') {
       showToast('项目已标记为完结。', 'success');
     } else {
@@ -1921,7 +2056,7 @@ function openProjectDetail(id) {
   var completedChapters = getProjectCompletedChapters(project);
   var targetPct = targetWords ? Math.min(100, Math.round((currentWords / targetWords) * 100)) : 0;
   var pauseNote = project.status === 'paused'
-    ? '<div class="hint" style="margin:10px 0 0;">项目当前已暂停。你可以先查看章节输出、修改步骤内容或添加人工干预说明，准备好后再点击“恢复”。</div>'
+    ? '<div class="hint" style="margin:10px 0 0;">项目当前已暂停。建议先回顾最近完成章节、检查下一步待办，再决定是补充人工干预说明还是直接恢复执行。</div>'
     : '';
 
   var stepsHtml = '';
@@ -1932,7 +2067,7 @@ function openProjectDetail(id) {
       if (s.phase === 'outline' || s.phase === 'draft' || s.phase === 'revision') {
         humanButtons = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">' +
           '<button class="small secondary btn-step-edit" data-step-id="' + esc(s.id) + '" data-step-index="' + i + '">人工干预 / 修改内容</button>' +
-          (project.status !== 'active' ? '<button class="small success btn-step-rerun" data-project-id="' + esc(project.id) + '">恢复并继续执行</button>' : '') +
+          '<button class="small success btn-step-rerun" data-project-id="' + esc(project.id) + '">写入意见后继续执行</button>' +
         '</div>';
       }
       stepsHtml +=
@@ -1965,6 +2100,7 @@ function openProjectDetail(id) {
     }
   }
   actionsHtml += '<button id="pdCompile">编译文件</button> ';
+  if (project.status === 'completed') { actionsHtml += '<button class="secondary" id="pdJumpReport">查看完结报告</button> '; }
 
   if (project.status === 'completed') {
     var nextPhases = getContinuationOptions(project.type);
@@ -1995,7 +2131,7 @@ function openProjectDetail(id) {
           '<div style="padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);"><div style="font-size:12px;color:var(--muted);">达标比例</div><div style="font-size:24px;font-weight:700;">' + targetPct + '%</div></div>' +
         '</div>' +
         '<div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" style="width:' + targetPct + '%">' + targetPct + '%</div></div>' +
-        '<div id="pdKeywordSummaryHint" class="hint" style="margin-top:10px;">当前累计 ' + formatNumberCN(currentWords) + ' / ' + formatNumberCN(targetWords) + ' 字。达到目标字数且主线收束后，可点击“立即完结”。</div>' +
+        '<div id="pdKeywordSummaryHint" class="hint" style="margin-top:10px;">当前累计 ' + formatNumberCN(currentWords) + ' / ' + formatNumberCN(targetWords) + ' 字。只有在达到目标字数且主线已经收束时才建议点击“立即完结”；否则请继续创作或补充人工干预。</div>' +
       '</div>';
   }
 
@@ -2009,7 +2145,7 @@ function openProjectDetail(id) {
             '<span class="badge badge-type">' + esc(formatProjectType(project.type || 'general')) + '</span>' +
             (personaName ? '<span class="badge badge-persona">' + esc(personaName) + '</span>' : '') +
             (project.preferredProvider ? '<span class="badge" style="background:var(--accent);color:#fff;">' + esc(project.preferredProvider) + '</span>' : '') +
-            '<span class="badge badge-status badge-' + esc(project.status) + '">' + esc(formatProjectStatus(project.status)) + '</span>' +
+            '<span class="badge badge-status badge-' + esc(project.status) + '">' + esc(getProjectStatusLabel(project)) + '</span>' +
           '</div>' +
         '</div>' +
         '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">' + esc(project.description || '') + '</div>' +
@@ -2038,7 +2174,9 @@ function openProjectDetail(id) {
   var pdResume = detail.querySelector('#pdResume');
   if (pdResume) pdResume.addEventListener('click', function() { projectAction('resume', id); });
   var pdFinalize = detail.querySelector('#pdFinalize');
-  if (pdFinalize) pdFinalize.addEventListener('click', function() { projectAction('finalize', id); });
+  if (pdFinalize) pdFinalize.addEventListener('click', function() { if (!confirm('请确认：只有在已达到目标字数且主线已经收束时才建议完结。确定现在完结吗？')) return; projectAction('finalize', id); });
+  var pdJumpReport = detail.querySelector('#pdJumpReport');
+  if (pdJumpReport) pdJumpReport.addEventListener('click', function() { var last = detail.querySelector('.step-item[data-step-idx="' + (project.steps.length - 1) + '"]'); if (last) { last.click(); last.scrollIntoView({ behavior: 'smooth', block: 'center' }); } });
   var pdDelete = detail.querySelector('#pdDelete');
   if (pdDelete) pdDelete.addEventListener('click', function() { deleteProject(id); });
   var pdCompile = detail.querySelector('#pdCompile');
@@ -2102,9 +2240,9 @@ function openProjectDetail(id) {
       var hint = document.getElementById('pdKeywordSummaryHint');
       if (!hint || !summary) return;
       var percent = summary.targetWords ? Math.min(100, Math.round((summary.totalWords / summary.targetWords) * 100)) : 0;
-      hint.textContent = '当前累计 ' + formatNumberCN(summary.totalWords) + ' / ' + formatNumberCN(summary.targetWords) + ' 字（' + percent + '%），已完成 ' + summary.completedChapters + ' 章。达到目标字数且主线收束后，可点击“立即完结”。';
+      hint.textContent = '当前累计 ' + formatNumberCN(summary.totalWords) + ' / ' + formatNumberCN(summary.targetWords) + ' 字（' + percent + '%），已完成 ' + summary.completedChapters + ' 章。只有在达到目标字数且主线已经收束时才建议点击“立即完结”；否则请继续创作。';
       if (summary.targetReached && !detail.querySelector('#pdFinalize') && project.status !== 'completed') {
-        showToast('该关键词长篇已达到目标字数，如主线已收束，可点击“立即完结”。', 'info');
+        showToast('该关键词长篇已达到目标字数；若主线已收束，请点击“立即完结”，否则可继续创作。', 'info');
       }
     });
   }
@@ -2116,7 +2254,7 @@ function openStepInterventionModal(project, step) {
   overlay.innerHTML =
     '<div class="modal" style="max-width:900px;">' +
       '<div class="modal-title">人工干预：' + esc(step.label || '项目步骤') + '</div>' +
-      '<div class="hint" style="margin-bottom:12px;">可直接修改提示词、输出内容，或添加人工干预说明。保存后不会自动重跑，适合暂停状态下逐步调整。</div>' +
+      '<div class="hint" style="margin-bottom:12px;">可直接修改提示词、输出内容，或添加人工干预说明。适合用来调整章节概要、修正文稿，或写入“重新生成单章”的明确要求。</div>' +
       '<div class="form-group">' +
         '<label>步骤提示词</label>' +
         '<textarea id="stepEditPrompt" rows="8" style="font-size:12px;line-height:1.6;">' + esc(step.prompt || '') + '</textarea>' +
@@ -2145,7 +2283,7 @@ function openStepInterventionModal(project, step) {
     };
     api('PATCH', '/api/projects/' + project.id + '/steps/' + step.id, body).then(function() {
       overlay.remove();
-      showToast('人工干预内容已保存。', 'success');
+      showToast('人工干预内容已保存。若需要重新推进，请点击“写入意见后继续执行”或手动恢复项目。', 'success');
       loadProjects();
       setTimeout(function() { openProjectDetail(project.id); }, 200);
     }).catch(function(err) {
@@ -2344,15 +2482,15 @@ function openPersonaModal(persona) {
         '<label>TTS 语音</label>' +
         '<select id="pmTTS">' +
           '<option value="">不设置</option>' +
-          '<option value="narrator_female"' + (persona && persona.ttsVoice === 'narrator_female' ? ' selected' : '') + '>Narrator Female — Versatile, expressive</option>' +
-          '<option value="narrator_male"' + (persona && persona.ttsVoice === 'narrator_male' ? ' selected' : '') + '>Narrator Male — Literary fiction, thrillers</option>' +
-          '<option value="narrator_deep"' + (persona && persona.ttsVoice === 'narrator_deep' ? ' selected' : '') + '>Narrator Deep — Epic fantasy, sci-fi</option>' +
-          '<option value="narrator_warm"' + (persona && persona.ttsVoice === 'narrator_warm' ? ' selected' : '') + '>Narrator Warm — Romance, memoir</option>' +
-          '<option value="british_male"' + (persona && persona.ttsVoice === 'british_male' ? ' selected' : '') + '>British Male — Period pieces, cozy mysteries</option>' +
-          '<option value="british_female"' + (persona && persona.ttsVoice === 'british_female' ? ' selected' : '') + '>British Female — Elegant literary fiction</option>' +
-          '<option value="storyteller"' + (persona && persona.ttsVoice === 'storyteller' ? ' selected' : '') + '>Storyteller — Adventure, YA</option>' +
-          '<option value="snarky_nerd"' + (persona && persona.ttsVoice === 'snarky_nerd' ? ' selected' : '') + '>Snarky Nerd — Witty banter, smart humor, sci-fi</option>' +
-          '<option value="curious_kid"' + (persona && persona.ttsVoice === 'curious_kid' ? ' selected' : '') + '>Curious Kid — Full of wonder, MG, whimsical</option>' +
+          '<option value="narrator_female"' + (persona && persona.ttsVoice === 'narrator_female' ? ' selected' : '') + '>女声旁白（通用、富有表现力）</option>' +
+          '<option value="narrator_male"' + (persona && persona.ttsVoice === 'narrator_male' ? ' selected' : '') + '>男声旁白（文学 / 悬疑）</option>' +
+          '<option value="narrator_deep"' + (persona && persona.ttsVoice === 'narrator_deep' ? ' selected' : '') + '>低沉旁白（史诗奇幻 / 科幻）</option>' +
+          '<option value="narrator_warm"' + (persona && persona.ttsVoice === 'narrator_warm' ? ' selected' : '') + '>温暖旁白（言情 / 回忆录）</option>' +
+          '<option value="british_male"' + (persona && persona.ttsVoice === 'british_male' ? ' selected' : '') + '>英伦男声（年代文 / 温馨推理）</option>' +
+          '<option value="british_female"' + (persona && persona.ttsVoice === 'british_female' ? ' selected' : '') + '>英伦女声（优雅文学风）</option>' +
+          '<option value="storyteller"' + (persona && persona.ttsVoice === 'storyteller' ? ' selected' : '') + '>故事讲述者（冒险 / 青少年）</option>' +
+          '<option value="snarky_nerd"' + (persona && persona.ttsVoice === 'snarky_nerd' ? ' selected' : '') + '>机智学者（吐槽感 / 科幻）</option>' +
+          '<option value="curious_kid"' + (persona && persona.ttsVoice === 'curious_kid' ? ' selected' : '') + '>好奇少年（童趣 / 轻奇幻）</option>' +
         '</select>' +
       '</div>' +
       '<div class="form-group">' +
@@ -2361,7 +2499,7 @@ function openPersonaModal(persona) {
       '</div>' +
       '<div class="form-group">' +
         '<label>作者其他作品（用逗号分隔）</label>' +
-        '<input type="text" id="pmAlsoBy" value="' + esc(persona && persona.alsoBy ? (Array.isArray(persona.alsoBy) ? persona.alsoBy.join(', ') : persona.alsoBy) : '') + '" placeholder="Book Title 1, Book Title 2">' +
+        '<input type="text" id="pmAlsoBy" value="' + esc(persona && persona.alsoBy ? (Array.isArray(persona.alsoBy) ? persona.alsoBy.join(', ') : persona.alsoBy) : '') + '" placeholder="例如：作品一，作品二">' +
       '</div>' +
       '<div class="modal-actions">' +
         '<button class="secondary" id="pmGenerate">AI 生成</button>' +
@@ -2625,8 +2763,7 @@ function loadVoices() {
         var preset = data.presets[key];
         var opt = document.createElement('option');
         opt.value = key;
-        var label = key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-        opt.textContent = label + ' — ' + (preset.description || '');
+        opt.textContent = voicePresetLabel(key) + ((preset.description || '') ? '（' + preset.description + '）' : '');
         if (data.activeVoice === key || data.activeVoice === preset.voice) opt.selected = true;
         sel.appendChild(opt);
       });
@@ -2635,15 +2772,15 @@ function loadVoices() {
     var sel = document.getElementById('ttsVoiceSelect');
     sel.innerHTML =
       '<option value="">无法加载语音列表</option>' +
-      '<option value="narrator_female">Narrator Female — Versatile, expressive</option>' +
-      '<option value="narrator_male">Narrator Male — Literary fiction, thrillers</option>' +
-      '<option value="narrator_deep">Narrator Deep — Epic fantasy, sci-fi</option>' +
-      '<option value="narrator_warm">Narrator Warm — Romance, memoir</option>' +
-      '<option value="british_male">British Male — Period pieces, cozy mysteries</option>' +
-      '<option value="british_female">British Female — Elegant literary fiction</option>' +
-      '<option value="storyteller">Storyteller — Adventure, YA</option>' +
-      '<option value="snarky_nerd">Snarky Nerd — Witty banter, smart humor, sci-fi</option>' +
-      '<option value="curious_kid">Curious Kid — Full of wonder, MG, whimsical</option>';
+      '<option value="narrator_female">女声旁白（通用、富有表现力）</option>' +
+      '<option value="narrator_male">男声旁白（文学 / 悬疑）</option>' +
+      '<option value="narrator_deep">低沉旁白（史诗奇幻 / 科幻）</option>' +
+      '<option value="narrator_warm">温暖旁白（言情 / 回忆录）</option>' +
+      '<option value="british_male">英伦男声（年代文 / 温馨推理）</option>' +
+      '<option value="british_female">英伦女声（优雅文学风）</option>' +
+      '<option value="storyteller">故事讲述者（冒险 / 青少年）</option>' +
+      '<option value="snarky_nerd">机智学者（吐槽感 / 科幻）</option>' +
+      '<option value="curious_kid">好奇少年（童趣 / 轻奇幻）</option>';
   });
 }
 
@@ -2653,7 +2790,7 @@ document.getElementById('btnTestVoice').addEventListener('click', function() {
   var btn = document.getElementById('btnTestVoice');
   btn.textContent = '生成中……';
   btn.disabled = true;
-  api('POST', '/api/audio/generate', { text: 'Hello! I am AuthorClaw, your AI writing partner. Let me help you create your next bestseller.', voice: voice }).then(function(data) {
+  api('POST', '/api/audio/generate', { text: '你好，我是 AuthorClaw，你的 AI 写作伙伴。让我帮你创作下一部精彩作品。', voice: voice }).then(function(data) {
     if (data.success && data.filename) {
       var audio = new Audio('/api/audio/file/' + encodeURIComponent(data.filename));
       audio.play().then(function() {

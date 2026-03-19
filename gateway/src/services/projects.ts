@@ -1923,6 +1923,9 @@ Description: ${description}`;
 
     project.status = 'completed';
     project.progress = 100;
+    project.context = project.context || {};
+    project.context.finalizedManually = true;
+    project.context.finalizedAt = new Date().toISOString();
     project.completedAt = new Date().toISOString();
     project.updatedAt = project.completedAt;
     this.persistState();
