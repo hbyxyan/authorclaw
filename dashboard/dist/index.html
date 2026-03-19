@@ -689,15 +689,15 @@ textarea { resize: vertical; min-height: 60px; }
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statWords">0</div>
-          <div class="stat-label">Total Words</div>
+          <div class="stat-label">累计字数</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statHeartbeat">--</div>
-          <div class="stat-label">Heartbeat</div>
+          <div class="stat-label">心跳状态</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statPersonas">0</div>
-          <div class="stat-label">Personas</div>
+          <div class="stat-label">作者人设</div>
         </div>
       </div>
 
@@ -709,40 +709,40 @@ textarea { resize: vertical; min-height: 60px; }
         </div>
       </div>
 
-      <!-- Word Count + Idle Tasks Row -->
+      <!-- 今日字数 + 空闲任务 -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;">
         <div class="card">
-          <div class="card-title">Today's Writing</div>
+          <div class="card-title">今日写作</div>
           <div id="homeWordProgress" style="text-align:center;padding:8px 0;">
             <div style="font-size:28px;font-weight:700;color:var(--accent);" id="homeWordCount">0</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">of <span id="homeWordGoal">1,000</span> words</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">目标 <span id="homeWordGoal">1,000</span> 字</div>
             <div style="background:var(--border);border-radius:6px;height:8px;overflow:hidden;">
               <div id="homeWordBar" style="background:var(--accent);height:100%;width:0%;border-radius:6px;transition:width 0.5s ease;"></div>
             </div>
           </div>
         </div>
         <div class="card">
-          <div class="card-title">Idle Tasks</div>
+          <div class="card-title">空闲任务</div>
           <div id="homeIdleSummary" style="padding:8px 0;">
             <div style="font-size:28px;font-weight:700;color:var(--accent);" id="homeIdleCount">0</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">tasks in queue</div>
-            <div style="font-size:12px;color:var(--text-secondary);" id="homeIdleCompleted">0 completed</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">当前可执行任务数</div>
+            <div style="font-size:12px;color:var(--text-secondary);" id="homeIdleCompleted">0 个已完成</div>
           </div>
         </div>
       </div>
 
-      <!-- Activity Feed -->
+      <!-- 最近活动 -->
       <div class="card" style="margin-bottom:16px;">
-        <div class="card-title">Recent Activity</div>
+        <div class="card-title">最近活动</div>
         <div class="activity-feed" id="activityFeed" style="max-height:220px;overflow-y:auto;">
-          <div style="color:var(--muted);text-align:center;padding:16px;">正在加载活动...</div>
+          <div style="color:var(--muted);text-align:center;padding:16px;">正在加载活动……</div>
         </div>
       </div>
 
       <!-- Chat Interface -->
       <div class="card">
         <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>Chat with AuthorClaw</span>
+          <span>与 AuthorClaw 对话</span>
           <button id="btnChatClear" class="small secondary" title="清空聊天记录" style="font-size:11px;padding:4px 10px;">清空</button>
         </div>
         <div class="chat-container">
@@ -755,7 +755,7 @@ textarea { resize: vertical; min-height: 60px; }
           </div>
         </div>
         <div class="hint" style="margin-top:8px;">
-          Commands: /novel, /project, /write, /files, /read, /export, /speak, /voice, /status, /stop, /clean, /help
+          命令：/novel、/project、/write、/files、/read、/export、/speak、/voice、/status、/stop、/clean、/help
         </div>
       </div>
     </div>
@@ -767,23 +767,23 @@ textarea { resize: vertical; min-height: 60px; }
 
       <!-- Template Tiles -->
       <div class="card" id="projectTemplatesCard">
-        <div class="card-title">Project Templates</div>
+        <div class="card-title">项目模板</div>
         <div class="template-grid" id="templateGrid">
           <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Project List -->
+      <!-- 项目列表 -->
       <div class="card" id="projectListCard">
         <div class="card-title">你的项目</div>
         <div class="filter-tabs" id="projectFilterTabs">
-          <div class="filter-tab active" data-filter="all">All</div>
-          <div class="filter-tab" data-filter="active">Active</div>
-          <div class="filter-tab" data-filter="paused">Paused</div>
-          <div class="filter-tab" data-filter="completed">Completed</div>
+          <div class="filter-tab active" data-filter="all">全部</div>
+          <div class="filter-tab" data-filter="active">进行中</div>
+          <div class="filter-tab" data-filter="paused">已暂停</div>
+          <div class="filter-tab" data-filter="completed">已完成</div>
         </div>
         <div id="projectList">
-          <div style="color:var(--muted);padding:20px;text-align:center;">正在加载项目...</div>
+          <div style="color:var(--muted);padding:20px;text-align:center;">正在加载项目……</div>
         </div>
       </div>
 
@@ -796,7 +796,7 @@ textarea { resize: vertical; min-height: 60px; }
          ═══════════════════════════════ -->
     <div class="panel" id="panel-personas">
       <div class="card">
-        <div class="card-title">Author Personas</div>
+        <div class="card-title">作者人设</div>
         <div class="persona-grid" id="personaGrid">
           <!-- Populated by JS -->
         </div>
@@ -808,18 +808,18 @@ textarea { resize: vertical; min-height: 60px; }
          ═══════════════════════════════ -->
     <div class="panel" id="panel-library">
       <div class="card">
-        <div class="card-title">Uploaded Documents</div>
+        <div class="card-title">已上传文档</div>
         <div style="margin-bottom:14px;">
-          <button id="btnUploadDoc" class="success">Upload Document</button>
+          <button id="btnUploadDoc" class="success">上传文档</button>
           <input type="file" id="fileUploadInput" style="display:none;" accept=".txt,.md,.docx,.pdf">
         </div>
         <div class="doc-list" id="docList">
-          <div style="color:var(--muted);text-align:center;padding:20px;">正在加载文档...</div>
+          <div style="color:var(--muted);text-align:center;padding:20px;">正在加载文档……</div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">Compiled Outputs</div>
+        <div class="card-title">已编译输出</div>
         <div id="compiledOutputs">
           <div style="color:var(--muted);text-align:center;padding:20px;">暂无已编译输出。</div>
         </div>
@@ -831,50 +831,50 @@ textarea { resize: vertical; min-height: 60px; }
          ═══════════════════════════════ -->
     <div class="panel" id="panel-settings">
 
-      <!-- API Keys -->
+      <!-- API 密钥 -->
       <div class="card">
-        <div class="card-title">API Keys</div>
-        <p class="hint" style="margin-bottom:12px;">Keys are encrypted with AES-256-GCM in the vault. Values are never displayed.</p>
+        <div class="card-title">API 密钥</div>
+        <p class="hint" style="margin-bottom:12px;">密钥会使用 AES-256-GCM 加密保存在保险库中，界面不会显示原始值。</p>
         <div id="apiKeyProviders"></div>
         <div class="key-list" id="keyList"></div>
       </div>
 
       <!-- Telegram -->
       <div class="card">
-        <div class="card-title">Telegram Integration</div>
-        <div id="telegramStatus" style="margin-bottom:12px;font-size:14px;color:var(--muted);">加载中...</div>
+        <div class="card-title">Telegram 集成</div>
+        <div id="telegramStatus" style="margin-bottom:12px;font-size:14px;color:var(--muted);">加载中……</div>
         <div class="form-group-inline">
           <div class="form-group">
-            <label>Bot Token</label>
-            <input type="password" id="telegramToken" placeholder="Paste your bot token...">
+            <label>机器人 Token</label>
+            <input type="password" id="telegramToken" placeholder="粘贴你的机器人 Token……">
           </div>
           <div class="form-group">
-            <label>User ID</label>
-            <input type="text" id="telegramUserId" placeholder="Your Telegram user ID">
+            <label>用户 ID</label>
+            <input type="text" id="telegramUserId" placeholder="你的 Telegram 用户 ID">
           </div>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="success" id="btnConnectTelegram">Connect</button>
-          <button class="danger" id="btnDisconnectTelegram">Disconnect</button>
+          <button class="success" id="btnConnectTelegram">连接</button>
+          <button class="danger" id="btnDisconnectTelegram">断开连接</button>
         </div>
       </div>
 
       <!-- Voice -->
       <div class="card">
-        <div class="card-title">Voice / TTS</div>
+        <div class="card-title">语音 / TTS</div>
         <div class="form-group">
-          <label>TTS Voice Preset</label>
+          <label>TTS 语音预设</label>
           <select id="ttsVoiceSelect">
-            <option value="">正在加载语音...</option>
+            <option value="">正在加载语音……</option>
           </select>
         </div>
-        <button id="btnTestVoice" class="secondary">Test Voice</button>
+        <button id="btnTestVoice" class="secondary">测试语音</button>
       </div>
 
       <!-- Website Allowlist -->
       <div class="card">
-        <div class="card-title">Website Allowlist</div>
-        <p class="hint" style="margin-bottom:8px;">Approved websites for AI research and tasks. One domain per line.</p>
+        <div class="card-title">研究网站白名单</div>
+        <p class="hint" style="margin-bottom:8px;">AI 研究与任务允许访问的网站域名，每行一个。</p>
         <div class="form-group">
           <textarea id="researchDomains" rows="5" placeholder="wikipedia.org&#10;arxiv.org"></textarea>
         </div>
@@ -883,48 +883,48 @@ textarea { resize: vertical; min-height: 60px; }
 
       <!-- Autonomous Mode -->
       <div class="card">
-        <div class="card-title">Autonomous Mode</div>
+        <div class="card-title">自治模式</div>
         <div class="toggle-wrap" style="margin-bottom:14px;">
           <label class="toggle">
             <input type="checkbox" id="autonomousToggle">
             <span class="slider"></span>
           </label>
-          <span id="autonomousLabel" style="font-size:14px;font-weight:600;">Agent OFF</span>
+          <span id="autonomousLabel" style="font-size:14px;font-weight:600;">智能体已关闭</span>
         </div>
         <div class="form-group-inline">
           <div class="form-group">
-            <label>Wake Interval (minutes)</label>
+            <label>唤醒间隔（分钟）</label>
             <input type="number" id="autonomousInterval" min="1" max="1440" placeholder="30">
           </div>
           <div class="form-group">
-            <label>Quiet Hours (24h format, e.g. 22-7)</label>
+            <label>静默时段（24 小时制，如 22-7）</label>
             <input type="text" id="autonomousQuiet" placeholder="22-7">
           </div>
         </div>
         <div class="form-group" style="margin-top:12px;">
-          <label>Daily Word Goal</label>
+          <label>每日字数目标</label>
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="number" id="dailyWordGoal" min="100" max="50000" step="100" placeholder="1000" style="max-width:140px;">
-            <span style="font-size:12px;color:var(--muted);">words/day</span>
+            <span style="font-size:12px;color:var(--muted);">字 / 天</span>
             <span id="wordGoalProgress" style="font-size:12px;color:var(--text-secondary);margin-left:auto;"></span>
           </div>
         </div>
         <button id="btnSaveAutonomous">保存设置</button>
       </div>
 
-      <!-- Idle Task Queue (Editable) -->
+      <!-- 空闲任务队列（可编辑） -->
       <div class="card">
         <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>Idle Task Queue</span>
-          <button class="small success" id="btnAddIdleTask" style="font-size:11px;padding:4px 10px;">+ Add Task</button>
+          <span>空闲任务队列</span>
+          <button class="small success" id="btnAddIdleTask" style="font-size:11px;padding:4px 10px;">+ 添加任务</button>
         </div>
-        <div class="hint" style="margin-bottom:12px;">When autonomous mode is enabled and there are no active projects, the agent picks a random enabled task. Edit the description to customize what the AI does.</div>
+        <div class="hint" style="margin-bottom:12px;">当自治模式开启且没有进行中的项目时，智能体会从已启用任务中随机选择一个执行。你可以编辑说明来自定义 AI 要做的事情。</div>
         <div id="idleTaskQueue" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
 
       <!-- Idle Task History -->
       <div class="card">
-        <div class="card-title">Completed Idle Tasks</div>
+        <div class="card-title">已完成的空闲任务</div>
         <div id="idleTaskHistory" style="max-height:400px;overflow-y:auto;">
           <div style="color:var(--muted);">加载中...</div>
         </div>
@@ -954,6 +954,7 @@ var chatWaiting = false;
 var statusPollTimer = null;
 var projectPollTimer = null;
 var currentDetailProject = null;
+var keywordBookSummaryCache = {};
 
 // ================================================================
 // UTILITIES
@@ -1028,6 +1029,77 @@ function initials(name) {
   return name.slice(0, 2).toUpperCase();
 }
 
+function formatProjectType(type) {
+  var labels = {
+    'book-planning': '图书策划',
+    'book-bible': '图书圣经',
+    'book-production': '正文生产',
+    'deep-revision': '深度修订',
+    'format-export': '排版导出',
+    'book-launch': '上市推广',
+    'custom': '自定义项目',
+    'novel-pipeline': '完整流水线',
+    'keyword-book-mvp': '关键词长篇'
+  };
+  return labels[type] || (type || '通用项目');
+}
+
+function formatProjectStatus(status) {
+  var labels = {
+    pending: '待开始',
+    active: '进行中',
+    paused: '已暂停',
+    completed: '已完成',
+    failed: '失败',
+    skipped: '已跳过'
+  };
+  return labels[status] || (status || '未知');
+}
+
+function formatStepStatus(status) {
+  return formatProjectStatus(status);
+}
+
+function formatNumberCN(value) {
+  var n = Number(value || 0);
+  return n.toLocaleString('zh-CN');
+}
+
+function getProjectTargetWords(project) {
+  return Number((project && project.context && (project.context.targetWords || project.context.estimatedTotalWords)) || 0);
+}
+
+function getProjectCurrentWords(project) {
+  if (!project || !project.steps) return 0;
+  var preferred = project.steps.filter(function(s) { return s.phase === 'revision' && s.status === 'completed' && (s.result || s.output); });
+  var source = preferred.length ? preferred : project.steps.filter(function(s) { return s.phase === 'draft' && s.status === 'completed' && (s.result || s.output); });
+  return source.reduce(function(sum, step) {
+    var text = (step.result || step.output || '').trim();
+    if (!text) return sum;
+    return sum + text.split(/\s+/).filter(Boolean).length;
+  }, 0);
+}
+
+function getProjectCompletedChapters(project) {
+  if (!project || !project.steps) return 0;
+  var preferred = project.steps.filter(function(s) { return s.phase === 'revision' && s.status === 'completed' && s.chapterNumber; });
+  if (preferred.length) return preferred.length;
+  return project.steps.filter(function(s) { return s.phase === 'draft' && s.status === 'completed' && s.chapterNumber; }).length;
+}
+
+function getProjectTargetChapters(project) {
+  return Number((project && project.context && project.context.targetChapters) || 0);
+}
+
+function loadKeywordBookSummary(projectId) {
+  return api('GET', '/api/keyword-book/projects/' + projectId + '/summary').then(function(data) {
+    keywordBookSummaryCache[projectId] = data;
+    return data;
+  }).catch(function() {
+    return keywordBookSummaryCache[projectId] || null;
+  });
+}
+
 // ================================================================
 // NAVIGATION
 // ================================================================
@@ -1079,12 +1151,12 @@ function loadStatus() {
     var dot = document.getElementById('heartbeatDot');
     var label = document.getElementById('heartbeatLabel');
     dot.className = 'heartbeat-dot ok';
-    label.textContent = 'Online';
+    label.textContent = '在线';
 
     // Header status
     var headerSt = document.getElementById('headerStatus');
     if (data.providers && data.providers.length > 0) {
-      headerSt.textContent = data.providers.length + ' provider(s) active';
+      headerSt.textContent = data.providers.length + ' 个 AI 提供商已就绪';
     } else {
       headerSt.textContent = '无可用 AI 提供商';
     }
@@ -1106,10 +1178,10 @@ function loadStatus() {
     // Heartbeat stat
     var hbStat = document.getElementById('statHeartbeat');
     if (data.heartbeat && data.heartbeat.enabled !== false) {
-      hbStat.textContent = 'OK';
+      hbStat.textContent = '正常';
       hbStat.style.color = '';
     } else {
-      hbStat.textContent = 'OK';
+      hbStat.textContent = '正常';
     }
 
     // Personas stat
@@ -1117,7 +1189,7 @@ function loadStatus() {
 
   }).catch(function() {
     document.getElementById('heartbeatDot').className = 'heartbeat-dot err';
-    document.getElementById('heartbeatLabel').textContent = 'Offline';
+    document.getElementById('heartbeatLabel').textContent = '离线';
     document.getElementById('headerStatus').textContent = '未连接';
   });
 }
@@ -1147,7 +1219,7 @@ function renderHomeProjects() {
   var container = document.getElementById('homeProjectScroll');
   var active = allProjects.filter(function(p) { return p.status === 'active' || p.status === 'paused'; });
   if (active.length === 0) {
-    container.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;width:100%;">暂无进行中的项目。前往“项目”创建。</div>';
+    container.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;width:100%;">暂无进行中的项目。前往“项目”面板创建即可。</div>';
     return;
   }
   container.innerHTML = '';
@@ -1160,15 +1232,18 @@ function renderHomeProjects() {
       if (act) currentStep = act.label || act.name || '';
     }
     var personaText = p.persona ? p.persona.penName || p.persona : '';
+    var currentWords = getProjectCurrentWords(p);
+    var targetWords = getProjectTargetWords(p);
     card.innerHTML =
       '<div class="psc-title">' + esc(p.title) + '</div>' +
       '<div class="psc-meta">' +
-        '<span class="badge badge-type">' + esc(p.type || 'general') + '</span>' +
-        '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(p.status) + '</span>' +
+        '<span class="badge badge-type">' + esc(formatProjectType(p.type || 'general')) + '</span>' +
+        '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(formatProjectStatus(p.status)) + '</span>' +
       '</div>' +
       '<div class="progress-bar"><div class="progress-fill" style="width:' + (p.progress || 0) + '%">' + (p.progress || 0) + '%</div></div>' +
-      (currentStep ? '<div class="psc-step">Current: ' + esc(currentStep) + '</div>' : '') +
-      (personaText ? '<div class="psc-step" style="color:var(--info);">Persona: ' + esc(typeof personaText === 'string' ? personaText : '') + '</div>' : '');
+      (currentStep ? '<div class="psc-step">当前步骤：' + esc(currentStep) + '</div>' : '') +
+      (targetWords ? '<div class="psc-step">项目字数：' + formatNumberCN(currentWords) + ' / ' + formatNumberCN(targetWords) + ' 字</div>' : '') +
+      (personaText ? '<div class="psc-step" style="color:var(--info);">作者人设：' + esc(typeof personaText === 'string' ? personaText : '') + '</div>' : '');
     card.addEventListener('click', function() {
       switchPanel('projects');
       setTimeout(function() { openProjectDetail(p.id); }, 100);
@@ -1233,7 +1308,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(e) {
 });
 document.getElementById('btnChatClear').addEventListener('click', function() {
   var el = document.getElementById('chatMessages');
-  el.innerHTML = '<div class="chat-msg bot">Hello! I\'m AuthorClaw, your AI writing partner. How can I help you today?</div>';
+  el.innerHTML = '<div class="chat-msg bot">你好！我是 AuthorClaw，你的 AI 写作伙伴。今天想让我帮你做什么？</div>';
   chatWaiting = false;
 });
 
@@ -1243,14 +1318,15 @@ document.getElementById('btnChatClear').addEventListener('click', function() {
 
 // ── Template Tiles ──
 var defaultTemplates = [
-  { id: 'book-planning', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>', name: 'Book Planning', desc: 'Outline and plan your book structure', steps: '5-8 steps', type: 'book-planning' },
-  { id: 'book-bible', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="13" y2="11"/></svg>', name: 'Book Bible', desc: 'Build your story world bible', steps: '6-10 steps', type: 'book-bible' },
-  { id: 'book-production', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>', name: 'Book Production', desc: 'Write chapters from outline to draft', steps: '10-30 steps', type: 'book-production' },
-  { id: 'deep-revision', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', name: 'Deep Revision', desc: 'Analyze and revise your manuscript', steps: '8-12 steps', type: 'deep-revision' },
-  { id: 'format-export', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>', name: 'Format & Export', desc: 'Format manuscript for publishing', steps: '4-6 steps', type: 'format-export' },
-  { id: 'book-launch', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>', name: 'Book Launch', desc: 'Marketing copy and launch materials', steps: '6-10 steps', type: 'book-launch' },
-  { id: 'custom', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>', name: 'Custom', desc: 'Describe your project freely', steps: 'AI-planned', type: 'custom' },
-  { id: 'pipeline', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>', name: 'Full Pipeline', desc: 'Complete book pipeline: plan, bible, write, revise, format, launch — all 6 phases from one idea', steps: '30+ steps', type: 'novel-pipeline', highlighted: true, span2: true }
+  { id: 'book-planning', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>', name: '图书策划', desc: '整理写作方向并搭建全书结构', steps: '5-8 步', type: 'book-planning' },
+  { id: 'book-bible', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="13" y2="11"/></svg>', name: '图书圣经', desc: '建立世界观、角色关系和设定手册', steps: '6-10 步', type: 'book-bible' },
+  { id: 'book-production', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>', name: '正文生产', desc: '按大纲逐章生成并推进正文', steps: '10-30 步', type: 'book-production' },
+  { id: 'keyword-book', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>', name: '关键词长篇', desc: '输入一个关键词，生成候选方案并自动创建超长篇项目', steps: '自动生成', type: 'keyword-book-mvp', highlighted: true },
+  { id: 'deep-revision', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', name: '深度修订', desc: '分析稿件并执行多轮修订', steps: '8-12 步', type: 'deep-revision' },
+  { id: 'format-export', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>', name: '排版导出', desc: '整理稿件并导出发布文件', steps: '4-6 步', type: 'format-export' },
+  { id: 'book-launch', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>', name: '上市推广', desc: '生成营销文案和发布素材', steps: '6-10 步', type: 'book-launch' },
+  { id: 'custom', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>', name: '自定义项目', desc: '自由描述你的需求，由 AI 自动拆解', steps: 'AI 自动规划', type: 'custom' },
+  { id: 'pipeline', icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>', name: '完整流水线', desc: '从想法到上市，一次性串起全部写作阶段', steps: '30+ 步', type: 'novel-pipeline', highlighted: true, span2: true }
 ];
 
 function loadTemplates() {
@@ -1271,7 +1347,7 @@ function renderTemplates() {
     var serverT = allTemplates.find(function(st) { return st.type === dt.type || st.id === dt.id; });
     var tile = document.createElement('div');
     tile.className = 'template-tile' + (dt.highlighted ? ' highlighted' : '') + (dt.span2 ? ' span-2' : '');
-    var stepsText = serverT ? (serverT.stepCountLabel || serverT.stepCount + ' steps') : dt.steps;
+    var stepsText = serverT ? (serverT.stepCountLabel || serverT.stepCount + ' 步') : dt.steps;
     tile.innerHTML =
       '<div class="tile-icon">' + dt.icon + '</div>' +
       '<div class="tile-name">' + esc(serverT ? (serverT.label || serverT.title || dt.name) : dt.name) + '</div>' +
@@ -1286,6 +1362,11 @@ function renderTemplates() {
 
 // ── Create Project Modal ──
 function openCreateProjectModal(template, serverTemplate) {
+  if (template.type === 'keyword-book-mvp') {
+    openKeywordBookModal(template, serverTemplate);
+    return;
+  }
+
   var overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.id = 'createProjectModal';
@@ -1294,7 +1375,7 @@ function openCreateProjectModal(template, serverTemplate) {
   var isProduction = template.type === 'book-production';
   var isCustom = template.type === 'custom';
 
-  var personaOpts = '<option value="">None</option>';
+  var personaOpts = '<option value="">不使用</option>';
   allPersonas.forEach(function(p) {
     personaOpts += '<option value="' + esc(p.id) + '">' + esc(p.penName || p.name) + '</option>';
   });
@@ -1303,41 +1384,45 @@ function openCreateProjectModal(template, serverTemplate) {
   if (isProduction || isPipeline) {
     extraFields =
       '<div class="form-group-inline">' +
-        '<div class="form-group"><label>Chapters</label><input type="number" id="modalChapters" value="12" min="1" max="100"></div>' +
-        '<div class="form-group"><label>Words per Chapter</label><input type="number" id="modalWordsPerCh" value="3000" min="500" max="20000"></div>' +
+        '<div class="form-group"><label>章节数</label><input type="number" id="modalChapters" value="12" min="1" max="100"></div>' +
+        '<div class="form-group"><label>每章目标字数</label><input type="number" id="modalWordsPerCh" value="3000" min="500" max="20000"></div>' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label>项目目标字数</label>' +
+        '<input type="number" id="modalTargetWords" value="500000" min="10000" step="1000" placeholder="默认 500000">' +
       '</div>';
   }
 
   overlay.innerHTML =
     '<div class="modal">' +
-      '<div class="modal-title">' + (isCustom ? 'Create Custom Project' : 'Create ' + esc(template.name) + ' Project') + '</div>' +
+      '<div class="modal-title">' + (isCustom ? '创建自定义项目' : ('创建“' + esc(template.name) + '”项目')) + '</div>' +
       '<div class="form-group">' +
-        '<label>Title</label>' +
-        '<input type="text" id="modalTitle" placeholder="Project title...">' +
+        '<label>标题</label>' +
+        '<input type="text" id="modalTitle" placeholder="请输入项目标题……">' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>Description</label>' +
-        '<textarea id="modalDesc" rows="3" placeholder="Describe what you want to accomplish...">' + esc(isCustom ? '' : (serverTemplate ? serverTemplate.description : template.desc)) + '</textarea>' +
+        '<label>说明</label>' +
+        '<textarea id="modalDesc" rows="3" placeholder="请描述你想完成的内容……">' + esc(isCustom ? '' : (serverTemplate ? serverTemplate.description : template.desc)) + '</textarea>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>Persona</label>' +
+        '<label>作者人设</label>' +
         '<select id="modalPersona">' + personaOpts + '</select>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>AI Model</label>' +
+        '<label>AI 模型</label>' +
         '<select id="modalProvider">' +
-          '<option value="">Auto — smart tiered routing (recommended)</option>' +
-          '<option value="gemini">Gemini (free tier)</option>' +
-          '<option value="deepseek">DeepSeek (cheap tier)</option>' +
-          '<option value="claude">Claude (premium tier)</option>' +
-          '<option value="openai">OpenAI GPT (premium tier)</option>' +
-          '<option value="ollama">Ollama (local, free)</option>' +
+          '<option value="">自动选择（推荐）</option>' +
+          '<option value="gemini">Gemini（免费档）</option>' +
+          '<option value="deepseek">DeepSeek（性价比）</option>' +
+          '<option value="claude">Claude（高质量）</option>' +
+          '<option value="openai">OpenAI GPT（高质量）</option>' +
+          '<option value="ollama">Ollama（本地免费）</option>' +
         '</select>' +
-        '<div style="font-size:11px;color:var(--muted);margin-top:4px;">Auto uses free models for research/marketing, mid-tier for writing, premium for final edits. Override to force one model for all steps.</div>' +
+        '<div style="font-size:11px;color:var(--muted);margin-top:4px;">默认会按任务类型自动选路由；也可以在这里强制指定同一个模型。</div>' +
       '</div>' +
       extraFields +
       '<div class="modal-actions">' +
-        '<button class="secondary" id="modalCancel">Cancel</button>' +
+        '<button class="secondary" id="modalCancel">取消</button>' +
         '<button class="success" id="modalCreate">创建项目</button>' +
       '</div>' +
     '</div>';
@@ -1351,7 +1436,7 @@ function openCreateProjectModal(template, serverTemplate) {
     var desc = document.getElementById('modalDesc').value.trim();
     var persona = document.getElementById('modalPersona').value;
     var provider = document.getElementById('modalProvider').value;
-    if (!desc && !title) { showToast('Please enter a title or description', 'error'); return; }
+    if (!desc && !title) { showToast('请至少填写标题或说明。', 'error'); return; }
 
     var body = {
       title: title || desc.slice(0, 60),
@@ -1363,21 +1448,24 @@ function openCreateProjectModal(template, serverTemplate) {
     };
 
     if (isProduction || isPipeline) {
-      var chs = parseInt(document.getElementById('modalChapters').value);
-      var wpc = parseInt(document.getElementById('modalWordsPerCh').value);
+      var chs = parseInt(document.getElementById('modalChapters').value, 10);
+      var wpc = parseInt(document.getElementById('modalWordsPerCh').value, 10);
+      var targetWords = parseInt(document.getElementById('modalTargetWords').value, 10);
       if (!isNaN(chs)) body.chapters = chs;
       if (!isNaN(wpc)) body.wordsPerChapter = wpc;
+      if (!isNaN(targetWords)) {
+        body.config = body.config || {};
+        body.config.targetWords = targetWords;
+      }
     }
 
     var endpoint = isPipeline ? '/api/pipeline/create' : '/api/projects/create';
-
-    document.getElementById('modalCreate').disabled = true;
-    document.getElementById('modalCreate').textContent = '创建中...';
+    var createBtn = document.getElementById('modalCreate');
+    createBtn.disabled = true;
+    createBtn.textContent = '创建中……';
 
     api('POST', endpoint, body).then(function(data) {
       overlay.remove();
-
-      // Get the project ID from the response
       var projectId = null;
       if (data.project && data.project.id) {
         projectId = data.project.id;
@@ -1386,37 +1474,172 @@ function openCreateProjectModal(template, serverTemplate) {
       }
 
       if (projectId) {
-        showToast('项目已创建，开始执行...', 'success');
+        showToast('项目已创建，正在自动执行。', 'success');
         loadProjects();
-        // Auto-execute: fire in background, open detail view, poll for progress
         setTimeout(function() {
           openProjectDetail(projectId);
-          // Fire auto-execute (this is a long-running request — we don't block on it)
           api('POST', '/api/projects/' + projectId + '/auto-execute').then(function(result) {
             var completed = (result.results || []).filter(function(r) { return r.success; }).length;
-            showToast('Project finished! ' + completed + ' steps completed.', 'success');
+            showToast('自动执行完成，已完成 ' + completed + ' 个步骤。', 'success');
             loadProjects();
             if (currentDetailProject === projectId) openProjectDetail(projectId);
           }).catch(function(err) {
-            showToast('Execution error: ' + err.message, 'error');
+            showToast('自动执行失败：' + err.message, 'error');
             loadProjects();
             if (currentDetailProject === projectId) openProjectDetail(projectId);
           });
-          // Poll for step progress while running
           var pollId = setInterval(function() {
             loadProjects();
             if (currentDetailProject === projectId) openProjectDetail(projectId);
           }, 8000);
-          setTimeout(function() { clearInterval(pollId); }, 600000); // 10 min max poll
+          setTimeout(function() { clearInterval(pollId); }, 600000);
         }, 500);
       } else {
-        showToast('Project created!', 'success');
+        showToast('项目已创建。', 'success');
         loadProjects();
       }
     }).catch(function(e) {
-      showToast('失败：' + e.message, 'error');
-      document.getElementById('modalCreate').disabled = false;
-      document.getElementById('modalCreate').textContent = '创建项目';
+      showToast('创建失败：' + e.message, 'error');
+      createBtn.disabled = false;
+      createBtn.textContent = '创建项目';
+    });
+  });
+}
+
+function openKeywordBookModal(template, serverTemplate) {
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'keywordBookModal';
+
+  var personaOpts = '<option value="">不使用</option>';
+  allPersonas.forEach(function(p) {
+    personaOpts += '<option value="' + esc(p.id) + '">' + esc(p.penName || p.name) + '</option>';
+  });
+
+  overlay.innerHTML =
+    '<div class="modal" style="max-width:860px;">' +
+      '<div class="modal-title">关键词长篇创建向导</div>' +
+      '<div class="hint" style="margin-bottom:12px;">输入一个关键词，系统会生成 3 个候选方向；选择其一后，可确认目标字数并直接创建长篇项目。</div>' +
+      '<div class="form-group">' +
+        '<label>关键词</label>' +
+        '<input type="text" id="kbKeyword" placeholder="例如：赛博修仙、古风权谋、校园悬疑……">' +
+      '</div>' +
+      '<div class="form-group-inline">' +
+        '<div class="form-group"><label>目标总字数</label><input type="number" id="kbTargetWords" value="500000" min="10000" step="1000"></div>' +
+        '<div class="form-group"><label>每章目标字数</label><input type="number" id="kbWordsPerChapter" value="4000" min="1000" step="500"></div>' +
+      '</div>' +
+      '<div class="form-group-inline">' +
+        '<div class="form-group"><label>作者人设</label><select id="kbPersona">' + personaOpts + '</select></div>' +
+        '<div class="form-group"><label>AI 模型</label><select id="kbProvider"><option value="">自动选择（推荐）</option><option value="gemini">Gemini</option><option value="deepseek">DeepSeek</option><option value="claude">Claude</option><option value="openai">OpenAI GPT</option><option value="ollama">Ollama</option></select></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">' +
+        '<button class="secondary" id="kbGenerate">生成候选方案</button>' +
+        '<span class="hint">默认按 50 万字创建，可在这里修改。</span>' +
+      '</div>' +
+      '<div id="kbCandidateList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;max-height:380px;overflow-y:auto;">' +
+        '<div style="color:var(--muted);padding:24px 0;text-align:center;grid-column:1/-1;">请先输入关键词并生成候选方案。</div>' +
+      '</div>' +
+      '<div class="modal-actions">' +
+        '<button class="secondary" id="kbCancel">取消</button>' +
+        '<button class="success" id="kbCreate" disabled>创建并自动执行</button>' +
+      '</div>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  overlay.querySelector('#kbCancel').addEventListener('click', function() { overlay.remove(); });
+
+  var candidateList = overlay.querySelector('#kbCandidateList');
+  var selectedCandidate = null;
+
+  function renderCandidates(candidates) {
+    candidateList.innerHTML = '';
+    if (!candidates || !candidates.length) {
+      candidateList.innerHTML = '<div style="color:var(--muted);padding:24px 0;text-align:center;grid-column:1/-1;">没有生成到候选方案，请稍后再试。</div>';
+      return;
+    }
+    candidates.forEach(function(candidate, index) {
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.style.cssText = 'text-align:left;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);cursor:pointer;';
+      card.innerHTML =
+        '<div style="font-size:16px;font-weight:700;margin-bottom:8px;">方案 ' + (index + 1) + '：' + esc(candidate.title || '') + '</div>' +
+        '<div style="font-size:12px;color:var(--accent);margin-bottom:8px;">钩子：' + esc(candidate.hook || '') + '</div>' +
+        '<div style="font-size:12px;line-height:1.6;color:var(--text-secondary);margin-bottom:8px;">' + esc(candidate.premise || '') + '</div>' +
+        '<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">目标读者：' + esc(candidate.audience || '未说明') + '</div>' +
+        '<div style="font-size:12px;color:var(--text-secondary);">卖点：' + esc((candidate.highlights || []).join(' / ')) + '</div>';
+      card.addEventListener('click', function() {
+        selectedCandidate = candidate;
+        overlay.querySelectorAll('#kbCandidateList button').forEach(function(btn) {
+          btn.style.borderColor = 'var(--border)';
+          btn.style.boxShadow = 'none';
+        });
+        card.style.borderColor = 'var(--accent)';
+        card.style.boxShadow = '0 0 0 1px var(--accent)';
+        overlay.querySelector('#kbCreate').disabled = false;
+      });
+      candidateList.appendChild(card);
+    });
+  }
+
+  overlay.querySelector('#kbGenerate').addEventListener('click', function() {
+    var keyword = overlay.querySelector('#kbKeyword').value.trim();
+    if (!keyword) { showToast('请先输入关键词。', 'error'); return; }
+    var btn = overlay.querySelector('#kbGenerate');
+    btn.disabled = true;
+    btn.textContent = '生成中……';
+    candidateList.innerHTML = '<div style="color:var(--muted);padding:24px 0;text-align:center;grid-column:1/-1;">候选方案生成中，请稍候……</div>';
+    api('POST', '/api/keyword-book/candidates', { keyword: keyword }).then(function(data) {
+      renderCandidates(data.candidates || []);
+    }).catch(function(err) {
+      candidateList.innerHTML = '<div style="color:var(--danger);padding:24px 0;text-align:center;grid-column:1/-1;">候选方案生成失败：' + esc(err.message) + '</div>';
+    }).finally(function() {
+      btn.disabled = false;
+      btn.textContent = '生成候选方案';
+    });
+  });
+
+  overlay.querySelector('#kbCreate').addEventListener('click', function() {
+    var keyword = overlay.querySelector('#kbKeyword').value.trim();
+    var targetWords = parseInt(overlay.querySelector('#kbTargetWords').value, 10) || 500000;
+    var wordsPerChapter = parseInt(overlay.querySelector('#kbWordsPerChapter').value, 10) || 4000;
+    var personaId = overlay.querySelector('#kbPersona').value;
+    var preferredProvider = overlay.querySelector('#kbProvider').value;
+    if (!keyword) { showToast('请先输入关键词。', 'error'); return; }
+    if (!selectedCandidate) { showToast('请先选择一个候选方案。', 'error'); return; }
+
+    var btn = overlay.querySelector('#kbCreate');
+    btn.disabled = true;
+    btn.textContent = '创建中……';
+
+    api('POST', '/api/keyword-book/projects', {
+      keyword: keyword,
+      selectedCandidate: selectedCandidate,
+      title: selectedCandidate.title,
+      description: selectedCandidate.premise,
+      targetWords: targetWords,
+      targetWordsPerChapter: wordsPerChapter,
+      personaId: personaId || undefined,
+      preferredProvider: preferredProvider || undefined
+    }).then(function(data) {
+      var projectId = data.project && data.project.id;
+      overlay.remove();
+      if (!projectId) {
+        showToast('项目已创建，但未返回项目 ID。', 'error');
+        loadProjects();
+        return;
+      }
+      showToast('关键词长篇项目已创建，正在自动执行。', 'success');
+      loadProjects();
+      switchPanel('projects');
+      setTimeout(function() {
+        openProjectDetail(projectId);
+        projectAction('auto-execute', projectId, { silentStart: true, successMessage: '关键词长篇自动执行完成。' });
+      }, 300);
+    }).catch(function(err) {
+      showToast('创建失败：' + err.message, 'error');
+      btn.disabled = false;
+      btn.textContent = '创建并自动执行';
     });
   });
 }
@@ -1452,7 +1675,7 @@ function renderProjectList() {
     filtered = allProjects.filter(function(p) { return p.status === projectFilter; });
   }
   if (filtered.length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;">No ' + (projectFilter === 'all' ? '' : projectFilter + ' ') + 'projects found.</div>';
+    el.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;">没有' + (projectFilter === 'all' ? '' : formatProjectStatus(projectFilter)) + '项目。</div>';
     return;
   }
   el.innerHTML = '';
@@ -1471,48 +1694,53 @@ function renderProjectList() {
       totalSteps = p.steps.length;
       completedSteps = p.steps.filter(function(s) { return s.status === 'completed'; }).length;
     }
+    var currentWords = getProjectCurrentWords(p);
+    var targetWords = getProjectTargetWords(p);
+    var chapterProgress = getProjectCompletedChapters(p);
+    var targetChapters = getProjectTargetChapters(p);
 
     card.innerHTML =
       '<div class="plc-header">' +
         '<span class="plc-title">' + esc(p.title) + '</span>' +
         '<div class="plc-badges">' +
-          '<span class="badge badge-type">' + esc(p.type || 'general') + '</span>' +
+          '<span class="badge badge-type">' + esc(formatProjectType(p.type || 'general')) + '</span>' +
           (personaName ? '<span class="badge badge-persona">' + esc(personaName) + '</span>' : '') +
-          '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(p.status) + '</span>' +
+          '<span class="badge badge-status badge-' + esc(p.status) + '">' + esc(formatProjectStatus(p.status)) + '</span>' +
         '</div>' +
       '</div>' +
       '<div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill" style="width:' + (p.progress || 0) + '%">' + (p.progress || 0) + '%</div></div>' +
-      '<div class="plc-info">' + completedSteps + '/' + totalSteps + ' steps' +
-        (p.createdAt ? ' &mdash; 创建于 ' + esc(formatDate(p.createdAt)) : '') +
+      '<div class="plc-info">已完成 ' + completedSteps + ' / ' + totalSteps + ' 个步骤' +
+        (targetWords ? ' · 项目字数 ' + formatNumberCN(currentWords) + ' / ' + formatNumberCN(targetWords) + ' 字' : '') +
+        (targetChapters ? ' · 章节 ' + chapterProgress + ' / ' + targetChapters : '') +
+        (p.createdAt ? ' · 创建于 ' + esc(formatDate(p.createdAt)) : '') +
       '</div>';
 
-    // Action buttons
     var actions = document.createElement('div');
     actions.className = 'plc-actions';
-
     if (p.status === 'pending') {
-      actions.innerHTML += '<button class="success small btn-start" data-id="' + esc(p.id) + '">Start</button>';
+      actions.innerHTML += '<button class="success small btn-start" data-id="' + esc(p.id) + '">开始并执行</button>';
     }
     if (p.status === 'active') {
       actions.innerHTML +=
-        '<button class="success small btn-auto" data-id="' + esc(p.id) + '">Auto-Execute</button>' +
-        '<button class="secondary small btn-pause" data-id="' + esc(p.id) + '">Pause</button>';
+        '<button class="success small btn-auto" data-id="' + esc(p.id) + '">继续自动执行</button>' +
+        '<button class="secondary small btn-pause" data-id="' + esc(p.id) + '">暂停</button>';
     }
     if (p.status === 'paused') {
-      actions.innerHTML += '<button class="success small btn-resume" data-id="' + esc(p.id) + '">Resume</button>';
+      actions.innerHTML += '<button class="success small btn-resume" data-id="' + esc(p.id) + '">恢复</button>';
+    }
+    if (p.type === 'keyword-book-mvp') {
+      actions.innerHTML += '<button class="secondary small btn-open" data-id="' + esc(p.id) + '">查看字数进度</button>';
     }
     actions.innerHTML += '<button class="danger small btn-delete" data-id="' + esc(p.id) + '">删除</button>';
 
     card.appendChild(actions);
     el.appendChild(card);
 
-    // Click title to open detail
     card.querySelector('.plc-title').addEventListener('click', function() {
       openProjectDetail(p.id);
     });
   });
 
-  // Wire action buttons — Start triggers auto-execute (Start alone only marks step active, doesn't run AI)
   el.querySelectorAll('.btn-start').forEach(function(btn) {
     btn.addEventListener('click', function() { projectAction('auto-execute', btn.getAttribute('data-id')); });
   });
@@ -1525,32 +1753,46 @@ function renderProjectList() {
   el.querySelectorAll('.btn-resume').forEach(function(btn) {
     btn.addEventListener('click', function() { projectAction('resume', btn.getAttribute('data-id')); });
   });
+  el.querySelectorAll('.btn-open').forEach(function(btn) {
+    btn.addEventListener('click', function() { openProjectDetail(btn.getAttribute('data-id')); });
+  });
   el.querySelectorAll('.btn-delete').forEach(function(btn) {
     btn.addEventListener('click', function() { deleteProject(btn.getAttribute('data-id')); });
   });
 }
 
-function projectAction(action, id) {
+function projectAction(action, id, options) {
+  options = options || {};
   var endpoint = '/api/projects/' + id + '/' + action;
-  var msg = action === 'auto-execute' ? 'Auto-executing all steps... this may take a while.' : (action.charAt(0).toUpperCase() + action.slice(1) + 'ing project...');
-  showToast(msg, 'info');
+  var msgMap = {
+    'auto-execute': '正在自动执行项目步骤，这可能需要一些时间……',
+    'pause': '正在暂停项目……',
+    'resume': '正在恢复项目……',
+    'finalize': '正在完结项目……'
+  };
+  if (!options.silentStart) showToast(msgMap[action] || '正在处理项目……', 'info');
   api('POST', endpoint).then(function(data) {
     if (action === 'auto-execute') {
       var completed = (data.results || []).filter(function(r) { return r.success; }).length;
-      showToast('Auto-execute done! ' + completed + ' steps completed.', 'success');
+      showToast(options.successMessage || ('自动执行完成，已完成 ' + completed + ' 个步骤。'), 'success');
+    } else if (action === 'pause') {
+      showToast('项目已暂停。暂停后可继续查看内容、添加人工干预说明，再点击“恢复”继续。', 'success');
+    } else if (action === 'resume') {
+      showToast('项目已恢复。', 'success');
+    } else if (action === 'finalize') {
+      showToast('项目已标记为完结。', 'success');
     } else {
-      showToast('Project ' + action + 'd!', 'success');
+      showToast('项目操作已完成。', 'success');
     }
     loadProjects();
     if (currentDetailProject === id) openProjectDetail(id);
   }).catch(function(e) {
-    showToast('失败：' + e.message, 'error');
+    showToast('操作失败：' + e.message, 'error');
     loadProjects();
   });
 
-  // Poll during auto-execute
   if (action === 'auto-execute') {
-    var pollId = setInterval(function() { loadProjects(); }, 8000);
+    var pollId = setInterval(function() { loadProjects(); if (currentDetailProject === id) openProjectDetail(id); }, 8000);
     setTimeout(function() { clearInterval(pollId); }, 300000);
   }
 }
@@ -1558,7 +1800,7 @@ function projectAction(action, id) {
 function deleteProject(id) {
   if (!confirm('确定删除该项目吗？')) return;
   api('DELETE', '/api/projects/' + id).then(function() {
-    showToast('Project deleted', 'info');
+    showToast('项目已删除。', 'info');
     if (currentDetailProject === id) showProjectList();
     loadProjects();
   }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
@@ -1576,28 +1818,28 @@ function showProjectList() {
 function getContinuationOptions(type) {
   var map = {
     'book-planning': [
-      { type: 'book-bible', label: 'Book Bible', desc: 'World-building, characters, continuity' },
-      { type: 'book-production', label: 'Book Production', desc: 'Write chapters with full context' },
+      { type: 'book-bible', label: '图书圣经', desc: '世界观、角色与连续性设定' },
+      { type: 'book-production', label: '正文生产', desc: '在完整上下文中继续生成正文' },
     ],
     'book-bible': [
-      { type: 'book-production', label: 'Book Production', desc: 'Write chapters with full context' },
+      { type: 'book-production', label: '正文生产', desc: '在完整上下文中继续生成正文' },
     ],
     'book-production': [
-      { type: 'deep-revision', label: 'Deep Revision', desc: '21-step editing: macro, scene, line-level' },
+      { type: 'deep-revision', label: '深度修订', desc: '21 步编辑：结构、场景与行文层面' },
     ],
     'deep-revision': [
-      { type: 'format-export', label: 'Format & Export', desc: 'Front/back matter, DOCX, EPUB' },
+      { type: 'format-export', label: '排版导出', desc: '前后文、DOCX 与 EPUB 导出' },
     ],
     'format-export': [
-      { type: 'book-launch', label: 'Book Launch', desc: 'Blurb, Amazon desc, keywords, ad copy' },
+      { type: 'book-launch', label: '上市推广', desc: '简介、关键词与投放文案' },
     ],
   };
   return map[type] || [
-    { type: 'book-bible', label: 'Book Bible', desc: 'World-building, characters, continuity' },
-    { type: 'book-production', label: 'Book Production', desc: 'Write chapters with full context' },
-    { type: 'deep-revision', label: 'Deep Revision', desc: '21-step editing passes' },
-    { type: 'format-export', label: 'Format & Export', desc: 'DOCX, EPUB export' },
-    { type: 'book-launch', label: 'Book Launch', desc: 'Blurb, keywords, ad copy' },
+    { type: 'book-bible', label: '图书圣经', desc: '世界观、角色与连续性设定' },
+    { type: 'book-production', label: '正文生产', desc: '在完整上下文中继续生成正文' },
+    { type: 'deep-revision', label: '深度修订', desc: '21 步深度编辑流程' },
+    { type: 'format-export', label: '排版导出', desc: 'DOCX / EPUB 导出' },
+    { type: 'book-launch', label: '上市推广', desc: '简介、关键词与广告文案' },
   ];
 }
 
@@ -1626,7 +1868,7 @@ function continueProjectToPhase(sourceProject, targetType) {
     preferredProvider: sourceProject.preferredProvider || undefined,
   };
 
-  showToast('Creating ' + targetType + ' project...', 'info');
+  showToast('正在创建“' + formatProjectType(targetType) + '”项目……', 'info');
   api('POST', '/api/projects/create', body).then(function(data) {
     var projectId = data.project && data.project.id;
     if (projectId) {
@@ -1636,11 +1878,11 @@ function continueProjectToPhase(sourceProject, targetType) {
         openProjectDetail(projectId);
         api('POST', '/api/projects/' + projectId + '/auto-execute').then(function(result) {
           var completed = (result.results || []).filter(function(r) { return r.success; }).length;
-          showToast('Done! ' + completed + ' steps completed.', 'success');
+          showToast('已完成，共执行 ' + completed + ' 个步骤。', 'success');
           loadProjects();
           if (currentDetailProject === projectId) openProjectDetail(projectId);
         }).catch(function(err) {
-          showToast('Execution error: ' + err.message, 'error');
+          showToast('执行失败：' + err.message, 'error');
           loadProjects();
         });
         var pollId = setInterval(function() {
@@ -1650,7 +1892,7 @@ function continueProjectToPhase(sourceProject, targetType) {
         setTimeout(function() { clearInterval(pollId); }, 600000);
       }, 500);
     } else {
-      showToast('Project created!', 'success');
+      showToast('项目已创建。', 'success');
       loadProjects();
     }
   }).catch(function(e) {
@@ -1660,7 +1902,7 @@ function continueProjectToPhase(sourceProject, targetType) {
 
 function openProjectDetail(id) {
   var project = allProjects.find(function(p) { return p.id === id; });
-  if (!project) { showToast('Project not found', 'error'); return; }
+  if (!project) { showToast('未找到该项目。', 'error'); return; }
 
   currentDetailProject = id;
   document.getElementById('projectTemplatesCard').style.display = 'none';
@@ -1673,53 +1915,89 @@ function openProjectDetail(id) {
     personaName = typeof project.persona === 'string' ? project.persona : (project.persona.penName || project.persona.name || '');
   }
 
+  var currentWords = getProjectCurrentWords(project);
+  var targetWords = getProjectTargetWords(project);
+  var targetChapters = getProjectTargetChapters(project);
+  var completedChapters = getProjectCompletedChapters(project);
+  var targetPct = targetWords ? Math.min(100, Math.round((currentWords / targetWords) * 100)) : 0;
+  var pauseNote = project.status === 'paused'
+    ? '<div class="hint" style="margin:10px 0 0;">项目当前已暂停。你可以先查看章节输出、修改步骤内容或添加人工干预说明，准备好后再点击“恢复”。</div>'
+    : '';
+
   var stepsHtml = '';
   if (project.steps && project.steps.length > 0) {
     project.steps.forEach(function(s, i) {
+      var outputText = s.output || s.result || '暂无输出。';
+      var humanButtons = '';
+      if (s.phase === 'outline' || s.phase === 'draft' || s.phase === 'revision') {
+        humanButtons = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">' +
+          '<button class="small secondary btn-step-edit" data-step-id="' + esc(s.id) + '" data-step-index="' + i + '">人工干预 / 修改内容</button>' +
+          (project.status !== 'active' ? '<button class="small success btn-step-rerun" data-project-id="' + esc(project.id) + '">恢复并继续执行</button>' : '') +
+        '</div>';
+      }
       stepsHtml +=
         '<div class="step-item" data-step-idx="' + i + '">' +
           '<span class="step-dot ' + esc(s.status) + '"></span>' +
           '<div style="flex:1;">' +
-            '<div>' + esc(s.label || s.name || 'Step ' + (i+1)) + '</div>' +
-            '<div style="font-size:11px;color:var(--muted);">' + esc(s.status) + (s.error ? ' - ' + esc(s.error.slice(0, 80)) : '') + '</div>' +
+            '<div>' + esc(s.label || s.name || ('步骤 ' + (i + 1))) + '</div>' +
+            '<div style="font-size:11px;color:var(--muted);">' + esc(formatStepStatus(s.status)) + (s.error ? ' - ' + esc(s.error.slice(0, 80)) : '') + '</div>' +
           '</div>' +
-          '<span class="badge badge-' + esc(s.status) + '" style="font-size:10px;">' + esc(s.status) + '</span>' +
+          '<span class="badge badge-' + esc(s.status) + '" style="font-size:10px;">' + esc(formatStepStatus(s.status)) + '</span>' +
         '</div>' +
-        '<div class="step-output" id="stepOutput' + i + '">' + esc(s.output || s.result || '暂无输出。') + '</div>';
+        '<div class="step-output" id="stepOutput' + i + '">' + esc(outputText) + humanButtons + '</div>';
     });
   }
 
   var actionsHtml = '';
   if (project.status === 'pending') {
-    actionsHtml += '<button class="success" id="pdStart">启动项目</button> ';
+    actionsHtml += '<button class="success" id="pdStart">开始项目</button> ';
   }
   if (project.status === 'active') {
-    actionsHtml += '<button class="success" id="pdAuto">Auto-Execute All</button> ';
-    actionsHtml += '<button class="secondary" id="pdPause">Pause</button> ';
+    actionsHtml += '<button class="success" id="pdAuto">继续自动执行</button> ';
+    actionsHtml += '<button class="secondary" id="pdPause">暂停</button> ';
   }
   if (project.status === 'paused') {
-    actionsHtml += '<button class="success" id="pdResume">Resume</button> ';
+    actionsHtml += '<button class="success" id="pdResume">恢复</button> ';
   }
-  actionsHtml += '<button id="pdCompile">Compile Files</button> ';
+  if (project.type === 'keyword-book-mvp' && targetWords > 0) {
+    if (currentWords >= targetWords || (project.progress || 0) >= 100) {
+      actionsHtml += '<button class="success" id="pdFinalize">立即完结</button> ';
+    }
+  }
+  actionsHtml += '<button id="pdCompile">编译文件</button> ';
 
-  // "Continue to..." button for completed projects
   if (project.status === 'completed') {
     var nextPhases = getContinuationOptions(project.type);
     if (nextPhases.length > 0) {
       actionsHtml += '<div style="display:inline-block;position:relative;">' +
-        '<button class="success" id="pdContinue">Continue to &rarr;</button>' +
+        '<button class="success" id="pdContinue">继续到下一阶段 &rarr;</button>' +
         '<div id="pdContinueMenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 0;min-width:240px;z-index:1000;box-shadow:0 4px 16px rgba(0,0,0,0.4);">';
       nextPhases.forEach(function(phase) {
         actionsHtml += '<div class="continue-option" data-type="' + esc(phase.type) + '" style="padding:10px 16px;cursor:pointer;font-size:13px;transition:background 0.15s;">' +
-          '<strong>' + esc(phase.label) + '</strong><br>' +
+          '<strong>' + esc(formatProjectType(phase.type) || phase.label) + '</strong><br>' +
           '<span style="font-size:11px;color:var(--muted);">' + esc(phase.desc) + '</span>' +
         '</div>';
       });
       actionsHtml += '</div></div> ';
     }
   }
-
   actionsHtml += '<button class="danger" id="pdDelete">删除项目</button>';
+
+  var keywordSummaryHtml = '';
+  if (project.type === 'keyword-book-mvp') {
+    keywordSummaryHtml =
+      '<div class="card" id="pdKeywordSummary">' +
+        '<div class="card-title">长篇进度概览</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">' +
+          '<div style="padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);"><div style="font-size:12px;color:var(--muted);">累计字数</div><div style="font-size:24px;font-weight:700;">' + formatNumberCN(currentWords) + '</div></div>' +
+          '<div style="padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);"><div style="font-size:12px;color:var(--muted);">目标字数</div><div style="font-size:24px;font-weight:700;">' + formatNumberCN(targetWords) + '</div></div>' +
+          '<div style="padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);"><div style="font-size:12px;color:var(--muted);">章节进度</div><div style="font-size:24px;font-weight:700;">' + completedChapters + ' / ' + (targetChapters || '-') + '</div></div>' +
+          '<div style="padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);"><div style="font-size:12px;color:var(--muted);">达标比例</div><div style="font-size:24px;font-weight:700;">' + targetPct + '%</div></div>' +
+        '</div>' +
+        '<div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" style="width:' + targetPct + '%">' + targetPct + '%</div></div>' +
+        '<div id="pdKeywordSummaryHint" class="hint" style="margin-top:10px;">当前累计 ' + formatNumberCN(currentWords) + ' / ' + formatNumberCN(targetWords) + ' 字。达到目标字数且主线收束后，可点击“立即完结”。</div>' +
+      '</div>';
+  }
 
   detail.innerHTML =
     '<div class="project-detail">' +
@@ -1727,30 +2005,30 @@ function openProjectDetail(id) {
       '<div class="card">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">' +
           '<h3 style="font-size:20px;font-weight:700;">' + esc(project.title) + '</h3>' +
-          '<div style="display:flex;gap:6px;">' +
-            '<span class="badge badge-type">' + esc(project.type || 'general') + '</span>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+            '<span class="badge badge-type">' + esc(formatProjectType(project.type || 'general')) + '</span>' +
             (personaName ? '<span class="badge badge-persona">' + esc(personaName) + '</span>' : '') +
             (project.preferredProvider ? '<span class="badge" style="background:var(--accent);color:#fff;">' + esc(project.preferredProvider) + '</span>' : '') +
-            '<span class="badge badge-status badge-' + esc(project.status) + '">' + esc(project.status) + '</span>' +
+            '<span class="badge badge-status badge-' + esc(project.status) + '">' + esc(formatProjectStatus(project.status)) + '</span>' +
           '</div>' +
         '</div>' +
+        '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">' + esc(project.description || '') + '</div>' +
         '<div class="progress-bar" style="margin-bottom:12px;"><div class="progress-fill" style="width:' + (project.progress || 0) + '%">' + (project.progress || 0) + '%</div></div>' +
         '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">' + actionsHtml + '</div>' +
+        pauseNote +
       '</div>' +
+      keywordSummaryHtml +
       '<div class="card">' +
-        '<div class="card-title">Steps</div>' +
+        '<div class="card-title">项目步骤</div>' +
         '<div class="step-list">' + stepsHtml + '</div>' +
       '</div>' +
       '<div class="card" id="pdFilePanel">' +
-        '<div class="card-title">Project Files</div>' +
-        '<div id="pdFiles" style="color:var(--muted);">正在加载文件...</div>' +
+        '<div class="card-title">项目文件</div>' +
+        '<div id="pdFiles" style="color:var(--muted);">正在加载文件……</div>' +
       '</div>' +
     '</div>';
 
-  // Wire back button
   detail.querySelector('#pdBack').addEventListener('click', showProjectList);
-
-  // Wire action buttons
   var pdStart = detail.querySelector('#pdStart');
   if (pdStart) pdStart.addEventListener('click', function() { projectAction('auto-execute', id); });
   var pdAuto = detail.querySelector('#pdAuto');
@@ -1759,12 +2037,13 @@ function openProjectDetail(id) {
   if (pdPause) pdPause.addEventListener('click', function() { projectAction('pause', id); });
   var pdResume = detail.querySelector('#pdResume');
   if (pdResume) pdResume.addEventListener('click', function() { projectAction('resume', id); });
+  var pdFinalize = detail.querySelector('#pdFinalize');
+  if (pdFinalize) pdFinalize.addEventListener('click', function() { projectAction('finalize', id); });
   var pdDelete = detail.querySelector('#pdDelete');
   if (pdDelete) pdDelete.addEventListener('click', function() { deleteProject(id); });
   var pdCompile = detail.querySelector('#pdCompile');
   if (pdCompile) pdCompile.addEventListener('click', function() { compileProject(id); });
 
-  // Wire "Continue to..." button
   var pdContinue = detail.querySelector('#pdContinue');
   if (pdContinue) {
     pdContinue.addEventListener('click', function(e) {
@@ -1772,7 +2051,6 @@ function openProjectDetail(id) {
       var menu = detail.querySelector('#pdContinueMenu');
       var isVisible = menu.style.display !== 'none';
       menu.style.display = isVisible ? 'none' : 'block';
-      // Add outside-click listener each time menu opens
       if (!isVisible) {
         setTimeout(function() {
           var closeHandler = function(evt) {
@@ -1796,7 +2074,6 @@ function openProjectDetail(id) {
     });
   }
 
-  // Wire step output toggle
   detail.querySelectorAll('.step-item').forEach(function(item) {
     item.addEventListener('click', function() {
       var idx = item.getAttribute('data-step-idx');
@@ -1804,9 +2081,77 @@ function openProjectDetail(id) {
       if (out) out.classList.toggle('open');
     });
   });
+  detail.querySelectorAll('.btn-step-edit').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var stepIndex = parseInt(btn.getAttribute('data-step-index'), 10);
+      var step = project.steps[stepIndex];
+      if (step) openStepInterventionModal(project, step);
+    });
+  });
+  detail.querySelectorAll('.btn-step-rerun').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      projectAction('resume', btn.getAttribute('data-project-id'));
+    });
+  });
 
-  // Load files
   loadProjectFiles(id);
+  if (project.type === 'keyword-book-mvp') {
+    loadKeywordBookSummary(id).then(function(summary) {
+      var hint = document.getElementById('pdKeywordSummaryHint');
+      if (!hint || !summary) return;
+      var percent = summary.targetWords ? Math.min(100, Math.round((summary.totalWords / summary.targetWords) * 100)) : 0;
+      hint.textContent = '当前累计 ' + formatNumberCN(summary.totalWords) + ' / ' + formatNumberCN(summary.targetWords) + ' 字（' + percent + '%），已完成 ' + summary.completedChapters + ' 章。达到目标字数且主线收束后，可点击“立即完结”。';
+      if (summary.targetReached && !detail.querySelector('#pdFinalize') && project.status !== 'completed') {
+        showToast('该关键词长篇已达到目标字数，如主线已收束，可点击“立即完结”。', 'info');
+      }
+    });
+  }
+}
+
+function openStepInterventionModal(project, step) {
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML =
+    '<div class="modal" style="max-width:900px;">' +
+      '<div class="modal-title">人工干预：' + esc(step.label || '项目步骤') + '</div>' +
+      '<div class="hint" style="margin-bottom:12px;">可直接修改提示词、输出内容，或添加人工干预说明。保存后不会自动重跑，适合暂停状态下逐步调整。</div>' +
+      '<div class="form-group">' +
+        '<label>步骤提示词</label>' +
+        '<textarea id="stepEditPrompt" rows="8" style="font-size:12px;line-height:1.6;">' + esc(step.prompt || '') + '</textarea>' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label>当前输出 / 草稿 / 概要</label>' +
+        '<textarea id="stepEditResult" rows="12" style="font-size:12px;line-height:1.6;">' + esc(step.result || step.output || '') + '</textarea>' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label>人工干预说明</label>' +
+        '<textarea id="stepEditNote" rows="4" placeholder="例如：第 12 章要提前埋下反派伏笔；女主说话风格要更克制……"></textarea>' +
+      '</div>' +
+      '<div class="modal-actions">' +
+        '<button class="secondary" id="stepEditCancel">取消</button>' +
+        '<button class="success" id="stepEditSave">保存干预</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  overlay.querySelector('#stepEditCancel').addEventListener('click', function() { overlay.remove(); });
+  overlay.querySelector('#stepEditSave').addEventListener('click', function() {
+    var body = {
+      prompt: document.getElementById('stepEditPrompt').value,
+      result: document.getElementById('stepEditResult').value,
+      appendOperatorNote: document.getElementById('stepEditNote').value.trim() || undefined
+    };
+    api('PATCH', '/api/projects/' + project.id + '/steps/' + step.id, body).then(function() {
+      overlay.remove();
+      showToast('人工干预内容已保存。', 'success');
+      loadProjects();
+      setTimeout(function() { openProjectDetail(project.id); }, 200);
+    }).catch(function(err) {
+      showToast('保存失败：' + err.message, 'error');
+    });
+  });
 }
 
 function loadProjectFiles(id) {
@@ -1842,7 +2187,7 @@ function loadProjectFiles(id) {
         '</div>' +
         '<div style="display:flex;align-items:center;">' +
           docxBtn +
-          '<a class="file-dl" href="/api/projects/' + encodeURIComponent(id) + '/download/' + encodeURIComponent(f.name) + '" download="' + esc(f.name) + '">Download</a>' +
+          '<a class="file-dl" href="/api/projects/' + encodeURIComponent(id) + '/download/' + encodeURIComponent(f.name) + '" download="' + esc(f.name) + '">下载</a>' +
         '</div>';
       el.appendChild(row);
     });
@@ -1862,14 +2207,14 @@ function loadProjectFiles(id) {
             document.body.appendChild(a);
             a.click();
             a.remove();
-            showToast('DOCX downloaded!', 'success');
+            showToast('DOCX 文件已下载。', 'success');
           } else {
             showToast(data.error || '导出失败', 'error');
           }
           btn.textContent = 'DOCX';
           btn.disabled = false;
         }).catch(function(e) {
-          showToast('DOCX export failed: ' + e.message, 'error');
+          showToast('DOCX 导出失败：' + e.message, 'error');
           btn.textContent = 'DOCX';
           btn.disabled = false;
         });
@@ -1877,20 +2222,20 @@ function loadProjectFiles(id) {
     });
   }).catch(function(e) {
     var el = document.getElementById('pdFiles');
-    if (el) el.innerHTML = '<div style="color:var(--muted);">Could not load files.</div>';
+    if (el) el.innerHTML = '<div style="color:var(--muted);">无法加载项目文件。</div>';
   });
 }
 
 function compileProject(id) {
-  showToast('Compiling project files...', 'info');
+  showToast('正在编译项目文件……', 'info');
   api('POST', '/api/projects/' + id + '/compile').then(function(data) {
     if (data.success) {
-      showToast('Compiled! ' + (data.sections || 0) + ' sections, ~' + ((data.totalWords || 0).toLocaleString()) + ' words. Files: ' + (data.files || []).join(', '), 'success');
+      showToast('编译完成：' + (data.sections || 0) + ' 个分段，约 ' + ((data.totalWords || 0).toLocaleString()) + ' 字。文件：' + (data.files || []).join(', '), 'success');
       loadProjectFiles(id);
     } else {
-      showToast(data.error || 'Compile failed', 'error');
+      showToast(data.error || '编译失败', 'error');
     }
-  }).catch(function(e) { showToast('Compile failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('编译失败：' + e.message, 'error'); });
 }
 
 // ================================================================
@@ -1934,9 +2279,9 @@ function renderPersonas() {
         '</div>' +
       '</div>' +
       (tags ? '<div class="pa-tags">' + tags + '</div>' : '') +
-      (p.ttsVoice ? '<div class="pa-voice">Voice: ' + esc(p.ttsVoice) + '</div>' : '') +
+      (p.ttsVoice ? '<div class="pa-voice">语音：' + esc(p.ttsVoice) + '</div>' : '') +
       '<div class="pa-actions">' +
-        '<button class="small secondary btn-edit-persona" data-id="' + esc(p.id) + '">Edit</button>' +
+        '<button class="small secondary btn-edit-persona" data-id="' + esc(p.id) + '">编辑</button>' +
         '<button class="small danger btn-del-persona" data-id="' + esc(p.id) + '">删除</button>' +
       '</div>';
     grid.appendChild(card);
@@ -1980,25 +2325,25 @@ function openPersonaModal(persona) {
     '<div class="modal">' +
       '<div class="modal-title">' + (isEdit ? '编辑作者人设' : '新建作者人设') + '</div>' +
       '<div class="form-group">' +
-        '<label>Pen Name</label>' +
-        '<input type="text" id="pmName" value="' + esc(persona ? (persona.penName || persona.name || '') : '') + '" placeholder="Author pen name...">' +
+        '<label>笔名</label>' +
+        '<input type="text" id="pmName" value="' + esc(persona ? (persona.penName || persona.name || '') : '') + '" placeholder="请输入作者笔名……">' +
       '</div>' +
       '<div class="form-group-inline">' +
-        '<div class="form-group"><label>Genre</label><input type="text" id="pmGenre" value="' + esc(persona ? persona.genre || '' : '') + '" placeholder="e.g. Fantasy"></div>' +
-        '<div class="form-group"><label>Subgenre</label><input type="text" id="pmSubgenre" value="' + esc(persona ? persona.subgenre || '' : '') + '" placeholder="e.g. Epic Fantasy"></div>' +
+        '<div class="form-group"><label>类型</label><input type="text" id="pmGenre" value="' + esc(persona ? persona.genre || '' : '') + '" placeholder="例如：奇幻"></div>' +
+        '<div class="form-group"><label>子类型</label><input type="text" id="pmSubgenre" value="' + esc(persona ? persona.subgenre || '' : '') + '" placeholder="例如：史诗奇幻"></div>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>Voice Description</label>' +
-        '<textarea id="pmVoice" rows="3" placeholder="Describe the writing voice...">' + esc(persona ? persona.voiceDescription || '' : '') + '</textarea>' +
+        '<label>文风描述</label>' +
+        '<textarea id="pmVoice" rows="3" placeholder="描述你想要的写作风格……">' + esc(persona ? persona.voiceDescription || '' : '') + '</textarea>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>Style Markers (comma-separated)</label>' +
-        '<input type="text" id="pmMarkers" value="' + esc(markers) + '" placeholder="e.g. lyrical, dark, atmospheric">' +
+        '<label>风格标签（用逗号分隔）</label>' +
+        '<input type="text" id="pmMarkers" value="' + esc(markers) + '" placeholder="例如：诗性、冷峻、氛围感">' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>TTS Voice</label>' +
+        '<label>TTS 语音</label>' +
         '<select id="pmTTS">' +
-          '<option value="">None</option>' +
+          '<option value="">不设置</option>' +
           '<option value="narrator_female"' + (persona && persona.ttsVoice === 'narrator_female' ? ' selected' : '') + '>Narrator Female — Versatile, expressive</option>' +
           '<option value="narrator_male"' + (persona && persona.ttsVoice === 'narrator_male' ? ' selected' : '') + '>Narrator Male — Literary fiction, thrillers</option>' +
           '<option value="narrator_deep"' + (persona && persona.ttsVoice === 'narrator_deep' ? ' selected' : '') + '>Narrator Deep — Epic fantasy, sci-fi</option>' +
@@ -2011,16 +2356,16 @@ function openPersonaModal(persona) {
         '</select>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>Bio</label>' +
-        '<textarea id="pmBio" rows="3" placeholder="Author biography...">' + esc(persona ? persona.bio || '' : '') + '</textarea>' +
+        '<label>简介</label>' +
+        '<textarea id="pmBio" rows="3" placeholder="请输入作者简介……">' + esc(persona ? persona.bio || '' : '') + '</textarea>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>Also By (comma-separated book titles)</label>' +
+        '<label>作者其他作品（用逗号分隔）</label>' +
         '<input type="text" id="pmAlsoBy" value="' + esc(persona && persona.alsoBy ? (Array.isArray(persona.alsoBy) ? persona.alsoBy.join(', ') : persona.alsoBy) : '') + '" placeholder="Book Title 1, Book Title 2">' +
       '</div>' +
       '<div class="modal-actions">' +
-        '<button class="secondary" id="pmGenerate">Generate with AI</button>' +
-        '<button class="secondary" id="pmCancel">Cancel</button>' +
+        '<button class="secondary" id="pmGenerate">AI 生成</button>' +
+        '<button class="secondary" id="pmCancel">取消</button>' +
         '<button class="success" id="pmSave">' + (isEdit ? '更新' : '创建') + '</button>' +
       '</div>' +
     '</div>';
@@ -2033,8 +2378,8 @@ function openPersonaModal(persona) {
   overlay.querySelector('#pmGenerate').addEventListener('click', function() {
     var genre = document.getElementById('pmGenre').value.trim();
     var desc = document.getElementById('pmVoice').value.trim();
-    if (!genre && !desc) { showToast('Enter a genre or voice description first', 'error'); return; }
-    showToast('Generating persona with AI...', 'info');
+    if (!genre && !desc) { showToast('请先填写类型或文风描述。', 'error'); return; }
+    showToast('正在使用 AI 生成人设……', 'info');
     api('POST', '/api/personas/generate', { genre: genre, description: desc }).then(function(data) {
       var gen = data.persona || data;
       if (gen.penName || gen.name) document.getElementById('pmName').value = gen.penName || gen.name;
@@ -2043,8 +2388,8 @@ function openPersonaModal(persona) {
       if (gen.voiceDescription) document.getElementById('pmVoice').value = gen.voiceDescription;
       if (gen.styleMarkers) document.getElementById('pmMarkers').value = Array.isArray(gen.styleMarkers) ? gen.styleMarkers.join(', ') : gen.styleMarkers;
       if (gen.bio) document.getElementById('pmBio').value = gen.bio;
-      showToast('Persona generated! Review and save.', 'success');
-    }).catch(function(e) { showToast('Generation failed: ' + e.message, 'error'); });
+      showToast('作者人设已生成，请检查后保存。', 'success');
+    }).catch(function(e) { showToast('生成失败：' + e.message, 'error'); });
   });
 
   // Save
@@ -2059,14 +2404,14 @@ function openPersonaModal(persona) {
       bio: document.getElementById('pmBio').value.trim(),
       alsoBy: document.getElementById('pmAlsoBy').value.split(',').map(function(s) { return s.trim(); }).filter(Boolean)
     };
-    if (!body.penName) { showToast('Pen name is required', 'error'); return; }
+    if (!body.penName) { showToast('笔名不能为空。', 'error'); return; }
 
     var method = isEdit ? 'PUT' : 'POST';
     var path = isEdit ? '/api/personas/' + persona.id : '/api/personas';
 
     api(method, path, body).then(function() {
       overlay.remove();
-      showToast(isEdit ? 'Persona updated!' : 'Persona created!', 'success');
+      showToast(isEdit ? '作者人设已更新。' : '作者人设已创建。', 'success');
       loadPersonas();
     }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
   });
@@ -2075,7 +2420,7 @@ function openPersonaModal(persona) {
 function deletePersona(id) {
   if (!confirm('确定删除该作者人设吗？')) return;
   api('DELETE', '/api/personas/' + id).then(function() {
-    showToast('Persona deleted', 'info');
+    showToast('作者人设已删除。', 'info');
     loadPersonas();
   }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 }
@@ -2089,7 +2434,7 @@ function loadDocuments() {
     renderDocuments(docs);
     loadCompiledOutputs();
   }).catch(function() {
-    document.getElementById('docList').innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">Could not load documents.</div>';
+    document.getElementById('docList').innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">无法加载文档列表。</div>';
   });
 }
 
@@ -2118,7 +2463,7 @@ function loadCompiledOutputs() {
   var completed = allProjects.filter(function(p) { return p.status === 'completed'; });
   var el = document.getElementById('compiledOutputs');
   if (completed.length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">暂无已编译输出。 Complete a project to generate one.</div>';
+    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">暂无已编译输出。请先完成一个项目。</div>';
     return;
   }
 
@@ -2130,9 +2475,9 @@ function loadCompiledOutputs() {
       '<span class="file-icon">&#128214;</span>' +
       '<div class="file-info">' +
         '<div class="file-name">' + esc(p.title) + '</div>' +
-        '<div class="file-size">Completed project</div>' +
+        '<div class="file-size">已完成项目</div>' +
       '</div>' +
-      '<button class="small secondary btn-view-files" data-id="' + esc(p.id) + '">View Files</button>';
+      '<button class="small secondary btn-view-files" data-id="' + esc(p.id) + '">查看文件</button>';
     el.appendChild(row);
   });
 
@@ -2154,11 +2499,11 @@ document.getElementById('fileUploadInput').addEventListener('change', function()
   if (!file) return;
   var formData = new FormData();
   formData.append('file', file);
-  showToast('Uploading ' + file.name + '...', 'info');
+  showToast('正在上传 ' + file.name + '……', 'info');
   apiRaw('POST', '/api/documents/upload', formData).then(function() {
-    showToast('Document uploaded!', 'success');
+    showToast('文档上传成功。', 'success');
     loadDocuments();
-  }).catch(function(e) { showToast('Upload failed: ' + e.message, 'error'); });
+  }).catch(function(e) { showToast('上传失败：' + e.message, 'error'); });
   this.value = '';
 });
 
@@ -2184,8 +2529,8 @@ function renderKeyProviders() {
     row.style.cssText = 'display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;';
     row.innerHTML =
       '<span style="min-width:140px;font-weight:600;font-size:14px;">' + esc(p.label) + '</span>' +
-      '<input type="password" class="key-input" data-key="' + esc(p.key) + '" placeholder="Paste ' + esc(p.label) + ' API key..." style="flex:1;min-width:200px;">' +
-      '<button class="small btn-save-key" data-key="' + esc(p.key) + '">Save</button>';
+      '<input type="password" class="key-input" data-key="' + esc(p.key) + '" placeholder="请输入 ' + esc(p.label) + ' API 密钥……" style="flex:1;min-width:200px;">' +
+      '<button class="small btn-save-key" data-key="' + esc(p.key) + '">保存</button>';
     el.appendChild(row);
   });
 
@@ -2194,10 +2539,10 @@ function renderKeyProviders() {
       var keyName = btn.getAttribute('data-key');
       var input = el.querySelector('input[data-key="' + keyName + '"]');
       var value = input.value.trim();
-      if (!value) { showToast('Please enter a key value', 'error'); return; }
+      if (!value) { showToast('请输入密钥内容。', 'error'); return; }
       api('POST', '/api/vault', { key: keyName, value: value }).then(function() {
         input.value = '';
-        showToast('Key saved and encrypted!', 'success');
+        showToast('密钥已加密保存。', 'success');
         loadKeys();
         loadStatus();
       }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
@@ -2224,14 +2569,14 @@ function loadKeys() {
         var keyName = d.getAttribute('data-key');
         if (!confirm('确定删除 ' + keyName + ' 吗？')) return;
         api('DELETE', '/api/vault/' + keyName).then(function() {
-          showToast('Key deleted', 'info');
+          showToast('密钥已删除。', 'info');
           loadKeys();
           loadStatus();
         }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
       });
     });
   }).catch(function() {
-    document.getElementById('keyList').innerHTML = '<span style="color:var(--danger);">Could not load keys</span>';
+    document.getElementById('keyList').innerHTML = '<span style="color:var(--danger);">无法加载密钥列表</span>';
   });
 }
 
@@ -2242,12 +2587,12 @@ function loadTelegramStatus() {
     if (data.connected) {
       el.innerHTML = '<span style="color:var(--success);font-weight:700;">已连接</span>';
     } else if (data.hasToken) {
-      el.innerHTML = '<span style="color:var(--warn);font-weight:700;">Token stored, not connected</span>';
+      el.innerHTML = '<span style="color:var(--warn);font-weight:700;">Token 已保存，但尚未连接</span>';
     } else {
-      el.innerHTML = '<span style="color:var(--muted);">Not configured</span>';
+      el.innerHTML = '<span style="color:var(--muted);">尚未配置</span>';
     }
   }).catch(function() {
-    document.getElementById('telegramStatus').innerHTML = '<span style="color:var(--muted);">Could not load</span>';
+    document.getElementById('telegramStatus').innerHTML = '<span style="color:var(--muted);">无法加载状态</span>';
   });
 }
 
@@ -2258,14 +2603,14 @@ document.getElementById('btnConnectTelegram').addEventListener('click', function
   if (token) body.token = token;
   if (userId) body.userId = userId;
   api('POST', '/api/telegram/connect', body).then(function(data) {
-    showToast(data.message || 'Telegram connected!', 'success');
+    showToast(data.message || 'Telegram 已连接。', 'success');
     loadTelegramStatus();
   }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
 
 document.getElementById('btnDisconnectTelegram').addEventListener('click', function() {
   api('POST', '/api/telegram/disconnect').then(function() {
-    showToast('Telegram disconnected', 'info');
+    showToast('Telegram 已断开连接。', 'info');
     loadTelegramStatus();
   }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
@@ -2274,7 +2619,7 @@ document.getElementById('btnDisconnectTelegram').addEventListener('click', funct
 function loadVoices() {
   api('GET', '/api/audio/voices').then(function(data) {
     var sel = document.getElementById('ttsVoiceSelect');
-    sel.innerHTML = '<option value="">Select a voice...</option>';
+    sel.innerHTML = '<option value="">请选择语音……</option>';
     if (data.presets && typeof data.presets === 'object') {
       Object.keys(data.presets).forEach(function(key) {
         var preset = data.presets[key];
@@ -2289,7 +2634,7 @@ function loadVoices() {
   }).catch(function() {
     var sel = document.getElementById('ttsVoiceSelect');
     sel.innerHTML =
-      '<option value="">Could not load voices</option>' +
+      '<option value="">无法加载语音列表</option>' +
       '<option value="narrator_female">Narrator Female — Versatile, expressive</option>' +
       '<option value="narrator_male">Narrator Male — Literary fiction, thrillers</option>' +
       '<option value="narrator_deep">Narrator Deep — Epic fantasy, sci-fi</option>' +
@@ -2304,26 +2649,26 @@ function loadVoices() {
 
 document.getElementById('btnTestVoice').addEventListener('click', function() {
   var voice = document.getElementById('ttsVoiceSelect').value;
-  if (!voice) { showToast('Select a voice first', 'error'); return; }
+  if (!voice) { showToast('请先选择一个语音。', 'error'); return; }
   var btn = document.getElementById('btnTestVoice');
-  btn.textContent = 'Generating...';
+  btn.textContent = '生成中……';
   btn.disabled = true;
   api('POST', '/api/audio/generate', { text: 'Hello! I am AuthorClaw, your AI writing partner. Let me help you create your next bestseller.', voice: voice }).then(function(data) {
     if (data.success && data.filename) {
       var audio = new Audio('/api/audio/file/' + encodeURIComponent(data.filename));
       audio.play().then(function() {
-        showToast('Playing voice: ' + voice, 'success');
+        showToast('正在播放语音：' + voice, 'success');
       }).catch(function() {
-        showToast('Audio generated but browser blocked playback. Click the page first, then try again.', 'error');
+        showToast('语音已生成，但浏览器阻止了自动播放。请先点击页面，再重试。', 'error');
       });
     } else {
-      showToast(data.error || 'Voice test failed', 'error');
+      showToast(data.error || '语音测试失败', 'error');
     }
-    btn.textContent = 'Test Voice';
+    btn.textContent = '测试语音';
     btn.disabled = false;
   }).catch(function(e) {
-    showToast('Voice test failed: ' + e.message, 'error');
-    btn.textContent = 'Test Voice';
+    showToast('语音测试失败：' + e.message, 'error');
+    btn.textContent = '测试语音';
     btn.disabled = false;
   });
 });
@@ -2342,7 +2687,7 @@ document.getElementById('btnSaveDomains').addEventListener('click', function() {
   var raw = document.getElementById('researchDomains').value.trim();
   var domains = raw ? raw.split('\n').map(function(d) { return d.trim(); }).filter(Boolean) : [];
   api('POST', '/api/research/domains', { domains: domains }).then(function(data) {
-    showToast('Research domains saved! (' + (data.count || domains.length) + ' domains)', 'success');
+    showToast('研究白名单已保存（' + (data.count || domains.length) + ' 个域名）。', 'success');
     loadResearchDomains();
   }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
@@ -2353,13 +2698,13 @@ function loadAutonomousStatus() {
     document.getElementById('autonomousToggle').checked = data.enabled;
     var label = document.getElementById('autonomousLabel');
     if (data.enabled && !data.paused) {
-      label.textContent = data.running ? 'Agent WORKING...' : 'Agent ON';
+      label.textContent = data.running ? '智能体执行中……' : '智能体已开启';
       label.style.color = data.running ? 'var(--info)' : 'var(--success)';
     } else if (data.enabled && data.paused) {
-      label.textContent = 'Agent PAUSED';
+      label.textContent = '智能体已暂停';
       label.style.color = 'var(--warn)';
     } else {
-      label.textContent = 'Agent OFF';
+      label.textContent = '智能体已关闭';
       label.style.color = 'var(--muted)';
     }
     if (data.intervalMinutes) document.getElementById('autonomousInterval').value = data.intervalMinutes;
@@ -2384,7 +2729,7 @@ document.getElementById('autonomousToggle').addEventListener('change', function(
   var enabled = this.checked;
   var endpoint = enabled ? '/api/autonomous/enable' : '/api/autonomous/disable';
   api('POST', endpoint).then(function() {
-    showToast(enabled ? 'Autonomous mode enabled!' : 'Autonomous mode disabled', enabled ? 'success' : 'info');
+    showToast(enabled ? '自治模式已开启。' : '自治模式已关闭。', enabled ? 'success' : 'info');
     loadAutonomousStatus();
   }).catch(function(e) {
     showToast('失败：' + e.message, 'error');
@@ -2412,7 +2757,7 @@ document.getElementById('btnSaveAutonomous').addEventListener('click', function(
     saves.push(api('POST', '/api/config/update', { path: 'heartbeat.dailyWordGoal', value: wordGoal }));
   }
   Promise.all(saves).then(function() {
-    showToast('Autonomous settings saved!', 'success');
+    showToast('自治模式设置已保存。', 'success');
     loadAutonomousStatus();
   }).catch(function(e) { showToast('失败：' + e.message, 'error'); });
 });
@@ -2429,7 +2774,7 @@ function loadIdleTasks() {
     renderIdleTaskHistory(data.history || []);
   }).catch(function() {
     var histEl = document.getElementById('idleTaskHistory');
-    if (histEl) histEl.innerHTML = '<div style="color:var(--muted);">Could not load idle tasks.</div>';
+    if (histEl) histEl.innerHTML = '<div style="color:var(--muted);">无法加载空闲任务。</div>';
   });
 }
 
@@ -2449,7 +2794,7 @@ function renderIdleTaskQueue() {
       '<div style="display:flex;align-items:center;gap:8px;' + enabledStyle + '">' +
         '<label class="toggle" style="transform:scale(0.7);"><input type="checkbox" class="idle-toggle" data-idx="' + idx + '"' + (task.enabled !== false ? ' checked' : '') + '><span class="slider"></span></label>' +
         '<strong style="flex:1;font-size:13px;">' + esc(task.label) + '</strong>' +
-        '<button class="small secondary btn-edit-idle" data-idx="' + idx + '" style="font-size:11px;padding:3px 8px;">Edit</button>' +
+        '<button class="small secondary btn-edit-idle" data-idx="' + idx + '" style="font-size:11px;padding:3px 8px;">编辑</button>' +
         '<button class="small danger btn-del-idle" data-idx="' + idx + '" style="font-size:11px;padding:3px 8px;">删除</button>' +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-secondary);margin-top:4px;margin-left:42px;line-height:1.4;' + enabledStyle + '">' + esc((task.prompt || '').substring(0, 120)) + '...</div>';
@@ -2483,7 +2828,7 @@ function renderIdleTaskQueue() {
 
 function saveIdleTasks() {
   api('PUT', '/api/autonomous/idle-tasks', { tasks: idleTasksCache }).then(function() {
-    showToast('Idle tasks saved!', 'success');
+    showToast('空闲任务已保存。', 'success');
   }).catch(function(e) { showToast('保存失败：' + e.message, 'error'); });
 }
 
@@ -2495,15 +2840,15 @@ function openIdleTaskEditor(task, idx) {
     '<div class="modal" style="max-width:600px;">' +
       '<div class="modal-title">' + (isNew ? '添加空闲任务' : '编辑空闲任务') + '</div>' +
       '<div class="form-group">' +
-        '<label>Task Name</label>' +
-        '<input type="text" id="idleEditLabel" value="' + esc(task ? task.label || '' : '') + '" placeholder="e.g. Market trend analysis">' +
+        '<label>任务名称</label>' +
+        '<input type="text" id="idleEditLabel" value="' + esc(task ? task.label || '' : '') + '" placeholder="例如：市场趋势分析">' +
       '</div>' +
       '<div class="form-group">' +
-        '<label>AI Instructions (what the agent should do)</label>' +
-        '<textarea id="idleEditPrompt" rows="10" style="font-size:12px;line-height:1.5;" placeholder="Describe in detail what the AI agent should research, create, or analyze...">' + esc(task ? task.prompt || '' : '') + '</textarea>' +
+        '<label>AI 指令（告诉智能体要做什么）</label>' +
+        '<textarea id="idleEditPrompt" rows="10" style="font-size:12px;line-height:1.5;" placeholder="请详细描述要让 AI 调研、创作或分析的内容……">' + esc(task ? task.prompt || '' : '') + '</textarea>' +
       '</div>' +
       '<div class="modal-actions">' +
-        '<button class="secondary" id="idleEditCancel">Cancel</button>' +
+        '<button class="secondary" id="idleEditCancel">取消</button>' +
         '<button class="success" id="idleEditSave">' + (isNew ? '添加任务' : '保存更改') + '</button>' +
       '</div>' +
     '</div>';
@@ -2513,8 +2858,8 @@ function openIdleTaskEditor(task, idx) {
   overlay.querySelector('#idleEditSave').addEventListener('click', function() {
     var label = document.getElementById('idleEditLabel').value.trim();
     var prompt = document.getElementById('idleEditPrompt').value.trim();
-    if (!label) { showToast('Task name is required', 'error'); return; }
-    if (!prompt) { showToast('AI instructions are required', 'error'); return; }
+    if (!label) { showToast('任务名称不能为空。', 'error'); return; }
+    if (!prompt) { showToast('AI 指令不能为空。', 'error'); return; }
     if (isNew) {
       idleTasksCache.push({ label: label, prompt: prompt, enabled: true });
     } else {

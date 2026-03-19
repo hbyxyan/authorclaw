@@ -583,6 +583,8 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
     const targetWordsPerChapter = Number(req.body?.targetWordsPerChapter || 4000);
     const title = String(req.body?.title || selectedCandidate?.title || keyword || '').trim();
     const description = String(req.body?.description || selectedCandidate?.premise || keyword || '').trim();
+    const personaId = req.body?.personaId;
+    const preferredProvider = req.body?.preferredProvider;
 
     if (!keyword) return res.status(400).json({ error: 'keyword required' });
     if (!selectedCandidate) return res.status(400).json({ error: 'selectedCandidate required' });
@@ -595,6 +597,8 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
         targetWordsPerChapter: Number.isFinite(targetWordsPerChapter) ? targetWordsPerChapter : 4000,
         selectedCandidate,
       });
+      if (personaId) project.personaId = personaId;
+      if (preferredProvider) project.preferredProvider = preferredProvider;
       res.status(201).json({ project });
     } catch (err) {
       res.status(500).json({ error: 'Failed to create keyword book project: ' + String(err) });
