@@ -1879,6 +1879,56 @@ Description: ${description}`;
     return result;
   }
 
+  updateStepContent(
+    projectId: string,
+    stepId: string,
+    updates: { prompt?: string; result?: string; appendOperatorNote?: string }
+  ): ProjectStep | null {
+    const project = this.projects.get(projectId);
+    if (!project) return null;
+    const step = project.steps.find(s => s.id === stepId);
+    if (!step) return null;
+
+    if (typeof updates.prompt === 'string') {
+      step.prompt = updates.prompt;
+    }
+    if (typeof updates.result === 'string') {
+      step.result = updates.result;
+    }
+    if (typeof updates.appendOperatorNote === 'string' && updates.appendOperatorNote.trim()) {
+      step.prompt += `\n\n[人工干预说明]\n${updates.appendOperatorNote.trim()}`;
+      project.context = project.context || {};
+      project.context.operatorNotes = project.context.operatorNotes || [];
+      project.context.operatorNotes.push({
+        stepId,
+        note: updates.appendOperatorNote.trim(),
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    project.updatedAt = new Date().toISOString();
+    this.persistState();
+    return step;
+  }
+
+  finalizeProject(id: string): Project | null {
+    const project = this.projects.get(id);
+    if (!project) return null;
+
+    project.steps.forEach(step => {
+      if (step.status === 'pending' || step.status === 'active') {
+        step.status = 'skipped';
+      }
+    });
+
+    project.status = 'completed';
+    project.progress = 100;
+    project.completedAt = new Date().toISOString();
+    project.updatedAt = project.completedAt;
+    this.persistState();
+    return project;
+  }
+
   /**
    * Build the system prompt addition for a project step.
    * This tells the AI what context it's operating in.

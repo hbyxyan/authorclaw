@@ -1044,6 +1044,30 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
     });
   });
 
+  app.post('/api/projects/:id/finalize', (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const project = engine.finalizeProject(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    res.json({ success: true, project });
+  });
+
+  app.patch('/api/projects/:id/steps/:stepId', (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const step = engine.updateStepContent(req.params.id, req.params.stepId, {
+      prompt: req.body?.prompt,
+      result: req.body?.result,
+      appendOperatorNote: req.body?.appendOperatorNote,
+    });
+    if (!step) return res.status(404).json({ error: 'Project or step not found' });
+    res.json({ success: true, step, project: engine.getProject(req.params.id) });
+  });
+
   app.delete('/api/projects/:id', async (req: Request, res: Response) => {
     const engine = gateway.getProjectEngine?.();
     if (!engine) {
