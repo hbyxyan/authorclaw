@@ -15,6 +15,14 @@ import { generateEpubBuffer } from '../services/epub-export.js';
 export function createAPIRoutes(app: Application, gateway: any, rootDir?: string): void {
   const services = gateway.getServices();
   const baseDir = rootDir || process.cwd();
+  const isProviderFailureResponse = (text: string) => {
+    const normalized = String(text || '').trim().toLowerCase();
+    if (!normalized) return true;
+    return normalized.includes("i'm having trouble connecting to my ai providers") ||
+      normalized.includes('please try again in a moment') ||
+      normalized.includes('no ai providers available') ||
+      normalized.includes('provider') && normalized.includes('error');
+  };
 
   // ── Health Check ──
   app.get('/api/health', (_req: Request, res: Response) => {
@@ -820,7 +828,7 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
         );
       }
 
-      if (!response || response.length < 50) {
+      if (!response || response.length < 50 || isProviderFailureResponse(response)) {
         engine.failStep(project.id, activeStep.id, 'Empty or too-short response from AI');
         return res.json({
           success: false,
@@ -908,7 +916,7 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
           );
         }
 
-        if (!response || response.length < 50) {
+        if (!response || response.length < 50 || isProviderFailureResponse(response)) {
           engine.failStep(currentProject.id, activeStep.id, 'Empty or too-short response from AI');
           results.push({ step: activeStep.label, success: false, error: 'Insufficient AI response' });
           break;

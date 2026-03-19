@@ -162,15 +162,15 @@ export class AIRouter {
     }
 
     // ── OpenAI GPT (PAID) ──
-    const openaiKey = await this.vault.get('openai_api_key');
+    const openaiKey = await this.vault.get('openai_api_key') || process.env.OPENAI_API_KEY;
     if (openaiKey) {
       this.providers.set('openai', {
         id: 'openai',
         name: 'OpenAI GPT',
-        model: this.config.openai?.model || 'gpt-4o',
+        model: process.env.OPENAI_MODEL || this.config.openai?.model || 'gpt-4o',
         tier: 'paid',
         available: true,
-        endpoint: 'https://api.openai.com/v1',
+        endpoint: process.env.OPENAI_API_BASE || this.config.openai?.endpoint || 'https://api.openai.com/v1',
         maxTokens: 4096,
         costPer1kInput: 0.0025,
         costPer1kOutput: 0.01,
@@ -421,7 +421,7 @@ export class AIRouter {
     request: CompletionRequest,
     vaultKey: string
   ): Promise<CompletionResponse> {
-    const apiKey = await this.vault.get(vaultKey);
+    const apiKey = await this.vault.get(vaultKey) || (vaultKey === 'openai_api_key' ? process.env.OPENAI_API_KEY : undefined);
     const endpoint = `${provider.endpoint}/chat/completions`;
 
     const response = await fetch(endpoint, {
