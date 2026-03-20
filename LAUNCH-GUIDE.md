@@ -33,7 +33,7 @@ taskkill /F /FI "WINDOWTITLE eq *authorclaw*"
 ### 首次部署
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/Ckokoski/authorclaw.git
+git clone https://github.com/hbyxyan/authorclaw.git
 cd authorclaw
 
 # 2. 安装 Node 22+（若不用 Docker）

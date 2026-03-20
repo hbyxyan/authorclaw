@@ -364,7 +364,15 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
     if (!safePaths.includes(path)) {
       return res.status(403).json({ error: 'Config path not allowed' });
     }
-    services.config.set(path, value);
+    services.config.setAndPersist(path, value);
+    
+    // Update active heartbeat instance if heartbeat config changed
+    if (path.startsWith('heartbeat.') && gateway.heartbeat) {
+      if (path === 'heartbeat.dailyWordGoal') {
+         gateway.heartbeat.config.dailyWordGoal = value;
+      }
+    }
+    
     res.json({ success: true, path, value });
   });
 

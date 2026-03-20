@@ -67,8 +67,8 @@ export class SkillLoader {
   }
 
   private parseSkill(content: string, name: string, category: 'core' | 'author' | 'marketing' | 'premium'): Skill | null {
-    // Parse YAML frontmatter
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    // Parse YAML frontmatter (handle BOM or leading whitespace, and Windows CRLF)
+    const frontmatterMatch = content.match(/^\s*---\r?\n([\s\S]*?)\r?\n---/);
     if (!frontmatterMatch) return null;
 
     const frontmatter = frontmatterMatch[1];
