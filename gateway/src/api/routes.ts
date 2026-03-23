@@ -15,6 +15,14 @@ import { generateEpubBuffer } from '../services/epub-export.js';
 export function createAPIRoutes(app: Application, gateway: any, rootDir?: string): void {
   const services = gateway.getServices();
   const baseDir = rootDir || process.cwd();
+  const isProviderFailureResponse = (text: string) => {
+    const normalized = String(text || '').trim().toLowerCase();
+    if (!normalized) return true;
+    return normalized.includes("i'm having trouble connecting to my ai providers") ||
+      normalized.includes('please try again in a moment') ||
+      normalized.includes('no ai providers available') ||
+      normalized.includes('provider') && normalized.includes('error');
+  };
 
   // ── Health Check ──
   app.get('/api/health', (_req: Request, res: Response) => {
@@ -356,7 +364,15 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
     if (!safePaths.includes(path)) {
       return res.status(403).json({ error: 'Config path not allowed' });
     }
-    services.config.set(path, value);
+    services.config.setAndPersist(path, value);
+    
+    // Update active heartbeat instance if heartbeat config changed
+    if (path.startsWith('heartbeat.') && gateway.heartbeat) {
+      if (path === 'heartbeat.dailyWordGoal') {
+         gateway.heartbeat.config.dailyWordGoal = value;
+      }
+    }
+    
     res.json({ success: true, path, value });
   });
 
@@ -526,6 +542,16 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
       return res.json({ project, planning: 'book-production' });
     }
 
+    if (inferredType === 'keyword-book-mvp') {
+      const cfg = config || context || {};
+      if (!cfg.keyword || !cfg.selectedCandidate) {
+        return res.status(400).json({ error: 'keyword and selectedCandidate are required for keyword-book-mvp' });
+      }
+      const project = engine.createKeywordBookProject(title, description, cfg);
+      applyProjectOptions(project);
+      return res.json({ project, planning: 'keyword-book-mvp' });
+    }
+
     // Dynamic planning: ask the AI to figure out the steps
     if (planning === 'dynamic') {
       const skillCatalog = services.skills.getSkillCatalog();
@@ -540,6 +566,81 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
     const project = engine.createProject(projectType, title, description, context);
     applyProjectOptions(project);
     res.json({ project, planning: 'template' });
+  });
+
+  // ── Keyword Book MVP: 关键词 -> 3候选方案 ──
+  app.post('/api/keyword-book/candidates', async (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const keyword = String(req.body?.keyword || '').trim();
+    if (!keyword) {
+      return res.status(400).json({ error: 'keyword required' });
+    }
+    try {
+      const candidates = await engine.generateKeywordBookCandidates(keyword);
+      res.json({ keyword, candidates });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to generate candidates: ' + String(err) });
+    }
+  });
+
+  // ── Keyword Book MVP: 创建项目（用户已选择候选） ──
+  app.post('/api/keyword-book/projects', async (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+
+    const keyword = String(req.body?.keyword || '').trim();
+    const selectedCandidate = req.body?.selectedCandidate;
+    const targetWords = Number(req.body?.targetWords || 500000);
+    const targetWordsPerChapter = Number(req.body?.targetWordsPerChapter || 4000);
+    const title = String(req.body?.title || selectedCandidate?.title || keyword || '').trim();
+    const description = String(req.body?.description || selectedCandidate?.premise || keyword || '').trim();
+    const personaId = req.body?.personaId;
+    const preferredProvider = req.body?.preferredProvider;
+
+    if (!keyword) return res.status(400).json({ error: 'keyword required' });
+    if (!selectedCandidate) return res.status(400).json({ error: 'selectedCandidate required' });
+    if (!title || !description) return res.status(400).json({ error: 'title and description required' });
+
+    try {
+      const project = engine.createKeywordBookProject(title, description, {
+        keyword,
+        targetWords: Number.isFinite(targetWords) ? targetWords : 500000,
+        targetWordsPerChapter: Number.isFinite(targetWordsPerChapter) ? targetWordsPerChapter : 4000,
+        selectedCandidate,
+      });
+      if (personaId) project.personaId = personaId;
+      if (preferredProvider) project.preferredProvider = preferredProvider;
+      res.status(201).json({ project });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to create keyword book project: ' + String(err) });
+    }
+  });
+
+  app.get('/api/keyword-book/projects/:id/summary', (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const project = engine.getProject(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    const stats = engine.getProjectWordStats(req.params.id);
+    res.json({
+      projectId: project.id,
+      title: project.title,
+      type: project.type,
+      status: project.status,
+      progress: project.progress,
+      keyword: project.context?.keyword || null,
+      targetWords: stats.targetWords,
+      totalWords: stats.totalWords,
+      completedChapters: stats.completedChapters,
+      targetReached: stats.targetReached,
+    });
   });
 
   // ── Pipeline Creation (chains all 6 phases) ──
@@ -735,7 +836,7 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
         );
       }
 
-      if (!response || response.length < 50) {
+      if (!response || response.length < 50 || isProviderFailureResponse(response)) {
         engine.failStep(project.id, activeStep.id, 'Empty or too-short response from AI');
         return res.json({
           success: false,
@@ -823,7 +924,7 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
           );
         }
 
-        if (!response || response.length < 50) {
+        if (!response || response.length < 50 || isProviderFailureResponse(response)) {
           engine.failStep(currentProject.id, activeStep.id, 'Empty or too-short response from AI');
           results.push({ step: activeStep.label, success: false, error: 'Insufficient AI response' });
           break;
@@ -961,6 +1062,30 @@ export function createAPIRoutes(app: Application, gateway: any, rootDir?: string
       activeStep: project.steps.find((s: any) => s.status === 'active')?.label || null,
       remainingSteps: remaining.length,
     });
+  });
+
+  app.post('/api/projects/:id/finalize', (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const project = engine.finalizeProject(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    res.json({ success: true, project });
+  });
+
+  app.patch('/api/projects/:id/steps/:stepId', (req: Request, res: Response) => {
+    const engine = gateway.getProjectEngine?.();
+    if (!engine) {
+      return res.status(503).json({ error: 'Project engine not initialized' });
+    }
+    const step = engine.updateStepContent(req.params.id, req.params.stepId, {
+      prompt: req.body?.prompt,
+      result: req.body?.result,
+      appendOperatorNote: req.body?.appendOperatorNote,
+    });
+    if (!step) return res.status(404).json({ error: 'Project or step not found' });
+    res.json({ success: true, step, project: engine.getProject(req.params.id) });
   });
 
   app.delete('/api/projects/:id', async (req: Request, res: Response) => {

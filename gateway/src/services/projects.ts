@@ -47,6 +47,7 @@ export type ProjectType =
   | 'deep-revision'
   | 'format-export'
   | 'book-launch'
+  | 'keyword-book-mvp'
   | 'novel-pipeline'
   | 'pipeline'
   | 'custom';
@@ -94,9 +95,25 @@ export interface NovelPipelineConfig {
   tone?: string;
   tense?: string;
   targetChapters?: number;        // default 25
-  targetWordsPerChapter?: number; // default 3000
+  targetWordsPerChapter?: number; // default 4000
   protagonistName?: string;
   antagonistName?: string;
+}
+
+export interface KeywordBookCandidate {
+  id: string;
+  title: string;
+  hook: string;
+  premise: string;
+  audience: string;
+  highlights: string[];
+}
+
+export interface KeywordBookProjectConfig {
+  keyword: string;
+  targetWords?: number;
+  targetWordsPerChapter?: number;
+  selectedCandidate: KeywordBookCandidate;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -118,16 +135,16 @@ interface ProjectTemplate {
 
 // Valid task types that the AI router understands (for planProject prompt)
 const TASK_TYPE_MAP: Record<string, string> = {
-  general: 'Basic tasks, chat, simple questions',
-  research: 'Web research, fact-finding',
-  creative_writing: 'Prose writing, chapters, scenes',
-  revision: 'Editing, rewriting, feedback',
-  style_analysis: 'Voice/style matching',
-  marketing: 'Blurbs, pitches, ads',
-  outline: 'Story structure, beat sheets',
-  book_bible: 'World building, characters',
-  consistency: 'Cross-chapter analysis',
-  final_edit: 'Final polish, proofreading',
+  general: '基础任务，聊天，简单问题',
+  research: '网络搜索，事实查证',
+  creative_writing: '散文写作，章节，场景',
+  revision: '编辑，重写，反馈',
+  style_analysis: '声音/风格匹配',
+  marketing: '简介，推销，广告',
+  outline: '故事结构，节拍表',
+  book_bible: '世界观构建，角色',
+  consistency: '跨章节连贯性分析',
+  final_edit: '最终润色，校对',
 };
 
 const PROJECT_TEMPLATES: ProjectTemplate[] = [
@@ -136,108 +153,108 @@ const PROJECT_TEMPLATES: ProjectTemplate[] = [
   // ═══════════════════════════════════════════════════════════
   {
     type: 'book-planning',
-    label: 'Book Planning',
-    description: 'Market analysis, premise development, characters, chapter outline, and synopsis',
+    label: '书籍规划',
+    description: '市场分析，前提构思，角色设定，章节大纲和剧情梗概',
     steps: [
       {
-        label: 'Market & genre analysis',
+        label: '市场和受众分析',
         skill: 'research',
         taskType: 'research',
-        promptTemplate: `Analyze the current market for this type of book: {{description}}
+        promptTemplate: `分析这类书籍的当前市场：{{description}}
 
-Research and report on:
-1. **Genre landscape**: Top-selling comparable titles in this genre/subgenre
-2. **Reader expectations**: What tropes, conventions, and beats does this genre demand?
-3. **Market gaps**: What's underserved? Where's the opportunity?
-4. **Comp titles**: Identify 3-5 comparable titles with why they're relevant
-5. **Target audience**: Demographics, reading habits, where they discover books
-6. **Commercial viability**: Honest assessment of market potential
+研究并报告：
+1. **类型格局**：该类型/子类型中最畅销的对标作品
+2. **读者期望**：该类型需要什么样的桥段、套路和节奏？
+3. **市场空白**：什么题材被忽视了？机会在哪里？
+4. **对标作品**：找出3-5本对标作品，并说明它们为什么相关
+5. **目标受众**：人口统计、阅读习惯、他们从哪里发现新书
+6. **商业可行性**：对市场潜力的客观评估
 
-Be specific and actionable. This informs every decision that follows.`,
+请具体且具有可操作性，这将指导后续的所有决策。`,
       },
       {
-        label: 'Develop premise',
+        label: '开发核心前提',
         skill: 'premise',
         taskType: 'general',
-        promptTemplate: `Develop a commercially viable premise for: {{description}}
+        promptTemplate: `为以下内容开发一个具有商业可行性的核心前提：{{description}}
 
-Using the market analysis, create:
-1. **Logline**: 1-2 sentences that sell the book
-2. **What-If question**: The central hook
-3. **Core conflict**: Internal and external
-4. **Stakes**: What happens if the protagonist fails? (personal, professional, global)
-5. **Theme statement**: The book's deeper argument about life
-6. **Unique hook**: What makes THIS book stand out from the comp titles?
-7. **Genre promise**: What emotional experience are we delivering?
+利用市场分析结果，创建：
+1. **一句话简介 (Logline)**：1-2句话推销这本书
+2. **“如果...会怎样” (What-If) 问题**：核心吸引力
+3. **核心冲突**：内在和外在冲突
+4. **赌注 (Stakes)**：如果主角失败了会发生什么？（个人的，职业的，全球的）
+5. **主题声明 (Theme statement)**：这本书关于生活的深层论点
+6. **独特的钩子 (Unique hook)**：是什么让这本书从对标作品中脱颖而出？
+7. **类型承诺 (Genre promise)**：我们提供什么样的情感体验？
 
-Make this premise commercially compelling AND creatively exciting.`,
+使这个前提在商业上引人入胜，并在创造性上令人兴奋。`,
       },
       {
-        label: 'Character profiles',
+        label: '核心人物设定',
         skill: 'book-bible',
         taskType: 'book_bible',
-        promptTemplate: `Create detailed character profiles for: {{description}}
+        promptTemplate: `为以下内容创建详细的人物档案：{{description}}
 
-Build out:
-**Protagonist**: Full name, age, backstory, motivation (want vs need), fatal flaw, emotional wound, strengths, appearance, speech patterns, character arc
-**Antagonist**: Motivation, backstory, why they believe they're right, how they challenge the protagonist
-**3-4 Supporting characters**: Name, role, relationship to protagonist, how they advance/challenge the arc
+构建：
+**主角**：全名，年龄，背景故事，动机（想要与需要），致命缺陷，情感创伤，优势，外貌，言语模式，角色弧光
+**对手**：动机，背景故事，他们为什么认为自己是对的，他们如何挑战主角
+**3-4个配角**：名字，角色，与主角的关系，他们如何推动/挑战角色的弧光
 
-Each character should feel real — contradictions, desires, fears. Write 800+ words total.`,
+每个角色都应该感觉真实——有矛盾，有欲望，有恐惧。总共写800字以上。`,
       },
       {
-        label: 'Chapter-by-chapter outline',
+        label: '逐章大纲',
         skill: 'outline',
         taskType: 'outline',
-        promptTemplate: `Create a detailed chapter-by-chapter outline for: {{description}}
+        promptTemplate: `为以下内容创建一个详细的逐章大纲：{{description}}
 
-For each chapter include:
-- **Chapter number & title**
-- **POV character**
-- **Key beats** (3-5 per chapter)
-- **Turning points** and revelations
-- **Tension level** (1-10)
-- **Chapter ending hook**
+每一章包括：
+- **章节号和标题**
+- **POV角色**
+- **关键节拍**（每章3-5个）
+- **转折点**和启示
+- **紧张程度**（1-10）
+- **章节结尾悬念**
 
-Structure using three-act beats:
-- Act 1 (25%): Setup, inciting incident, debate/refusal
-- Act 2A (25%): Rising action, fun & games, midpoint shift
-- Act 2B (25%): Complications, all-is-lost moment
-- Act 3 (25%): Climax sequence, resolution
+使用三幕结构：
+- 第一幕 (25%)：设定，激励事件，辩论/拒绝
+- 第二幕A (25%)：上升的行动，游戏与娱乐，中点转变
+- 第二幕B (25%)：复杂化，一败涂地时刻
+- 第三幕 (25%)：高潮序列，结局
 
-Target 20-30 chapters. Number EVERY chapter.`,
+目标20-30章。为每一章编号。`,
       },
       {
-        label: 'Synopsis generation',
+        label: '剧情梗概生成',
         skill: 'outline',
         taskType: 'general',
-        promptTemplate: `Generate professional synopses for: {{description}}
+        promptTemplate: `为以下内容生成专业的剧情梗概：{{description}}
 
-Create two versions:
-1. **One-page synopsis** (~500 words): Complete story arc including the ending. Professional query format.
-2. **Three-page synopsis** (~1500 words): Expanded with character arcs, key scenes, and emotional beats.
+创建两个版本：
+1. **一页梗概**（约500字）：包含结局的完整故事弧。专业的查询格式。
+2. **三页梗概**（约1500字）：扩展角色弧光，关键场景和情感节拍。
 
-Both should:
-- Reveal the entire plot (including ending — this is for industry professionals)
-- Show the character's emotional journey
-- Demonstrate clear story structure
-- Be written in present tense, third person
-- Feel compelling to read, not just dutiful`,
+两者都应该：
+- 揭示整个情节（包括结局——这是为行业专业人士准备的）
+- 展示角色的情感旅程
+- 表现出清晰的故事结构
+- 使用现在时，第三人称书写
+- 读起来引人入胜，而不仅仅是尽职尽责`,
       },
       {
-        label: 'Review & refine plan',
+        label: '审查与完善计划',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Review the complete book plan we've built. Check for:
+        promptTemplate: `审查我们建立的完整书籍计划。检查：
 
-1. **Plot holes**: Any logical gaps in the outline?
-2. **Character consistency**: Do motivations and arcs make sense?
-3. **Pacing issues**: Any dead zones or rushed sections in the outline?
-4. **Theme coherence**: Does every subplot reinforce the theme?
-5. **Commercial viability**: Does this match the market analysis findings?
-6. **Genre compliance**: Are all genre promises being fulfilled?
+1. **情节漏洞**：大纲中有逻辑漏洞吗？
+2. **角色一致性**：动机和弧光有意义吗？
+3. **节奏问题**：大纲中有死区或仓促的部分吗？
+4. **主题连贯性**：每个子情节是否强化了主题？
+5. **商业可行性**：这符合市场分析的发现吗？
+6. **类型合规性**：所有的类型承诺都兑现了吗？
 
-Provide specific improvements, not vague suggestions. Reference chapter numbers and character names.`,
+提供具体的改进，而不是模糊的建议。引用章节号和角色名。`,
       },
     ],
   },
@@ -247,96 +264,96 @@ Provide specific improvements, not vague suggestions. Reference chapter numbers 
   // ═══════════════════════════════════════════════════════════
   {
     type: 'book-bible',
-    label: 'Book Bible',
-    description: 'World-building, character bible, continuity tracker, themes, and style reference',
+    label: '设定集',
+    description: '世界观构建、角色档案、连贯性追踪表、主题和风格参考',
     steps: [
       {
-        label: 'World-building document',
+        label: '世界观构建文档',
         skill: 'book-bible',
         taskType: 'book_bible',
-        promptTemplate: `Create a comprehensive world-building document for: {{description}}
+        promptTemplate: `为以下内容创建全面的世界观构建文档：{{description}}
 
-Include:
-1. **Setting**: Physical environment, geography, climate, key locations with sensory details
-2. **Time period**: When does this take place? Historical/futuristic context
-3. **Social structures**: Power dynamics, social classes, political systems
-4. **Rules**: Laws of physics/magic, technology, what's possible and what isn't
-5. **Culture**: Customs, beliefs, languages, food, entertainment
-6. **History**: Key events that shaped this world before the story begins
-7. **Economy**: How do people earn a living? What's valuable?
-8. **Daily life**: What does an ordinary day look like for ordinary people?
+包括：
+1. **设定**：物理环境，地理，气候，带有感官细节的关键地点
+2. **时间段**：这发生在什么时候？历史/未来背景
+3. **社会结构**：权力动态，社会阶层，政治制度
+4. **规则**：物理/魔法定律，技术，什么是可能的，什么是不可能的
+5. **文化**：习俗，信仰，语言，食物，娱乐
+6. **历史**：在故事开始前塑造这个世界的关键事件
+7. **经济**：人们如何谋生？什么是有价值的？
+8. **日常生活**：普通人平凡的一天是什么样的？
 
-Write 1000+ words. Be specific enough that a writer could maintain consistency across 80,000 words.`,
+写1000字以上。要足够具体，以便作家能够在80000字中保持一致性。`,
       },
       {
-        label: 'Character bible',
+        label: '角色档案',
         skill: 'book-bible',
         taskType: 'book_bible',
-        promptTemplate: `Create deep character profiles for: {{description}}
+        promptTemplate: `为以下内容创建深入的角色档案：{{description}}
 
-For EACH major character (protagonist, antagonist, 3-4 supporting):
-- **Full name** and any nicknames
-- **Age, appearance** (specific: eye color, hair, height, distinguishing marks)
-- **Personality**: Myers-Briggs type, enneagram, core fear, core desire
-- **Backstory**: 200+ words of formative experiences
-- **Voice**: Speech patterns, vocabulary level, verbal tics, sentence style
-- **Arc**: Where they start → what changes → where they end
-- **Relationships**: Map to other characters with dynamic description
-- **Secrets**: What are they hiding? From whom?
+对于每个主要角色（主角，对手，3-4个配角）：
+- **全名**和任何昵称
+- **年龄，外貌**（具体：眼睛颜色，头发，身高，显著特征）
+- **性格**：迈尔斯-布里格斯类型，九型人格，核心恐惧，核心欲望
+- **背景故事**：200字以上的成长经历
+- **声音**：言语模式，词汇量，口头禅，句子风格
+- **弧光**：他们从哪里开始 → 什么改变了 → 他们在哪里结束
+- **人际关系**：用动态描述映射到其他角色
+- **秘密**：他们在隐藏什么？瞒着谁？
 
-Also create a **relationship web** showing how all characters connect.`,
+还要创建一个**关系网**，显示所有角色是如何连接的。`,
       },
       {
-        label: 'Series continuity tracker',
+        label: '系列连贯性追踪表',
         skill: 'book-bible',
         taskType: 'consistency',
-        promptTemplate: `Create a continuity tracking document for: {{description}}
+        promptTemplate: `为以下内容创建一个连贯性追踪文档：{{description}}
 
-This is the master reference for maintaining consistency. Include:
-1. **Character tracking sheet**: Physical details, introduced in chapter X, status (alive/dead/missing)
-2. **Timeline**: Day-by-day chronology of events in the story
-3. **Location details**: Room layouts, distances between places, what's where
-4. **Object tracking**: Important items — who has them, where they are
-5. **Plot thread tracker**: Every promise/setup and where it's resolved
-6. **Name registry**: All proper nouns with consistent spelling
-7. **Rules reference**: Quick-lookup for world rules (magic costs, tech limits, etc.)
+这是保持一致性的主参考。包括：
+1. **角色追踪表**：物理细节，在第X章介绍，状态（生/死/失踪）
+2. **时间线**：故事中事件的每日年表
+3. **地点细节**：房间布局，地点之间的距离，什么在哪里
+4. **物品追踪**：重要物品——谁有它们，它们在哪里
+5. **情节线追踪**：每个承诺/设置以及它在哪里解决
+6. **名称注册表**：所有专有名词及一致的拼写
+7. **规则参考**：世界规则的快速查找（魔法消耗，技术限制等）
 
-Format as a reference guide a writer can quickly scan while writing.`,
+格式化为一个作家在写作时可以快速扫描的参考指南。`,
       },
       {
-        label: 'Theme & motif guide',
+        label: '主题与母题指南',
         skill: 'book-bible',
         taskType: 'book_bible',
-        promptTemplate: `Create a theme and motif guide for: {{description}}
+        promptTemplate: `为以下内容创建一个主题和母题指南：{{description}}
 
-Analyze and document:
-1. **Central theme**: What argument is this book making about human nature/life?
-2. **Supporting themes**: 2-3 secondary themes that reinforce the central one
-3. **Recurring motifs**: Images, objects, or situations that appear repeatedly
-4. **Symbolic elements**: What represents what? (settings, weather, objects, colors)
-5. **Theme per subplot**: How each subplot explores a facet of the theme
-6. **Thematic arc**: How the theme develops across the story's structure
-7. **Motif placement guide**: Where each motif should appear for maximum impact
+分析并记录：
+1. **中心主题**：这本书对人性/生活提出了什么论点？
+2. **支持主题**：2-3个强化中心主题的次要主题
+3. **反复出现的母题**：反复出现的图像，物体或情况
+4. **象征元素**：什么代表什么？（环境，天气，物体，颜色）
+5. **每个子情节的主题**：每个子情节如何探索主题的一个方面
+6. **主题弧光**：主题如何在故事结构中发展
+7. **母题放置指南**：每个母题应该出现在哪里以获得最大影响
 
-This guide ensures every scene serves the deeper meaning of the book.`,
+这个指南确保每个场景都服务于书的更深层含义。`,
       },
       {
-        label: 'Style & tone reference',
+        label: '风格与基调参考',
         skill: 'style-clone',
         taskType: 'style_analysis',
-        promptTemplate: `Create a style and tone reference guide for: {{description}}
+        promptTemplate: `为以下内容创建一个风格和基调参考指南：{{description}}
 
-Document the writing voice this book requires:
-1. **Tone**: Dark? Humorous? Lyrical? Sharp? Warm? Describe with examples
-2. **Prose style**: Sentence length tendencies, vocabulary level, rhythm
-3. **POV approach**: Deep POV? Omniscient? How close to the character's thoughts?
-4. **Tense**: Past or present? Why?
-5. **Dialogue style**: Naturalistic? Stylized? Snappy? Formal?
-6. **Description approach**: Lush and detailed? Sparse and punchy?
-7. **Sample paragraph**: Write a 200-word example paragraph in the target voice
-8. **Voice DON'Ts**: What should the writing NOT sound like?
+记录这本书需要的写作声音：
+1. **基调**：黑暗？幽默？抒情？尖锐？温暖？用例子描述
+2. **散文风格**：句子长度倾向，词汇水平，节奏
+3. **POV方法**：深层POV？全知？离角色的思想有多近？
+4. **时态**：过去或现在？为什么？
+5. **对话风格**：自然主义？程式化？活泼？正式？
+6. **描述方法**：丰富而详细？稀疏而有力？
+7. **示例文本**：用目标声音写一段200字的段落
+8. **声音禁忌**：写作不应该听起来像什么？
 
-If an author persona is assigned, integrate their voice profile into this guide.`,
+如果分配了作者角色，将他们的声音资料整合到这个指南中。`,
       },
     ],
   },
@@ -346,8 +363,8 @@ If an author persona is assigned, integrate their voice profile into this guide.
   // ═══════════════════════════════════════════════════════════
   {
     type: 'book-production',
-    label: 'Book Production',
-    description: 'Write chapters sequentially with full context injection — write, self-review, and compile',
+    label: '书籍制作',
+    description: '按顺序编写章节并注入完整上下文 — 编写、自查并编译',
     steps: [], // Dynamic: chapters auto-generated based on config (like novel-pipeline writing phase)
   },
 
@@ -356,391 +373,391 @@ If an author persona is assigned, integrate their voice profile into this guide.
   // ═══════════════════════════════════════════════════════════
   {
     type: 'deep-revision',
-    label: 'Deep Revision',
-    description: '21-step, 3-pass manuscript revision — macro (structural), medium (scene-level), micro (line-level) + beta reader panel',
+    label: '深度修订',
+    description: '21个步骤，3遍手稿修订 — 宏观（结构），中观（场景级别），微观（行级别）+ 试读小组',
     steps: [
       // ── Pass 1: Macro / Structural (7 steps) ──
       {
-        label: 'Plot structure analysis',
+        label: '情节结构分析',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Analyze the plot structure of this manuscript:
+        promptTemplate: `分析这部手稿的情节结构：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Evaluate:
-1. **Three-act structure compliance**: Is there a clear setup, confrontation, and resolution?
-2. **Inciting incident**: When does it occur? Is it strong enough? Too early/late?
-3. **Midpoint shift**: Is there a genuine reversal or revelation at the midpoint?
-4. **All-is-lost moment**: Does the 75% mark deliver real despair?
-5. **Climax**: Is it earned? Does it resolve the central conflict?
-6. **Resolution**: Is it satisfying without being too neat?
-7. **Hero's journey beats**: Which archetypes are present? Which are missing?
+评估：
+1. **三幕结构合规性**：是否有清晰的设定、对抗和解决方案？
+2. **激励事件**：什么时候发生？够不够强？太早/太晚？
+3. **中点转变**：中点是否发生了真正的逆转或启示？
+4. **一败涂地时刻**：75%的进度是否带来了真正的绝望？
+5. **高潮**：是水到渠成的吗？它解决核心冲突了吗？
+6. **结局**：是否令人满意，而又不过于完美？
+7. **英雄之旅节拍**：哪些原型存在？哪些缺失？
 
-Rate structural integrity: 1-10. Provide specific chapter references for every issue.`,
+对结构完整性进行评分：1-10。为每个问题提供具体的章节参考。`,
       },
       {
-        label: 'Pacing audit',
+        label: '节奏审计',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Create a chapter-by-chapter pacing heatmap for:
+        promptTemplate: `为以下内容创建逐章节奏热图：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-For EACH chapter: Tension (1-10) | Pacing (Too Fast/Fast/Good/Slow/Draggy) | Scene types | Energy
+对于每一章：紧张感 (1-10) | 节奏 (太快/快/好/慢/拖沓) | 场景类型 | 能量
 
-Then analyze:
-- Where are the energy valleys? Should chapters be cut or combined?
-- Do climactic moments land with proper setup?
-- Is the action-to-reflection ratio balanced?
-- Are chapter lengths consistent? Do variations serve the story?
-- Do the first 3 chapters build enough momentum?
+然后分析：
+- 能量低谷在哪里？章节应该被删减还是合并？
+- 高潮时刻的铺垫是否到位？
+- 行动与反思的比例是否平衡？
+- 章节长度是否一致？变化是否服务于故事？
+- 前3章是否积累了足够的动力？
 
-End with top 3 pacing fixes, prioritized by impact.`,
+以影响力排序，给出排名前3的节奏修复建议作为结束。`,
       },
       {
-        label: 'Character arc consistency',
+        label: '角色弧光一致性',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Check character arc consistency across:
+        promptTemplate: `检查以下内容中角色弧光的一致性：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-For each major character:
-1. **Arc mapping**: Where they start → key turning points → where they end
-2. **Growth evidence**: What specific scenes show change?
-3. **Regression moments**: Are setbacks believable?
-4. **Arc completion**: Does the ending deliver on the character's promise?
-5. **Motivation consistency**: Do they ever act out of character for plot convenience?
+对于每个主要角色：
+1. **弧光映射**：他们从哪里开始 → 关键转折点 → 他们在哪里结束
+2. **成长的证据**：哪些具体场景展示了变化？
+3. **退步时刻**：挫折可信吗？
+4. **弧光完成**：结局兑现了对角色的承诺吗？
+5. **动机一致性**：他们是否为了情节的便利而做出不符合性格的行为？
 
-Flag any character who doesn't change, changes too abruptly, or acts inconsistently.`,
+标记任何没有改变，改变太突然或行为不一致的角色。`,
       },
       {
-        label: 'Theme coherence review',
+        label: '主题连贯性审查',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Analyze thematic coherence in:
+        promptTemplate: `分析以下内容的主题连贯性：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-1. **Central theme identification**: What is this book really about beneath the plot?
-2. **Theme in subplots**: Does each subplot reinforce or contrast the central theme?
-3. **Thematic drift**: Are there sections where the theme gets lost?
-4. **Theme in character arcs**: How does each character's journey explore the theme?
-5. **Thematic resolution**: Does the ending make a clear statement about the theme?
-6. **Heavy-handedness**: Are there moments where theme becomes preachy?`,
+1. **中心主题识别**：除了情节之外，这本书真正讲述的是什么？
+2. **子情节中的主题**：每个子情节是强化还是对比了中心主题？
+3. **主题漂移**：是否有部分主题丢失了？
+4. **角色弧光中的主题**：每个角色的旅程如何探索主题？
+5. **主题解析**：结局是否对主题做出了清晰的陈述？
+6. **生硬说教**：是否有主题变得像说教的时刻？`,
       },
       {
-        label: 'World-building continuity scan',
+        label: '世界观连续性扫描',
         skill: 'revise',
         taskType: 'consistency',
-        promptTemplate: `Run a world-building continuity scan on:
+        promptTemplate: `对以下内容运行世界观连续性扫描：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Check for:
-1. **Setting contradictions**: Room layouts, geography, distances between locations
-2. **Rule violations**: Magic/tech/social rules that get broken without explanation
-3. **Timeline errors**: Days, dates, seasons, time-of-day inconsistencies
-4. **Character knowledge**: Does anyone know something they shouldn't?
-5. **Dead/missing characters**: Anyone disappears without explanation?
-6. **Object tracking**: Important items that appear/disappear without logic
+检查：
+1. **设定矛盾**：房间布局，地理，地点之间的距离
+2. **规则违背**：在没有解释的情况下被打破的魔法/技术/社会规则
+3. **时间线错误**：天，日期，季节，一天中的时间不一致
+4. **角色知识**：有人知道他们不应该知道的事情吗？
+5. **死亡/失踪角色**：有人在没有解释的情况下消失了吗？
+6. **物品追踪**：重要物品在没有逻辑的情况下出现/消失
 
-For each issue: where it appears, what the contradiction is, and how to fix it. Organized by severity.`,
+对于每个问题：它出现在哪里，矛盾是什么，以及如何修复它。按严重程度组织。`,
       },
       {
-        label: 'Stakes escalation verification',
+        label: '赌注升级验证',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Verify that stakes escalate properly in:
+        promptTemplate: `验证以下内容中的赌注是否适当地升级：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Analyze:
-1. **Personal stakes**: What does the protagonist personally lose if they fail? Does this deepen?
-2. **External stakes**: How do consequences widen over the story?
-3. **Urgency**: Is there a ticking clock? Does time pressure increase?
-4. **Cost of action**: Does pursuing the goal cost more as the story progresses?
-5. **Point of no return**: When can the protagonist no longer walk away?
-6. **Stakes at climax**: Are the final stakes the highest they've been?
+分析：
+1. **个人赌注**：如果主角失败了，他们个人会失去什么？这加深了吗？
+2. **外部赌注**：随着故事的发展，后果如何扩大？
+3. **紧迫性**：有倒计时吗？时间压力是否增加？
+4. **行动成本**：随着故事的进展，追求目标的成本是否更高？
+5. **不归路**：主角什么时候再也不能走开了？
+6. **高潮时的赌注**：最终的赌注是否达到了最高点？
 
-Flag any moment where stakes plateau, decrease, or feel artificial.`,
+标记任何赌注停滞，减少或感觉不自然的时刻。`,
       },
       {
-        label: 'Subplot tracking & resolution',
+        label: '子情节追踪与解析',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Track all subplots in:
+        promptTemplate: `追踪以下内容中的所有子情节：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-For each subplot found:
-1. **Introduction**: When and how is it introduced?
-2. **Purpose**: How does it serve the main plot or theme?
-3. **Key beats**: Major developments (with chapter references)
-4. **Resolution**: How and when is it resolved?
-5. **Dropped threads**: Was anything set up but never paid off?
+对于找到的每个子情节：
+1. **介绍**：它是何时以及如何被介绍的？
+2. **目的**：它如何服务于主要情节或主题？
+3. **关键节拍**：主要发展（带有章节参考）
+4. **解析**：它是如何以及何时被解决的？
+5. **遗弃的线索**：是否有什么设定了但从未得到回报？
 
-Also check:
-- Are any subplots redundant? Do two accomplish the same thing?
-- Are any subplots underdeveloped?
-- Do subplots interfere with pacing?`,
+还要检查：
+- 任何子情节是多余的吗？两个子情节是否实现了相同的目的？
+- 任何子情节是否不发达？
+- 子情节是否干扰了节奏？`,
       },
 
       // ── Pass 2: Medium / Scene-Level (7 steps) ──
       {
-        label: 'Dialogue authenticity pass',
+        label: '对话真实性检查',
         skill: 'dialogue',
         taskType: 'revision',
-        promptTemplate: `Perform a dialogue authenticity audit on:
+        promptTemplate: `对以下内容执行对话真实性审计：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-1. **Voice distinctiveness**: Rate each major character's voice uniqueness (1-10). Can you tell them apart?
-2. **Info-dumping**: Flag "As you know, Bob..." moments
-3. **Subtext quality**: Best and worst examples of saying vs meaning
-4. **Speech patterns**: Note unique patterns per character
-5. **Tag vs action beat ratio**: Are they balanced?
-6. **Emotional authenticity**: Do emotional conversations ring true?
+1. **声音独特性**：对每个主要角色声音的独特性进行评分（1-10）。你能把他们区分开来吗？
+2. **信息倾倒**：标记“如你所知，鲍勃……”的时刻
+3. **潜台词质量**：言与意不符的最好和最坏例子
+4. **言语模式**：注意每个角色独特的模式
+5. **提示语与动作节拍比例**：它们平衡吗？
+6. **情感真实性**：情感对话听起来真实吗？
 
-Suggest rewrites for the 5 worst dialogue passages.`,
+为5段最差的对话提出重写建议。`,
       },
       {
-        label: 'Show-don\'t-tell audit',
+        label: '展示而非讲述审计',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Scan for show vs tell issues in:
+        promptTemplate: `扫描以下内容中“展示与讲述”的问题：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Flag: emotional telling, character description telling, backstory dumps, motivation telling, atmosphere telling.
+标记：情感讲述，角色描述讲述，背景故事倾倒，动机讲述，氛围讲述。
 
-For the 10 worst offenders: quote the original → write a "showing" rewrite → explain why it's stronger.
+对于10个最严重的问题：引用原文 → 写一个“展示”的重写 → 解释为什么它更强。
 
-Note: some telling is FINE. Only flag cases where showing would genuinely improve the experience.`,
+注意：一些讲述是没问题的。只标记那些展示会真正改善体验的情况。`,
       },
       {
-        label: 'Scene tension & conflict check',
+        label: '场景张力与冲突检查',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Check every scene for tension and conflict:
+        promptTemplate: `检查每个场景的张力和冲突：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-For each scene:
-- **Goal**: What does the POV character want in this scene?
-- **Obstacle**: What's preventing them from getting it?
-- **Stakes**: What happens if they fail?
-- **Outcome**: Do they succeed, fail, or get a complicated result?
+对于每个场景：
+- **目标**：POV（视角）角色在这个场景中想要什么？
+- **障碍**：是什么阻止了他们得到它？
+- **赌注**：如果他们失败了会发生什么？
+- **结果**：他们是成功了，失败了，还是得到了一个复杂的结果？
 
-Flag any scene where:
-- The character has no goal
-- There's no opposition
-- Nothing changes by the end
-- The tension is purely internal with no external manifestation
+标记任何出现以下情况的场景：
+- 角色没有目标
+- 没有对抗
+- 到最后什么都没有改变
+- 张力纯粹是内在的，没有外部表现
 
-These are scenes that may need to be cut or strengthened.`,
+这些场景可能需要被删减或加强。`,
       },
       {
-        label: 'Transition smoothness review',
+        label: '过渡平滑度审查',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Review all transitions in:
+        promptTemplate: `审查以下内容中的所有过渡：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Check:
-1. **Chapter transitions**: Does each chapter end with a hook and begin with orientation?
-2. **Scene breaks**: Are time/location jumps clear?
-3. **POV shifts**: If multi-POV, are switches smooth and clearly signaled?
-4. **Timeline jumps**: Are flashbacks/flash-forwards handled well?
-5. **Tone shifts**: Do tonal changes feel intentional or jarring?
+检查：
+1. **章节过渡**：每章是否以悬念结束并以定位开始？
+2. **场景中断**：时间/地点的跳跃清晰吗？
+3. **POV转换**：如果是多POV，转换是否平滑且有明确信号？
+4. **时间线跳跃**：倒叙/闪前处理得好吗？
+5. **基调转换**：基调变化感觉是有意的还是突兀的？
 
-Flag the 5 roughest transitions and suggest smoother alternatives.`,
+标记5个最生硬的过渡，并提出更平滑的替代方案。`,
       },
       {
-        label: 'Emotional beat mapping',
+        label: '情感节拍映射',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Map the emotional journey in:
+        promptTemplate: `映射以下内容的情感旅程：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Chapter by chapter, identify:
-- **Dominant emotion**: What should the reader feel?
-- **Emotional high point**: The strongest moment
-- **Emotional low point**: The most vulnerable/sad moment
-- **Emotional variety**: Does each chapter offer a different emotional flavor?
+逐章识别：
+- **主导情绪**：读者应该感受到什么？
+- **情感高点**：最强烈的时刻
+- **情感低点**：最脆弱/悲伤的时刻
+- **情感多样性**：每一章是否提供了不同的情感风味？
 
-Then assess:
-- Is there enough emotional variety or does it feel monotone?
-- Do big emotional moments land? Are they properly set up?
-- Is the emotional climax the strongest moment in the book?
-- Are there enough quiet, intimate moments between action?`,
+然后评估：
+- 情感变化是否足够，或者感觉单调？
+- 强烈的情感时刻是否达到了效果？它们有适当的铺垫吗？
+- 情感高潮是书中最强烈的时刻吗？
+- 在动作之间是否有足够多安静、亲密的时刻？`,
       },
       {
-        label: 'Sensory detail enhancement',
+        label: '感官细节增强',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Audit sensory details in:
+        promptTemplate: `审计以下内容中的感官细节：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-1. **Sense inventory**: Which of the 5 senses are used? Which are underused?
-2. **Visual-heavy check**: Is the writing too visual with not enough sound, smell, touch, taste?
-3. **Key scenes**: Are pivotal scenes richly grounded in sensory experience?
-4. **Setting atmosphere**: Do locations have distinctive sensory signatures?
-5. **Character-filtered**: Are sensory details filtered through the POV character's personality?
+1. **感官盘点**：使用了5种感官中的哪几种？哪些使用不足？
+2. **视觉过度检查**：写作是否过于视觉化，而声音、气味、触觉、味觉不够？
+3. **关键场景**：关键场景是否深深扎根于感官体验中？
+4. **设定氛围**：地点有独特的感官特征吗？
+5. **角色过滤**：感官细节是否通过POV角色的个性进行了过滤？
 
-Identify 5-10 scenes that would benefit most from sensory enrichment and suggest specific details.`,
+识别5-10个最能从感官丰富中受益的场景，并提出具体的细节建议。`,
       },
       {
-        label: 'Info-dump & exposition detection',
+        label: '信息倾倒与说明检测',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Scan for info-dumps and exposition problems in:
+        promptTemplate: `扫描以下内容中的信息倾倒和说明问题：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Flag every instance of:
-1. **Backstory dumps**: Paragraphs of history interrupting the action
-2. **World-building lectures**: Characters explaining things the reader doesn't need yet
-3. **As-you-know-Bob dialogue**: Characters telling each other things they already know
-4. **Mirror descriptions**: Character describing their own appearance while looking in a mirror
-5. **Prologue info-dump**: Does the opening front-load too much context?
+标记每一个实例：
+1. **背景故事倾倒**：打断动作的大段历史
+2. **世界观讲座**：角色解释读者暂时不需要知道的事情
+3. **“如你所知，鲍勃”式对话**：角色互相告诉他们已经知道的事情
+4. **镜像描述**：角色在照镜子时描述自己的外貌
+5. **序言信息倾倒**：开头是否预先加载了太多上下文？
 
-For each: quote the passage, explain why it's a problem, and suggest how to weave the information in naturally (through action, dialogue subtext, or gradual revelation).`,
+对于每一个：引用段落，解释为什么它是一个问题，并建议如何自然地将信息编织进去（通过动作、对话潜台词或逐渐揭示）。`,
       },
 
-      // ── Pass 3: Micro / Line-Level (5 steps) ──
+      // ── Pass 3: 微观/行级修改 (5步) ──
       {
-        label: 'Copy edit pass',
+        label: '文字编辑',
         skill: 'revise',
         taskType: 'final_edit',
-        promptTemplate: `Perform a copy edit pass on:
+        promptTemplate: `对以下内容执行文字编辑：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Check for:
-- Grammar errors
-- Punctuation issues (especially dialogue punctuation)
-- Spelling mistakes
-- Homophone errors (their/there/they're, its/it's)
-- Subject-verb agreement
-- Tense consistency
-- Comma splices and run-on sentences
+检查：
+- 语法错误
+- 标点符号问题（特别是对话标点）
+- 拼写错误
+- 同音词错误（如的/地/得，在/再）
+- 主谓一致
+- 时态一致性
+- 逗号连接的独立分句和连写句
 
-List all errors found with chapter/location and correction.`,
+列出发现的所有错误，附带章节/位置和修改建议。`,
       },
       {
-        label: 'Line edit pass',
+        label: '行级编辑',
         skill: 'revise',
         taskType: 'final_edit',
-        promptTemplate: `Perform a line edit pass on:
+        promptTemplate: `对以下内容执行行级编辑：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Focus on:
-- **Prose rhythm**: Sentence length variety, flow, musicality
-- **Word choice**: Precision, specificity, avoiding generic words
-- **Verb strength**: Replace weak verbs (was, had, got) with vivid ones
-- **Clarity**: Any confusing sentences or ambiguous references?
-- **Redundancy**: Phrases that say the same thing twice
+重点关注：
+- **行文节奏**：句子长度的多样性、流畅度、韵律感
+- **词语选择**：准确性、具体性，避免使用泛泛的词汇
+- **动词力度**：用生动的动词替换弱动词（如：是、有、得到）
+- **清晰度**：是否有令人困惑的句子或指代不明的地方？
+- **冗余**：表达同样意思的重复短语
 
-Show 10 before/after examples of line-level improvements.`,
+展示10个行级改进前/后的示例。`,
       },
       {
-        label: 'Repetition finder',
+        label: '重复词查找',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Find overused words and phrases in:
+        promptTemplate: `在以下内容中查找过度使用的词语和短语：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Report on:
-1. **Overused words**: Adverbs, weak verbs, filler words with frequency
-2. **Crutch phrases**: Repeated constructions the author leans on
-3. **AI-sounding words**: delve, tapestry, testament, visceral, nuanced, multifaceted, resonate, paradigm, myriad, beacon, realm
-4. **Repetitive openers**: Sentence-starting patterns
-5. **Passive voice frequency** (target: <10%)
-6. **Adverb density** (target: <5 per 1000 words)
+报告内容：
+1. **过度使用的词语**：副词、弱动词、无意义的填充词及其频率
+2. **口头禅/套话**：作者经常依赖的重复结构
+3. **AI感词汇**：深入探讨、交织、证明、本能的、微妙的、多面的、共鸣、范式、无数的、灯塔、领域
+4. **重复的开头**：以相同模式开头的句子
+5. **被动语态频率**（目标：<10%）
+6. **副词密度**（目标：每千字<5个）
 
-For each: word/phrase, frequency, example, and suggested alternatives.`,
+对每个发现提供：词语/短语、频率、示例和建议的替代词。`,
       },
       {
-        label: 'Crutch word elimination',
+        label: '消除冗词/口头禅',
         skill: 'revise',
         taskType: 'final_edit',
-        promptTemplate: `Eliminate crutch words from:
+        promptTemplate: `从以下内容中消除冗词/口头禅：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Specific targets:
-- **Just, really, very, quite, actually, basically, literally** — flag every instance, suggest which to cut
-- **Suddenly** — almost always cuttable, show the action instead
-- **Felt/feeling** — usually telling, show the sensation
-- **Started to / began to** — just do the action
-- **Seemed / appeared** — be more direct
-- **That** — flag unnecessary instances
-- **Nodded/shrugged/sighed** — overused physical beats
+具体目标：
+- **只是、真的、非常、相当、实际上、基本上、字面上** — 标记每个实例，建议删减哪些
+- **突然** — 几乎总是可以删掉，直接展示动作
+- **感觉/觉得** — 通常是“讲述”，请展示这种感觉
+- **开始** — 直接做动作
+- **似乎/看起来** — 更直接一些
+- **那个/这** — 标记不必要的实例
+- **点头/耸肩/叹气** — 过度使用的身体动作
 
-Provide a prioritized cut list with estimated word savings.`,
+提供一份按优先级排序的删减列表，并估算节省的字数。`,
       },
       {
-        label: 'Sensitivity read',
+        label: '敏感度阅读',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Perform a sensitivity read on:
+        promptTemplate: `对以下内容进行敏感度阅读：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Check for:
-1. **Cultural representation**: Are characters from diverse backgrounds portrayed authentically?
-2. **Stereotypes**: Any characters reduced to stereotypes?
-3. **Language sensitivity**: Outdated or potentially offensive terms?
-4. **Power dynamics**: Are marginalized characters given agency?
-5. **Historical accuracy**: If set in a real period/place, are cultural details accurate?
-6. **Unconscious bias**: Any patterns in which characters are villains, heroes, or victims?
+检查：
+1. **文化表现**：来自不同背景的角色塑造是否真实？
+2. **刻板印象**：是否有角色沦为刻板印象？
+3. **语言敏感度**：是否有过时或可能具有冒犯性的用语？
+4. **权力动态**：边缘化角色是否被赋予了主观能动性？
+5. **历史准确性**：如果设定在真实的时期/地点，文化细节是否准确？
+6. **无意识偏见**：在谁是反派、英雄或受害者方面是否存在某种模式？
 
-Note: This is a preliminary read. For publication, a human sensitivity reader is recommended. Flag potential issues for professional review.`,
+注意：这只是初步阅读。出版时建议聘请人类敏感度读者。标记出潜在问题以供专业审查。`,
       },
 
-      // ── Final: Beta Readers + Synthesis ──
+      // ── 最终：试读者 + 总结 ──
       {
-        label: 'Beta reader panel',
+        label: '试读者小组',
         skill: 'beta-reader',
         taskType: 'revision',
-        promptTemplate: `You are a panel of 5 beta readers with different perspectives. Read and respond:
+        promptTemplate: `你们是一个由5名拥有不同视角的试读者组成的小组。阅读并回复：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-**Reader 1 — The Casual Reader**: Gut reactions, where you got bored, enjoyment rating 1-10
-**Reader 2 — The Genre Expert**: Genre compliance, trope execution, market positioning, rating 1-10
-**Reader 3 — The Harsh Critic**: Plot holes, weak motivations, clichés, the single biggest problem
-**Reader 4 — The Target Reader**: Emotional journey, favorite scenes, would you recommend? Rating 1-10
-**Reader 5 — The Romance/Thriller Super-Fan**: What made you keep reading? What almost made you stop? Pre-order the sequel?
+**读者1 — 休闲读者**：直觉反应，哪里让你觉得无聊，喜爱度评分（1-10）
+**读者2 — 类型专家**：类型符合度，套路执行情况，市场定位，评分（1-10）
+**读者3 — 严厉的批评家**：剧情漏洞，动机薄弱，陈词滥调，最大的单一问题
+**读者4 — 目标读者**：情感历程，最喜欢的场景，你会推荐吗？评分（1-10）
+**读者5 — 爱情/惊悚狂热粉**：是什么让你继续读下去？是什么让你差点放弃？会预购续集吗？
 
-Keep each reader's response to 200-300 words. Be specific with chapter references.`,
+将每位读者的回复控制在200-300字。具体说明章节出处。`,
       },
       {
-        label: 'Final revision action plan',
+        label: '最终修改行动计划',
         skill: 'revise',
         taskType: 'revision',
-        promptTemplate: `Synthesize ALL 20 prior revision passes into a final action plan:
+        promptTemplate: `综合前面所有20次修改，制定最终行动计划：
 
-**Manuscript**: "{{title}}" — {{description}}
+**手稿**：“{{title}}” — {{description}}
 
-Create:
-1. **Overall Grade**: A-F with justification
-2. **Top 5 Strengths**: What to keep and amplify
-3. **Critical Fixes** (5-7 must-do items, ranked by priority)
-4. **Important Improvements** (5-7 should-do items)
-5. **Polish Items** (3-5 nice-to-have refinements)
-6. **Revision Roadmap**: Pass 1 → Pass 2 → Pass 3 order of operations
-7. **Market Readiness**: Ready for beta readers? Agent? Self-publishing?
-8. **Encouraging Close**: What makes this book worth finishing
+创建：
+1. **总体评分**：A-F并附上理由
+2. **五大优势**：应该保留和放大的内容
+3. **关键修复**（5-7个必做事项，按优先级排序）
+4. **重要改进**（5-7个应做事项）
+5. **润色项目**（3-5个锦上添花的完善事项）
+6. **修改路线图**：第一遍 → 第二遍 → 第三遍的操作顺序
+7. **市场准备度**：准备好给试读者看了吗？经纪人？还是自助出版？
+8. **鼓励的结语**：是什么让这本书值得完成
 
-Make every recommendation specific and actionable with chapter references.`,
+使每项建议具体且具有可操作性，并附上章节出处。`,
       },
     ],
   },
@@ -750,67 +767,67 @@ Make every recommendation specific and actionable with chapter references.`,
   // ═══════════════════════════════════════════════════════════
   {
     type: 'format-export',
-    label: 'Format & Export',
-    description: 'Generate front/back matter and export as DOCX, EPUB, and PDF — KDP-ready formatting',
+    label: '格式与导出',
+    description: '生成卷首/卷尾内容并导出为 DOCX、EPUB 和 PDF — KDP 准备就绪的格式',
     steps: [
       {
-        label: 'Generate front matter',
+        label: '生成卷首内容',
         skill: 'format',
         taskType: 'general',
-        promptTemplate: `Generate professional front matter for: {{description}}
+        promptTemplate: `为以下内容生成专业的卷首内容：{{description}}
 
-Create:
-1. **Title page**: Title, subtitle (if any), author name
-2. **Copyright page**: Standard indie publishing copyright notice with year, all rights reserved, ISBN placeholder, edition info
-3. **Dedication**: A placeholder dedication (author can customize)
-4. **Table of Contents**: Auto-generated from chapter headings (placeholder — will be filled during export)
-5. **Epigraph** (optional): Suggest a thematic quote if appropriate
+创建：
+1. **扉页**：书名，副标题（如果有），作者名
+2. **版权页**：标准的独立出版版权声明，包含年份，保留所有权利，ISBN 占位符，版本信息
+3. **致谢/题词**：占位符致谢（作者可以自定义）
+4. **目录**：从章节标题自动生成（占位符 — 将在导出期间填充）
+5. **题记**（可选）：如果合适，建议一个与主题相关的引用
 
-Format each as clean markdown sections with clear dividers.`,
+将每个部分格式化为带有清晰分隔符的干净 markdown。`,
       },
       {
-        label: 'Generate back matter',
+        label: '生成卷尾内容',
         skill: 'format',
         taskType: 'marketing',
-        promptTemplate: `Generate professional back matter for: {{description}}
+        promptTemplate: `为以下内容生成专业的卷尾内容：{{description}}
 
-Create:
-1. **Author bio**: Professional 3rd-person bio (use persona bio if available, otherwise create a template)
-2. **Also By section**: List of other titles (from persona's alsoBy list if available, otherwise placeholder)
-3. **Newsletter CTA**: "Join [Author]'s readers list for exclusive content, early access, and bonus scenes. Sign up at: [URL]"
-4. **Acknowledgments**: Template with common categories (agent, editor, family, readers)
-5. **Preview**: First chapter teaser of next book (placeholder)
+创建：
+1. **作者简介**：专业的第三人称简介（如果可用，使用人物简介，否则创建模板）
+2. **作者其他作品**：其他作品列表（如果可用，来自人物的 alsoBy 列表，否则为占位符）
+3. **时事通讯号召性用语 (CTA)**：“加入 [作者] 的读者列表，获取独家内容，抢先体验和奖励场景。在 [URL] 注册”
+4. **致谢**：包含常见类别的模板（经纪人，编辑，家人，读者）
+5. **试读**：下一本书的第一章预告（占位符）
 
-Format each as clean markdown. Keep the tone professional and genre-appropriate.`,
+将每个部分格式化为干净的 markdown。保持专业和符合类型的基调。`,
       },
       {
-        label: 'Compile & export DOCX',
+        label: '编译并导出 DOCX',
         skill: 'format',
         taskType: 'general',
-        promptTemplate: `Compile the manuscript with front and back matter into a professional DOCX format for: {{description}}
+        promptTemplate: `将包含卷首和卷尾内容的手稿编译为专业的 DOCX 格式：{{description}}
 
-The export system will:
-- Combine front matter + chapters + back matter
-- Apply KDP-standard formatting (chapter headings, scene breaks, page breaks)
-- Set professional typography (serif font, justified text, proper margins)
-- Generate downloadable DOCX file
+导出系统将：
+- 组合卷首内容 + 章节 + 卷尾内容
+- 应用 KDP 标准格式（章节标题，场景分隔，分页）
+- 设置专业的排版（衬线字体，两端对齐，适当的页边距）
+- 生成可下载的 DOCX 文件
 
-Confirm the manuscript is ready for export. List the chapter count, estimated word count, and any missing sections that should be addressed before publishing.`,
+确认手稿已准备好导出。列出章节数，估计字数，以及在出版前应解决的任何缺失部分。`,
       },
       {
-        label: 'Compile & export EPUB',
+        label: '编译并导出 EPUB',
         skill: 'format',
         taskType: 'general',
-        promptTemplate: `Generate EPUB export for: {{description}}
+        promptTemplate: `为以下内容生成 EPUB 导出：{{description}}
 
-The export system will:
-- Create valid EPUB3 with proper metadata (title, author, description)
-- Split chapters into individual XHTML files
-- Include cover image placeholder
-- Generate navigation TOC
-- Apply clean reading CSS
+导出系统将：
+- 创建包含正确元数据（书名，作者，描述）的有效 EPUB3
+- 将章节拆分为单独的 XHTML 文件
+- 包含封面图像占位符
+- 生成导航目录 (TOC)
+- 应用干净的阅读 CSS
 
-Confirm EPUB readiness. Note any elements that may not render well on e-readers.`,
+确认 EPUB 就绪状态。注意任何在电子阅读器上可能渲染不佳的元素。`,
       },
     ],
   },
@@ -820,141 +837,141 @@ Confirm EPUB readiness. Note any elements that may not render well on e-readers.
   // ═══════════════════════════════════════════════════════════
   {
     type: 'book-launch',
-    label: 'Book Launch',
-    description: 'Back cover blurb, Amazon description, keywords, categories, ad copy, and social media posts',
+    label: '新书发布',
+    description: '封底简介，亚马逊描述，关键字，类别，广告文案和社交媒体帖子',
     steps: [
       {
-        label: 'Back cover blurb',
+        label: '封底简介',
         skill: 'blurb-writer',
         taskType: 'marketing',
-        promptTemplate: `Write compelling book blurbs for: {{description}}
+        promptTemplate: `为以下内容撰写引人入胜的书籍简介：{{description}}
 
-Create 3 versions:
-1. **Short tagline** (1 sentence): The elevator pitch
-2. **Back cover blurb** (150-200 words): The hook, the setup, the stakes, the question
-3. **Long blurb** (250-300 words): Expanded version with more character and world detail
+创建3个版本：
+1. **简短标语**（1句话）：电梯游说
+2. **封底简介**（150-200字）：钩子，设定，赌注，问题
+3. **长简介**（250-300字）：包含更多角色和世界细节的扩展版本
 
-Each should:
-- Hook from the first line
-- Convey genre and tone immediately
-- End with a compelling question or stakes statement
-- NEVER reveal the ending
-- Match the expectations of the target genre audience`,
+每个版本都应：
+- 从第一行就开始吸引人
+- 立即传达类型和基调
+- 以引人入胜的问题或赌注声明结束
+- 永远不要剧透结局
+- 符合目标类型读者的期望`,
       },
       {
-        label: 'Amazon book description',
+        label: '亚马逊书籍描述',
         skill: 'blurb-writer',
         taskType: 'marketing',
-        promptTemplate: `Create an Amazon-optimized book description for: {{description}}
+        promptTemplate: `为以下内容创建亚马逊优化的书籍描述：{{description}}
 
-Format with HTML tags Amazon supports:
-- <b>bold</b> for emphasis
-- <br> for line breaks
-- <i>italic</i> for titles and emphasis
+使用亚马逊支持的 HTML 标签进行格式化：
+- <b>粗体</b> 用于强调
+- <br> 用于换行
+- <i>斜体</i> 用于标题和强调
 
-Structure:
-1. **Opening hook** (bold, attention-grabbing)
-2. **Character introduction** (who are they, what do they want)
-3. **Conflict & stakes** (what stands in the way, what happens if they fail)
-4. **Genre signals** (tropes, tone, comp titles: "Perfect for fans of...")
-5. **Call to action** (bold: "Buy now" or "Start reading today")
+结构：
+1. **开场钩子**（粗体，引人注目）
+2. **角色介绍**（他们是谁，他们想要什么）
+3. **冲突与赌注**（什么阻碍了他们，如果他们失败了会怎样）
+4. **类型信号**（套路，基调，对标作品：“完美适合...的粉丝”）
+5. **行动号召**（粗体：“立即购买”或“今天开始阅读”）
 
-Also include a review quote template: "___ ★★★★★" format.`,
+还包括一个评论引用模板：“___ ★★★★★”格式。`,
       },
       {
-        label: 'Amazon categories & keywords',
+        label: '亚马逊类别与关键词',
         skill: 'research',
         taskType: 'research',
-        promptTemplate: `Research Amazon categories and keywords for: {{description}}
+        promptTemplate: `研究以下内容的亚马逊类别和关键词：{{description}}
 
-Provide:
-1. **7 Keywords/phrases** (max 50 chars each): Research-backed keywords that readers search for. Mix specific tropes + genre terms + emotional hooks
-2. **2 BISAC categories**: The best-fit primary and secondary categories
-3. **Amazon browse categories**: 2-3 specific Amazon category paths (e.g., Kindle Store > Romance > Contemporary > New Adult)
-4. **BISAC codes**: The alphanumeric codes for the chosen categories
+提供：
+1. **7个关键词/短语**（每个最多50个字符）：基于研究的读者搜索关键词。混合特定套路 + 类型术语 +情感钩子
+2. **2个 BISAC 类别**：最适合的主要和次要类别
+3. **亚马逊浏览类别**：2-3个特定的亚马逊类别路径（例如：Kindle Store > Romance > Contemporary > New Adult）
+4. **BISAC 代码**：所选类别的字母数字代码
 
-Explain WHY each keyword/category was chosen — what search behavior does it target?`,
+解释为什么要选择每个关键词/类别 — 它针对的是什么样的搜索行为？`,
       },
       {
-        label: 'Ad copy generation',
+        label: '广告文案生成',
         skill: 'ad-copy',
         taskType: 'marketing',
-        promptTemplate: `Create advertising copy for: {{description}}
+        promptTemplate: `为以下内容创建广告文案：{{description}}
 
-**Amazon Ads (AMS)**:
-- 3 headline variants (150 chars max each)
-- Focus on genre keywords and emotional hooks
+**亚马逊广告 (AMS)**：
+- 3个标题变体（每个最多150个字符）
+- 关注类型关键词和情感钩子
 
-**Facebook/Meta Ads**:
-- 2 primary text variants (short, punchy)
-- 2 headline variants
-- Suggested audience targeting (interests, lookalike authors)
+**Facebook/Meta 广告**：
+- 2个主要文本变体（简短，有力）
+- 2个标题变体
+- 建议的受众目标（兴趣，相似作者）
 
-**BookBub Featured Deal**:
-- 1 description (optimal for BookBub's format and audience)
-- Suggested deal price strategy
+**BookBub 精选特价**：
+- 1个描述（最适合 BookBub 的格式和受众）
+- 建议的特价策略
 
-Each variant should use a different angle: emotion, trope, comp title, question, urgency.`,
+每个变体都应使用不同的角度：情感，套路，对标作品，问题，紧迫性。`,
       },
       {
-        label: 'Social media launch posts',
+        label: '社交媒体发布帖子',
         skill: 'blurb-writer',
         taskType: 'marketing',
-        promptTemplate: `Create social media launch content for: {{description}}
+        promptTemplate: `为以下内容创建社交媒体发布内容：{{description}}
 
-**Instagram/BookStagram** (3 posts):
-- Cover reveal post (caption + hashtags)
-- Launch day post
-- "Why I wrote this book" personal post
+**Instagram/BookStagram**（3个帖子）：
+- 封面揭晓帖子（说明 + 标签）
+- 发布日帖子
+- “我为什么要写这本书”的个人帖子
 
-**Twitter/X** (5 tweets):
-- Launch announcement
-- Logline tweet
-- Character introduction thread starter
-- Reader comp ("If you loved X, you'll love...")
-- Quote from the book (with formatting)
+**Twitter/X**（5条推文）：
+- 发布公告
+- 一句话简介推文
+- 角色介绍主题帖开头
+- 读者对标（“如果你喜欢X，你会喜欢...”）
+- 书中引语（带格式）
 
-**TikTok/BookTok** (2 video concepts):
-- Concept + script outline for each
+**TikTok/BookTok**（2个视频概念）：
+- 每个视频的概念 + 脚本大纲
 
-**Email newsletter**:
-- Launch announcement email (subject line + body)
+**电子邮件通讯**：
+- 发布公告电子邮件（主题行 + 正文）
 
-Include relevant hashtags for each platform.`,
+包括每个平台的相关标签。`,
       },
       {
-        label: 'Launch checklist & timeline',
+        label: '发布清单与时间表',
         skill: 'format',
         taskType: 'general',
-        promptTemplate: `Create a book launch checklist and timeline for: {{description}}
+        promptTemplate: `为以下内容创建书籍发布清单和时间表：{{description}}
 
-**Pre-Launch (4-6 weeks before)**:
-- ARC distribution, cover reveal timing, pre-order setup
+**预发布（发布前4-6周）**：
+- ARC 分发，封面揭晓时间，预购设置
 
-**Launch Week**:
-- Day-by-day social media schedule
-- Email sequence
-- Ad activation timeline
+**发布周**：
+- 每日社交媒体日程安排
+- 电子邮件序列
+- 广告激活时间表
 
-**Post-Launch (2-4 weeks after)**:
-- Review solicitation, ad optimization, newsletter follow-up
+**发布后（发布后2-4周）**：
+- 征集评论，广告优化，时事通讯跟进
 
-Include specific actionable items with dates relative to launch day (L-30, L-14, L-7, L-Day, L+7, etc.)`,
+包括相对于发布日的具体可操作项目和日期（L-30, L-14, L-7, L-Day, L+7 等）`,
       },
       {
-        label: 'Book cover concepts',
+        label: '书籍封面概念',
         skill: 'book-launch',
         taskType: 'marketing',
-        promptTemplate: `Generate 2 book cover concept ideas for: {{description}}
+        promptTemplate: `为以下内容生成2个书籍封面概念想法：{{description}}
 
-For each concept provide:
-1. **Visual description** — Detailed scene, composition, imagery, key visual elements
-2. **Typography recommendation** — Font style suggestions, title placement (top/center/bottom), author name placement
-3. **Color palette** — 3-5 hex color codes with mood/emotion reasoning
-4. **Comparable covers** — 2-3 bestselling covers in this genre with a similar style
-5. **AI image generation prompt** — A detailed, ready-to-use prompt for generating the cover art with AI (describe the image only, no text)
+为每个概念提供：
+1. **视觉描述** — 详细的场景，构图，图像，关键视觉元素
+2. **排版建议** — 字体样式建议，书名位置（上/中/下），作者名位置
+3. **调色板** — 3-5个带有情绪/情感推理的十六进制颜色代码
+4. **对标封面** — 该类型中具有相似风格的2-3个畅销封面
+5. **AI 图像生成提示** — 一个详细的、随时可用的使用 AI 生成封面艺术的提示词（仅描述图像，不含文本）
 
-Mark the recommended concept clearly. Focus on genre-appropriate design that would stand out in Amazon thumbnail size.`,
+清楚地标记推荐的概念。关注在亚马逊缩略图大小中脱颖而出的符合类型的设计。`,
       },
     ],
   },
@@ -963,9 +980,16 @@ Mark the recommended concept clearly. Focus on genre-appropriate design that wou
   // Novel Pipeline (kept from V3 — auto-generates 30+ steps)
   // ═══════════════════════════════════════════════════════════
   {
+    type: 'keyword-book-mvp',
+    label: '关键词书籍 MVP',
+    description: '关键词 → 3个候选 → 选择一个 → 扩展项目 → 大纲章节 → 起草，修订和完成',
+    steps: [],
+  },
+
+  {
     type: 'novel-pipeline',
-    label: 'Full Novel Pipeline',
-    description: 'Write a complete novel from premise to final manuscript — premise, characters, world, outline, chapters, revision, and assembly',
+    label: '完整小说流水线',
+    description: '从前提到最终手稿编写一本完整的小说 — 前提、角色、世界观、大纲、章节、修订和组装',
     steps: [], // 30+ steps are auto-generated by createNovelPipeline()
   },
 ];
@@ -1052,6 +1076,232 @@ export class ProjectEngine {
     this.aiSelectProvider = selectProvider;
   }
 
+  async generateKeywordBookCandidates(keyword: string): Promise<KeywordBookCandidate[]> {
+    const cleaned = keyword.trim();
+    if (!cleaned) return [];
+
+    if (!this.aiComplete || !this.aiSelectProvider) {
+      return this.buildFallbackKeywordCandidates(cleaned);
+    }
+
+    try {
+      const provider = this.aiSelectProvider('outline');
+      const prompt = `You are designing commercial long-form Chinese web novel / fiction concepts.
+
+Given a keyword or short topic, generate EXACTLY 3 distinct candidate book concepts.
+
+Output ONLY valid JSON:
+{"candidates":[
+  {"title":"", "hook":"", "premise":"", "audience":"", "highlights":["", "", ""]},
+  {"title":"", "hook":"", "premise":"", "audience":"", "highlights":["", "", ""]},
+  {"title":"", "hook":"", "premise":"", "audience":"", "highlights":["", "", ""]}
+]}
+
+Requirements:
+- Write in Simplified Chinese
+- Candidates must be clearly different in direction / tone / conflict
+- premise should be 120-220 Chinese characters
+- highlights must contain exactly 3 short bullets
+- Keep them production-friendly for a very long manuscript project
+
+Keyword: ${cleaned}`;
+
+      const result = await this.aiComplete({
+        provider: provider.id,
+        system: prompt,
+        messages: [{ role: 'user', content: cleaned }],
+        maxTokens: 2200,
+        temperature: 0.8,
+      });
+
+      const parsed = this.parseCandidatesResponse(result.text);
+      if (parsed.length === 3) return parsed;
+    } catch (error) {
+      console.error('  ⚠ Failed to generate keyword book candidates via AI:', error);
+    }
+
+    return this.buildFallbackKeywordCandidates(cleaned);
+  }
+
+  createKeywordBookProject(
+    title: string,
+    description: string,
+    config: KeywordBookProjectConfig
+  ): Project {
+    const id = `project-${this.nextId++}`;
+    const now = new Date().toISOString();
+    const targetWords = Math.max(config.targetWords || 500000, 10000);
+    const wordsPerChapter = Math.max(config.targetWordsPerChapter || 4000, 1000);
+    const chapterCount = Math.min(Math.max(Math.ceil(targetWords / wordsPerChapter), 1), 300);
+    const candidate = config.selectedCandidate;
+
+    const steps: ProjectStep[] = [];
+    let stepNum = 0;
+    const addStep = (
+      label: string,
+      phase: string,
+      taskType: string,
+      prompt: string,
+      opts: { skill?: string; wordCountTarget?: number; chapterNumber?: number } = {}
+    ) => {
+      stepNum++;
+      steps.push({
+        id: `${id}-step-${stepNum}`,
+        label,
+        phase,
+        taskType,
+        prompt,
+        status: 'pending',
+        skill: opts.skill,
+        wordCountTarget: opts.wordCountTarget,
+        chapterNumber: opts.chapterNumber,
+      });
+    };
+
+    addStep(
+      '项目扩展',
+      'expansion',
+      'outline',
+      `你现在要把一个已选题方案扩展成可执行的超长篇写作项目。
+
+项目标题：${title}
+关键词：${config.keyword}
+目标总字数：${targetWords}
+预计章节数：${chapterCount}
+单章目标字数：${wordsPerChapter}
+
+已选方案：
+- 标题：${candidate.title}
+- 核心钩子：${candidate.hook}
+- 核心设定：${candidate.premise}
+- 目标读者：${candidate.audience}
+- 卖点：${candidate.highlights.join('；')}
+
+请输出一份中文项目扩展稿，至少包含：
+1. 故事主线
+2. 主角/核心人物关系
+3. 世界观或主要舞台
+4. 长线冲突与升级节奏
+5. 适合长篇连载推进的内容抓手
+6. 分卷/阶段建议
+7. 风格与写作约束
+
+要求：可直接作为后续章节规划输入，内容具体、结构清晰。`,
+      { skill: 'outline' }
+    );
+
+    addStep(
+      '生成章节概要',
+      'outline',
+      'outline',
+      `基于已经扩展好的项目资料，为《${title}》生成完整的章节概要。
+
+硬性要求：
+- 总目标字数：${targetWords}
+- 章节数：${chapterCount}
+- 每章目标字数：${wordsPerChapter}
+- 必须覆盖全部章节，从第1章到第${chapterCount}章
+
+对每一章都给出：
+1. 章节标题
+2. 本章目标
+3. 关键情节推进
+4. 角色变化/冲突
+5. 章节结尾钩子
+6. 建议字数
+
+要求：
+- 使用中文
+- 保证章节之间有递进
+- 前中后期节奏明显
+- 适合后续逐章生成，便于引用。`,
+      { skill: 'outline' }
+    );
+
+    for (let ch = 1; ch <= chapterCount; ch++) {
+      addStep(
+        `生成第${ch}章`,
+        'draft',
+        'creative_writing',
+        `现在开始生成《${title}》第${ch}章正文。
+
+要求：
+- 依据既有项目扩展资料和章节概要
+- 本章写成完整正文，不要写成大纲或说明
+- 目标字数不少于${wordsPerChapter}
+- 强调情节推进、人物行动、对话与场景
+- 结尾保留推进下一章的钩子
+- 输出仅为正文内容`,
+        { skill: 'write', wordCountTarget: wordsPerChapter, chapterNumber: ch }
+      );
+
+      addStep(
+        `检查并修订第${ch}章`,
+        'revision',
+        'revision',
+        `对《${title}》第${ch}章进行基础检查与修订。
+
+请完成：
+1. 检查是否偏离本章概要
+2. 检查剧情是否连贯
+3. 检查角色行为和语气是否一致
+4. 检查是否存在明显重复、空话、概述化表达
+5. 在不改变主线的前提下，直接输出修订后的完整章节正文
+
+要求：
+- 保持本章为完整正文
+- 修订后尽量不低于${Math.round(wordsPerChapter * 0.9)}字
+- 输出仅为修订后的正文`,
+        { skill: 'revise', chapterNumber: ch }
+      );
+    }
+
+    addStep(
+      '完结与达标报告',
+      'assembly',
+      'general',
+      `请为《${title}》生成一份完结报告。
+
+目标总字数：${targetWords}
+预计章节数：${chapterCount}
+
+报告需要包含：
+1. 项目是否达到目标字数
+2. 实际完成章节数
+3. 全书主线是否闭环
+4. 还可继续优化的点
+5. 一段结项总结
+
+用中文输出，适合作为项目收尾说明。`
+    );
+
+    const project: Project = {
+      id,
+      type: 'keyword-book-mvp',
+      title,
+      description,
+      status: 'pending',
+      progress: 0,
+      steps,
+      createdAt: now,
+      updatedAt: now,
+      context: {
+        workflow: 'keyword-book-mvp',
+        keyword: config.keyword,
+        selectedCandidate: candidate,
+        targetWords,
+        targetWordsPerChapter: wordsPerChapter,
+        targetChapters: chapterCount,
+        estimatedTotalWords: chapterCount * wordsPerChapter,
+      },
+    };
+
+    this.projects.set(id, project);
+    this.persistState();
+    console.log(`  ✓ Keyword book MVP created: "${title}" — ${chapterCount} chapters, ~${targetWords.toLocaleString()} words target`);
+    return project;
+  }
+
   // ── Novel Pipeline ──
 
   /**
@@ -1062,8 +1312,9 @@ export class ProjectEngine {
     const id = `project-${this.nextId++}`;
     const now = new Date().toISOString();
 
+    // Default changed to 25 chapters * 4000 words = 100k words
     const chapters = Math.min(Math.max(config.targetChapters || 25, 1), 200);
-    const wordsPerChapter = Math.max(config.targetWordsPerChapter || 3000, 100);
+    const wordsPerChapter = Math.max(config.targetWordsPerChapter || 4000, 100);
 
     // Build premise context from config fields
     const premiseContext = [
@@ -1115,85 +1366,85 @@ export class ProjectEngine {
     };
 
     // ── Phase: Premise (2 steps) ──
-    addStep('Develop premise', 'premise', 'general',
-      `Develop this story concept into a complete premise for "${title}":${premiseBlock}\n\n${description}\n\nCreate:\n- A refined logline (1-2 sentences)\n- The central What-If question\n- Protagonist's want vs need\n- The core conflict\n- Stakes: personal, professional, and global\n- Theme statement\n- 3 comparable titles\n\nWrite a thorough, detailed response. Do not abbreviate.`,
+    addStep('开发前提', 'premise', 'general',
+      `将这个故事概念开发成“${title}”的完整前提：${premiseBlock}\n\n${description}\n\n创建：\n- 一个精炼的标语（1-2句话）\n- 核心的“如果...会怎样”问题\n- 主角的想要与需要\n- 核心冲突\n- 赌注：个人、职业和全局\n- 主题陈述\n- 3个对标作品\n\n写出全面、详细的回复。不要简写。`,
       { skill: 'premise' }
     );
 
-    addStep('Refine premise', 'premise', 'general',
-      `Refine the "${title}" premise further. Using everything from the initial premise, add:\n- The antagonist's motivation and logic\n- The ticking clock: what specific deadline creates urgency?\n- 3 possible plot twists (one at midpoint, one at 75%, one final revelation)\n- The emotional core: what personal loss or wound drives the protagonist?\n\nWrite a thorough, detailed response.`,
+    addStep('完善前提', 'premise', 'general',
+      `进一步完善“${title}”的前提。使用初始前提中的所有内容，添加：\n- 反派的动机和逻辑\n- 倒计时：什么具体的截止日期创造了紧迫感？\n- 3个可能的情节反转（一个在中点，一个在75%处，一个最终揭示）\n- 情感核心：什么个人损失或创伤驱使着主角？\n\n写出全面、详细的回复。`,
       { skill: 'premise' }
     );
 
     // ── Phase: Book Bible (6 steps) ──
-    addStep('Protagonist profile', 'bible', 'book_bible',
-      `Create a detailed protagonist profile for "${title}".\n\nInclude: full name, age, role, skills, fatal flaw, emotional wound, backstory, motivation (want vs need), character arc from beginning to end, speech patterns, physical description, and key relationships.\n\nWrite 500+ words of substantive character development.`,
+    addStep('主角档案', 'bible', 'book_bible',
+      `为“${title}”创建详细的主角档案。\n\n包含：全名、年龄、角色、技能、致命缺陷、情感创伤、背景故事、动机（想要与需要）、从头到尾的角色弧线、言语模式、外貌描述以及关键人际关系。\n\n写出500字以上的实质性角色发展内容。`,
       { skill: 'book-bible' }
     );
 
-    addStep('Antagonist profile', 'bible', 'book_bible',
-      `Create a detailed antagonist profile for "${title}".\n\nInclude: capabilities, constraints, goals, motivation, backstory, communication style, personality quirks, why they believe they're right, and how they challenge the protagonist.\n\nWrite 500+ words of substantive character development.`,
+    addStep('反派档案', 'bible', 'book_bible',
+      `为“${title}”创建详细的反派档案。\n\n包含：能力、限制、目标、动机、背景故事、沟通风格、性格怪癖、他们为什么认为自己是对的，以及他们如何挑战主角。\n\n写出500字以上的实质性角色发展内容。`,
       { skill: 'book-bible' }
     );
 
-    addStep('Supporting characters', 'bible', 'book_bible',
-      `Create 3-4 supporting character profiles for "${title}".\n\nFor each character include: name, age, role in the story, relationship to protagonist, motivation, backstory, personality traits, speech patterns, and how they contribute to the protagonist's arc.\n\nWrite 500+ words total.`,
+    addStep('配角档案', 'bible', 'book_bible',
+      `为“${title}”创建3-4个配角档案。\n\n对于每个角色包含：姓名、年龄、在故事中的角色、与主角的关系、动机、背景故事、性格特征、言语模式，以及他们如何对主角的成长弧线做出贡献。\n\n总共写出500字以上。`,
       { skill: 'book-bible' }
     );
 
-    addStep('Major locations', 'bible', 'book_bible',
-      `Build out the major locations for "${title}".\n\nCreate 4-5 key locations. For each: name, physical description, atmosphere, who frequents it, significance to the plot, and sensory details (sounds, smells, textures, light).\n\nWrite 500+ words.`,
+    addStep('主要地点', 'bible', 'book_bible',
+      `为“${title}”构建主要地点。\n\n创建4-5个关键地点。对于每个地点：名称、物理描述、氛围、常客、对情节的意义以及感官细节（声音、气味、质地、光线）。\n\n写出500字以上。`,
       { skill: 'book-bible' }
     );
 
-    addStep('Timeline', 'bible', 'book_bible',
-      `Create a detailed timeline for "${title}".\n\nInclude: key backstory events before the novel begins, the chronological sequence of major plot events, crisis escalation points, and the resolution timeline. Note which characters are present at each key event.\n\nWrite 500+ words.`,
+    addStep('时间线', 'bible', 'book_bible',
+      `为“${title}”创建详细的时间线。\n\n包含：小说开始前的关键背景事件、主要情节事件的时间顺序、危机升级点以及解决时间线。注明每个关键事件中有哪些角色在场。\n\n写出500字以上。`,
       { skill: 'book-bible' }
     );
 
-    addStep('World rules & consistency guide', 'bible', 'consistency',
-      `Create a consistency guide and world rules document for "${title}".\n\nInclude: naming conventions, key terminology, character physical details that must remain consistent, technology/magic rules, social structures, and any other details that must stay consistent across ${chapters} chapters.\n\nWrite 500+ words.`,
+    addStep('世界规则与一致性指南', 'bible', 'consistency',
+      `为“${title}”创建一致性指南和世界规则文档。\n\n包含：命名约定、关键术语、必须保持一致的角色物理细节、技术/魔法规则、社会结构，以及任何其他必须在 ${chapters} 个章节中保持一致的细节。\n\n写出500字以上。`,
       { skill: 'book-bible' }
     );
 
     // ── Phase: Outline (2 steps) ──
-    addStep('Chapter outline', 'outline', 'outline',
-      `Create a ${chapters}-chapter outline for "${title}" with structural beats.\n\nFor each chapter include:\n- Chapter number and title\n- POV character\n- Primary location\n- 3-5 key beats\n- Tension level (1-10)\n- Chapter ending hook\n\nStructure:\n- Chapters 1-${setupEnd}: Setup and world introduction\n- Chapters ${setupEnd + 1}-${incitingEnd}: Inciting incident\n- Chapters ${incitingEnd + 1}-${midpoint - 1}: Rising action\n- Chapter ${midpoint}: Midpoint twist\n- Chapters ${midpoint + 1}-${twist75 - 1}: Complications multiply\n- Chapter ${twist75}: 75% twist / all is lost\n- Chapters ${climaxStart}-${climaxEnd}: Climax sequence\n- Chapter ${chapters}: Resolution\n\nYou MUST include ALL ${chapters} chapters. Do NOT stop early. Number every chapter.`,
+    addStep('章节大纲', 'outline', 'outline',
+      `为“${title}”创建带有结构节拍的 ${chapters} 章大纲。\n\n对于每一章包含：\n- 章节号和标题\n- 视点 (POV) 角色\n- 主要地点\n- 3-5个关键节拍\n- 紧张程度 (1-10)\n- 章节结尾钩子\n\n结构：\n- 第 1-${setupEnd} 章：设定和世界介绍\n- 第 ${setupEnd + 1}-${incitingEnd} 章：引发事件\n- 第 ${incitingEnd + 1}-${midpoint - 1} 章：情节发展\n- 第 ${midpoint} 章：中点反转\n- 第 ${midpoint + 1}-${twist75 - 1} 章：复杂情况增加\n- 第 ${twist75} 章：75%反转 / 一败涂地\n- 第 ${climaxStart}-${climaxEnd} 章：高潮序列\n- 第 ${chapters} 章：结局\n\n你必须包含所有 ${chapters} 章。不要提前停止。为每一章编号。`,
       { skill: 'outline' }
     );
 
-    addStep('Scene breakdowns', 'outline', 'outline',
-      `Expand the ${chapters}-chapter outline into scene-by-scene breakdowns for "${title}".\n\nFor each chapter, create 2-4 scenes with:\n- Scene goal and conflict\n- Key dialogue moments or reveals\n- Emotional beats\n- Estimated word count per scene\n\nTarget ~${wordsPerChapter} words per chapter. Focus especially on the inciting incident, midpoint twist, and climax sequence.`,
+    addStep('场景分解', 'outline', 'outline',
+      `将 ${chapters} 章的大纲扩展为“${title}”的逐个场景分解。\n\n为每一章创建2-4个场景，包含：\n- 场景目标和冲突\n- 关键对话时刻或揭示\n- 情感节拍\n- 每个场景的估计字数\n\n目标是每章约 ${wordsPerChapter} 字。特别关注引发事件、中点反转和高潮序列。`,
       { skill: 'outline' }
     );
 
     // ── Phase: Writing (N steps, one per chapter) ──
     for (let ch = 1; ch <= chapters; ch++) {
-      addStep(`Write Chapter ${ch}`, 'writing', 'creative_writing',
-        `Write Chapter ${ch} of "${title}".\n\nInstructions:\n- Follow the outline beats and scene breakdowns for this chapter\n- Check the Book Bible for character consistency\n- You MUST write at least ${wordsPerChapter} words of actual prose narrative\n- Open with a hook — no throat-clearing\n- End with a reason to turn the page\n- Include sensory details and internal tension\n- Write the COMPLETE chapter as actual prose, not a summary\n- Do NOT write fewer than ${wordsPerChapter} words. If running short, add more scenes, dialogue, internal monologue, sensory detail.`,
+      addStep(`编写第 ${ch} 章`, 'writing', 'creative_writing',
+        `编写“${title}”的第 ${ch} 章。\n\n说明：\n- 遵循本章的大纲节拍和场景分解\n- 检查设定集以保持角色一致性\n- 你必须写出至少 ${wordsPerChapter} 字的实际散文叙述\n- 以吸引人的钩子开篇 — 不要兜圈子\n- 以让读者想翻页的理由结束\n- 包含感官细节和内在张力\n- 将完整的章节写成实际的散文，而不是摘要\n- 不要写少于 ${wordsPerChapter} 字。如果字数不够，添加更多场景、对话、内心独白、感官细节。`,
         { skill: 'write', wordCountTarget: wordsPerChapter, chapterNumber: ch }
       );
     }
 
     // ── Phase: Revision (3 steps) ──
-    addStep('Developmental edit', 'revision', 'revision',
-      `Perform a developmental edit across all ${chapters} chapters of "${title}".\n\nAnalyze:\n- Plot structure and pacing across the full arc\n- Character arc completion (do characters grow/change as planned?)\n- Tension and stakes escalation\n- Thematic coherence\n- Narrative drive and hooks between chapters\n\nProvide specific, chapter-by-chapter feedback with actionable suggestions.`,
+    addStep('结构性编辑', 'revision', 'revision',
+      `对“${title}”的所有 ${chapters} 章执行结构性编辑。\n\n分析：\n- 贯穿整个故事弧线的情节结构和节奏\n- 角色弧线的完成度（角色是否按计划成长/改变？）\n- 紧张感和赌注的升级\n- 主题连贯性\n- 章节之间的叙事驱动力和钩子\n\n提供具体的、逐章的反馈和可操作的建议。`,
       { skill: 'revise' }
     );
 
-    addStep('Line edit notes', 'revision', 'revision',
-      `Perform a line edit review of "${title}".\n\nFocus on:\n- Sentence rhythm and variety\n- Word choice and verb strength\n- Show vs tell instances\n- Dialogue quality and tag usage\n- Prose clarity and flow\n- Filler words to cut (suddenly, very, just, basically)\n\nProvide specific examples from the chapters with before/after suggestions.`,
+    addStep('行级编辑笔记', 'revision', 'revision',
+      `对“${title}”执行行级编辑审查。\n\n重点关注：\n- 句子节奏和多样性\n- 词语选择和动词力度\n- 展示与讲述的实例\n- 对话质量和提示语的使用\n- 散文的清晰度和流畅度\n- 需要删减的填充词（突然，非常，只是，基本上）\n\n提供章节中的具体示例和修改前/后的建议。`,
       { skill: 'revise' }
     );
 
-    addStep('Consistency check', 'revision', 'consistency',
-      `Run a consistency check across all ${chapters} chapters of "${title}" against the Book Bible.\n\nCheck for:\n- Character description contradictions\n- Timeline inconsistencies\n- Location detail mismatches\n- World rule violations\n- Plot holes or dropped threads\n- Tone/voice inconsistencies\n\nList any issues with specific chapter references.`,
+    addStep('一致性检查', 'revision', 'consistency',
+      `根据设定集对“${title}”的所有 ${chapters} 章运行一致性检查。\n\n检查：\n- 角色描述矛盾\n- 时间线不一致\n- 地点细节不匹配\n- 世界规则违反\n- 情节漏洞或遗漏的线索\n- 基调/声音不一致\n\n列出任何问题并附上具体的章节出处。`,
       { skill: 'revise' }
     );
 
     // ── Phase: Assembly (1 step) ──
-    addStep('Assemble manuscript & report', 'assembly', 'general',
-      `Generate a completion report for "${title}".\n\nInclude:\n- Total chapters: ${chapters}\n- Target word count: ~${(chapters * wordsPerChapter).toLocaleString()} words\n- Assessment of the manuscript's strengths\n- Areas for improvement in a future draft\n- 2-3 sentence back cover blurb\n- Recommendations for next steps (beta readers, professional edit, etc.)\n\nAll chapter files have been saved individually. This report summarizes the complete pipeline.`
+    addStep('组装手稿与报告', 'assembly', 'general',
+      `生成“${title}”的完成报告。\n\n包含：\n- 总章节数：${chapters}\n- 目标字数：约 ${(chapters * wordsPerChapter).toLocaleString()} 字\n- 对手稿优势的评估\n- 未来草稿需要改进的领域\n- 2-3句话的封底简介\n- 后续步骤的建议（试读者、专业编辑等）\n\n所有章节文件已单独保存。本报告总结了完整的流水线。`
     );
 
     const project: Project = {
@@ -1232,7 +1483,7 @@ export class ProjectEngine {
       label: t.label,
       description: t.description,
       stepCount: t.type === 'novel-pipeline' ? 30 : t.steps.length,
-      stepCountLabel: t.type === 'novel-pipeline' ? '30+ auto-generated steps' : undefined,
+      stepCountLabel: t.type === 'novel-pipeline' ? '30+ 自动生成的步骤' : undefined,
     }));
   }
 
@@ -1468,6 +1719,35 @@ Description: ${description}`;
     return projects;
   }
 
+  getProjectWordStats(projectId: string): {
+    totalWords: number;
+    targetWords: number;
+    completedChapters: number;
+    targetReached: boolean;
+  } {
+    const project = this.projects.get(projectId);
+    if (!project) {
+      return { totalWords: 0, targetWords: 0, completedChapters: 0, targetReached: false };
+    }
+
+    const revisedSteps = project.steps.filter(s => s.phase === 'revision' && s.status === 'completed' && s.result);
+    const sourceSteps = revisedSteps.length > 0
+      ? revisedSteps
+      : project.steps.filter(s => s.phase === 'draft' && s.status === 'completed' && s.result);
+
+    const totalWords = sourceSteps.reduce((sum, step) => {
+      return sum + (step.result ? step.result.trim().split(/\s+/).filter(Boolean).length : 0);
+    }, 0);
+    const targetWords = Number(project.context?.targetWords || project.context?.estimatedTotalWords || 0);
+
+    return {
+      totalWords,
+      targetWords,
+      completedChapters: sourceSteps.filter(s => s.chapterNumber).length,
+      targetReached: targetWords > 0 ? totalWords >= targetWords : false,
+    };
+  }
+
   /**
    * Start executing a project — marks it active and returns the first step
    */
@@ -1600,6 +1880,59 @@ Description: ${description}`;
     return result;
   }
 
+  updateStepContent(
+    projectId: string,
+    stepId: string,
+    updates: { prompt?: string; result?: string; appendOperatorNote?: string }
+  ): ProjectStep | null {
+    const project = this.projects.get(projectId);
+    if (!project) return null;
+    const step = project.steps.find(s => s.id === stepId);
+    if (!step) return null;
+
+    if (typeof updates.prompt === 'string') {
+      step.prompt = updates.prompt;
+    }
+    if (typeof updates.result === 'string') {
+      step.result = updates.result;
+    }
+    if (typeof updates.appendOperatorNote === 'string' && updates.appendOperatorNote.trim()) {
+      step.prompt += `\n\n[人工干预说明]\n${updates.appendOperatorNote.trim()}`;
+      project.context = project.context || {};
+      project.context.operatorNotes = project.context.operatorNotes || [];
+      project.context.operatorNotes.push({
+        stepId,
+        note: updates.appendOperatorNote.trim(),
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    project.updatedAt = new Date().toISOString();
+    this.persistState();
+    return step;
+  }
+
+  finalizeProject(id: string): Project | null {
+    const project = this.projects.get(id);
+    if (!project) return null;
+
+    project.steps.forEach(step => {
+      if (step.status === 'pending' || step.status === 'active') {
+        step.status = 'skipped';
+      }
+    });
+
+    project.status = 'completed';
+    project.progress = 100;
+    project.context = project.context || {};
+    project.context.finalizedManually = true;
+    project.context.finalizedAt = new Date().toISOString();
+    project.completedAt = new Date().toISOString();
+    project.updatedAt = project.completedAt;
+    this.persistState();
+    return project;
+  }
+
   /**
    * Build the system prompt addition for a project step.
    * This tells the AI what context it's operating in.
@@ -1614,6 +1947,8 @@ Description: ${description}`;
     // Novel pipeline: phase-aware context accumulation
     if (project.type === 'novel-pipeline' && step.phase) {
       context += this.buildNovelPipelineContext(project, step);
+    } else if (project.type === 'keyword-book-mvp' && step.phase) {
+      context += this.buildKeywordBookContext(project, step);
     } else {
       // Default: add results from prior steps
       const completedSteps = project.steps.filter(s => s.status === 'completed' && s.result);
@@ -1668,6 +2003,82 @@ Description: ${description}`;
       if (instruction) {
         context += `**How to use**: ${instruction}\n`;
       }
+    }
+
+    return context;
+  }
+
+  private buildKeywordBookContext(project: Project, step: ProjectStep): string {
+    let context = '';
+    const completed = project.steps.filter(s => s.status === 'completed' && s.result);
+    const candidate = project.context?.selectedCandidate as KeywordBookCandidate | undefined;
+    const targetWords = Number(project.context?.targetWords || 500000);
+    const targetChapters = Number(project.context?.targetChapters || 0);
+    const wordsPerChapter = Number(project.context?.targetWordsPerChapter || 4000);
+
+    if (candidate) {
+      context += `## 已选方案\n\n`;
+      context += `- 标题：${candidate.title}\n`;
+      context += `- 核心钩子：${candidate.hook}\n`;
+      context += `- 核心设定：${candidate.premise}\n`;
+      context += `- 目标读者：${candidate.audience}\n`;
+      context += `- 卖点：${candidate.highlights.join('；')}\n\n`;
+    }
+
+    context += `## 项目目标\n\n`;
+    context += `- 目标总字数：${targetWords.toLocaleString()}\n`;
+    context += `- 目标章节数：${targetChapters}\n`;
+    context += `- 每章目标字数：${wordsPerChapter.toLocaleString()}\n\n`;
+
+    const truncate = (text: string, max: number) =>
+      text.length > max ? text.slice(0, max) + '\n\n[...truncated...]' : text;
+
+    const expansion = completed.find(s => s.phase === 'expansion');
+    const outline = completed.find(s => s.phase === 'outline');
+
+    switch (step.phase) {
+      case 'expansion':
+        break;
+      case 'outline':
+        if (expansion?.result) {
+          context += `## 项目扩展稿\n\n${truncate(expansion.result, 5000)}\n\n`;
+        }
+        break;
+      case 'draft': {
+        if (expansion?.result) context += `## 项目扩展稿\n\n${truncate(expansion.result, 3500)}\n\n`;
+        if (outline?.result) context += `## 章节概要\n\n${truncate(outline.result, 6000)}\n\n`;
+        const revisedChapters = completed
+          .filter(s => s.phase === 'revision' && s.chapterNumber)
+          .sort((a, b) => (a.chapterNumber || 0) - (b.chapterNumber || 0));
+        if (revisedChapters.length > 0) {
+          const recent = revisedChapters.slice(-2);
+          context += `## 最近已修订章节（连续性参考）\n\n`;
+          for (const ch of recent) {
+            context += `### ${ch.label}\n${truncate(ch.result || '', 2200)}\n\n`;
+          }
+        }
+        break;
+      }
+      case 'revision': {
+        if (outline?.result) context += `## 章节概要\n\n${truncate(outline.result, 5000)}\n\n`;
+        const currentDraft = completed.find(s => s.phase === 'draft' && s.chapterNumber === step.chapterNumber);
+        if (currentDraft?.result) {
+          context += `## 当前章节草稿\n\n${truncate(currentDraft.result, 12000)}\n\n`;
+        }
+        break;
+      }
+      case 'assembly': {
+        const stats = this.getProjectWordStats(project.id);
+        context += `## 完成统计\n\n`;
+        context += `- 已完成修订章节：${stats.completedChapters}\n`;
+        context += `- 当前累计字数：${stats.totalWords.toLocaleString()}\n`;
+        context += `- 是否达标：${stats.targetReached ? '是' : '否'}\n\n`;
+        break;
+      }
+      default:
+        for (const cs of completed.slice(-5)) {
+          context += `### ${cs.label}\n${truncate(cs.result || '', 1500)}\n\n`;
+        }
     }
 
     return context;
@@ -1826,6 +2237,10 @@ Description: ${description}`;
   inferProjectType(description: string): ProjectType {
     const lower = description.toLowerCase();
 
+    if (lower.match(/\b(keyword|关键词|选题|长篇立项|网文|连载)\b/)) {
+      return 'keyword-book-mvp';
+    }
+
     // Novel pipeline signals — ONLY when explicitly asking for a full novel/book
     if (lower.match(/\b(novel|full book|write a book|write my book|entire book|complete novel|full manuscript|book from scratch|novel pipeline|write a complete)\b/)) {
       return 'novel-pipeline';
@@ -1882,12 +2297,12 @@ Description: ${description}`;
   ): { pipelineId: string; projects: Project[] } {
     const pipelineId = `pipeline-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
     const phases: Array<{ type: ProjectType; label: string; phaseNum: number }> = [
-      { type: 'book-planning', label: `${title} — Planning`, phaseNum: 1 },
-      { type: 'book-bible', label: `${title} — Book Bible`, phaseNum: 2 },
-      { type: 'book-production', label: `${title} — Production`, phaseNum: 3 },
-      { type: 'deep-revision', label: `${title} — Deep Revision`, phaseNum: 4 },
-      { type: 'format-export', label: `${title} — Format & Export`, phaseNum: 5 },
-      { type: 'book-launch', label: `${title} — Book Launch`, phaseNum: 6 },
+      { type: 'book-planning', label: `${title} — 策划`, phaseNum: 1 },
+      { type: 'book-bible', label: `${title} — 设定集`, phaseNum: 2 },
+      { type: 'book-production', label: `${title} — 制作`, phaseNum: 3 },
+      { type: 'deep-revision', label: `${title} — 深度修订`, phaseNum: 4 },
+      { type: 'format-export', label: `${title} — 格式与导出`, phaseNum: 5 },
+      { type: 'book-launch', label: `${title} — 新书发布`, phaseNum: 6 },
     ];
 
     const projects: Project[] = [];
@@ -1918,28 +2333,28 @@ Description: ${description}`;
     const id = `project-${this.nextId++}`;
     const now = new Date().toISOString();
     const chapters = Math.min(Math.max(config.targetChapters || 25, 1), 200);
-    const wordsPerChapter = Math.max(config.targetWordsPerChapter || 3000, 100);
+    const wordsPerChapter = Math.max(config.targetWordsPerChapter || 4000, 100);
 
     const steps: ProjectStep[] = [];
     for (let ch = 1; ch <= chapters; ch++) {
       steps.push({
         id: `${id}-step-${ch * 2 - 1}`,
-        label: `Write Chapter ${ch}`,
+        label: `编写第 ${ch} 章`,
         phase: 'writing',
         skill: 'write',
         taskType: 'creative_writing',
-        prompt: `Write Chapter ${ch} of "${title}".\n\nInstructions:\n- Follow the outline beats and book bible for this chapter\n- You MUST write at least ${wordsPerChapter} words of actual prose narrative\n- Open with a hook — no throat-clearing\n- End with a reason to turn the page\n- Include sensory details and internal tension\n- Write the COMPLETE chapter as actual prose, not a summary\n\n${description}`,
+        prompt: `编写“${title}”的第 ${ch} 章。\n\n说明：\n- 遵循本章的大纲节拍和设定集\n- 你必须写出至少 ${wordsPerChapter} 字的实际散文叙述\n- 以吸引人的钩子开篇 — 不要兜圈子\n- 以让读者想翻页的理由结束\n- 包含感官细节和内在张力\n- 将完整的章节写成实际的散文，而不是摘要\n\n${description}`,
         status: 'pending',
         wordCountTarget: wordsPerChapter,
         chapterNumber: ch,
       });
       steps.push({
         id: `${id}-step-${ch * 2}`,
-        label: `Self-review Chapter ${ch}`,
+        label: `自我审查第 ${ch} 章`,
         phase: 'writing',
         skill: 'revise',
         taskType: 'revision',
-        prompt: `Review Chapter ${ch} we just wrote. Check for: voice consistency, pacing, show vs tell, dialogue quality, sensory details, word count target (${wordsPerChapter}+). Suggest improvements but focus on completing the chapter, not perfection.`,
+        prompt: `复查我们刚刚写的第 ${ch} 章。检查：声音的一致性、节奏、展示与讲述、对话质量、感官细节、目标字数（${wordsPerChapter}+）。提出改进建议，但专注于完成本章，而不是追求完美。`,
         status: 'pending',
         chapterNumber: ch,
       });
@@ -1948,10 +2363,10 @@ Description: ${description}`;
     // Assembly step
     steps.push({
       id: `${id}-step-${chapters * 2 + 1}`,
-      label: 'Compile manuscript',
+      label: '编译手稿',
       phase: 'assembly',
       taskType: 'general',
-      prompt: `Generate a completion report for "${title}". Total chapters: ${chapters}. Target: ~${(chapters * wordsPerChapter).toLocaleString()} words. Assess strengths, areas for improvement, and next steps.`,
+      prompt: `生成“${title}”的完成报告。总章节数：${chapters}。目标：约 ${(chapters * wordsPerChapter).toLocaleString()} 字。评估优势、需要改进的地方以及后续步骤。`,
       status: 'pending',
     });
 
@@ -2045,6 +2460,7 @@ Description: ${description}`;
       'deep-revision': 'revision',
       'format-export': 'general',
       'book-launch': 'marketing',
+      'keyword-book-mvp': 'outline',
       'novel-pipeline': 'creative_writing',
       pipeline: 'general',
       custom: 'general',
@@ -2064,6 +2480,65 @@ Description: ${description}`;
       }
       return step;
     });
+  }
+
+  private parseCandidatesResponse(text: string): KeywordBookCandidate[] {
+    let cleaned = text.trim();
+    cleaned = cleaned.replace(/^```(?:json)?\n?/i, '').replace(/\n?```$/i, '').trim();
+    let parsed: any = null;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch {
+      const jsonMatch = cleaned.match(/\{[\s\S]*"candidates"[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch {
+          parsed = null;
+        }
+      }
+    }
+
+    const candidates = Array.isArray(parsed?.candidates) ? parsed.candidates.slice(0, 3) : [];
+    return candidates.map((candidate: any, index: number) => ({
+      id: `candidate-${index + 1}`,
+      title: String(candidate?.title || `方案${index + 1}`),
+      hook: String(candidate?.hook || ''),
+      premise: String(candidate?.premise || ''),
+      audience: String(candidate?.audience || ''),
+      highlights: Array.isArray(candidate?.highlights)
+        ? candidate.highlights.slice(0, 3).map((item: any) => String(item))
+        : [],
+    })).filter((candidate: KeywordBookCandidate) => candidate.title && candidate.premise);
+  }
+
+  private buildFallbackKeywordCandidates(keyword: string): KeywordBookCandidate[] {
+    return [
+      {
+        id: 'candidate-1',
+        title: `${keyword}：逆袭主线版`,
+        hook: `围绕“${keyword}”打造强成长、强升级、强冲突的长篇故事。`,
+        premise: `主角因“${keyword}”卷入一个不断升级的局势，从个人生存问题一路推进到更大的阵营冲突与命运选择，适合长线连载扩写。`,
+        audience: '偏好成长、推进感和持续爽点的长篇读者',
+        highlights: ['强主线推进', '易做阶段升级', '适合长篇连载'],
+      },
+      {
+        id: 'candidate-2',
+        title: `${keyword}：悬念解谜版`,
+        hook: `用“${keyword}”做谜题核心，靠真相层层揭露驱动篇幅。`,
+        premise: `以“${keyword}”为核心秘密，主角在调查、误导、反转中不断接近真相，每次揭晓都会带来新的关系变化和更高风险，适合章节尾钩子结构。`,
+        audience: '喜欢反转、揭秘和悬念推进的读者',
+        highlights: ['章节钩子强', '适合分卷揭秘', '节奏容易控制'],
+      },
+      {
+        id: 'candidate-3',
+        title: `${keyword}：群像关系版`,
+        hook: `将“${keyword}”放进复杂人物关系网，靠阵营与情感冲突拉长篇幅。`,
+        premise: `围绕“${keyword}”构建多人物、多立场、多阶段目标的叙事体系，让人物关系与利益博弈不断重组，从而支撑超长篇持续展开。`,
+        audience: '偏爱人物群像、关系变化和世界展开的读者',
+        highlights: ['群像可扩展', '世界观延展性高', '适合长线关系戏'],
+      },
+    ];
   }
 
   private enrichWithPriorResults(prompt: string, project: Project): string {

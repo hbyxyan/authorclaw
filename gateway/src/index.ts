@@ -208,8 +208,22 @@ class AuthorClawGateway {
         }
       }
 
-      await fs.writeFile(skillsRefPath, refContent, 'utf-8');
-      console.log(`  ✓ SKILLS.txt auto-updated (${catalog.length} skills)`);
+      let existingContent = '';
+      try {
+        existingContent = await fs.readFile(skillsRefPath, 'utf-8');
+      } catch (err) {
+        // File doesn't exist, ignore
+      }
+
+      // Normalize newlines to prevent constant overwriting on Windows
+      const normalize = (str: string) => str.replace(/\r\n/g, '\n').trim();
+
+      if (normalize(existingContent) !== normalize(refContent)) {
+        await fs.writeFile(skillsRefPath, refContent, 'utf-8');
+        console.log(`  ✓ SKILLS.txt auto-updated (${catalog.length} skills)`);
+      } else {
+        console.log(`  ✓ SKILLS.txt is up-to-date (${catalog.length} skills)`);
+      }
     } catch (e) {
       console.log(`  ⚠ Failed to update SKILLS.txt: ${e}`);
     }

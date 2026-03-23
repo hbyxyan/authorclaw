@@ -25,7 +25,8 @@
       "model": "claude-sonnet-4-5-20250929"
     },
     "openai": {
-      "model": "gpt-4o"
+      "endpoint": "https://api.siliconflow.cn/v1",
+      "model": "Qwen/Qwen3.5-397B-A17B"
     }
   },
   "memory": {
@@ -41,8 +42,8 @@
     "quietHoursEnd": 0
   },
   "costs": {
-    "dailyLimit": 5,
-    "monthlyLimit": 50,
+    "dailyLimit": 50,
+    "monthlyLimit": 100,
     "alertAt": 0.8
   },
   "bridges": {

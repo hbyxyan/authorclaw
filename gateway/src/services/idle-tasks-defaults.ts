@@ -12,99 +12,99 @@ export interface IdleTask {
 
 export const DEFAULT_IDLE_TASKS: IdleTask[] = [
   {
-    label: 'Market trend analysis',
+    label: '市场趋势分析',
     enabled: true,
-    prompt: `You are a publishing market analyst with deep expertise in indie and traditional publishing. Perform a detailed market trend analysis:
+    prompt: `你是一位精通独立出版和传统出版的市场分析师。请执行详细的市场趋势分析：
 
-1. **Bestseller Trends**: Analyze what's working in the top 20 books across romance, thriller, fantasy, and mystery right now. What patterns do you see?
-2. **Emerging Tropes**: Identify 3-5 tropes or subgenres gaining traction (e.g., "cozy fantasy", "morally grey heroes", "romantasy"). Why are they resonating?
-3. **Reader Preferences**: What are readers asking for on BookTok, Goodreads, and reader forums? What gaps exist between what readers want and what's being published?
-4. **Comp Title Spotlight**: For each genre, identify 2-3 recent standout titles and analyze why they're succeeding (cover, hook, timing, positioning).
-5. **Actionable Recommendations**: Suggest 3 specific book concepts that could capitalize on current market gaps. Include logline, genre, target tropes, and why NOW is the right time.
+1. **畅销书趋势**：分析当前在爱情、惊悚、奇幻和悬疑类排名前20的书籍中哪些元素在起作用。你看到了什么模式？
+2. **新兴套路**：找出3-5个正在获得关注的套路或子流派（例如，“温馨奇幻”、“道德灰色的英雄”、“浪漫奇幻”）。它们为什么能引起共鸣？
+3. **读者偏好**：读者在BookTok、Goodreads和读者论坛上要求什么？读者想要的和正在出版的内容之间存在什么差距？
+4. **对标作品聚焦**：对于每个类型，找出2-3本最近表现突出的作品，并分析它们成功的原因（封面、钩子、时机、定位）。
+5. **可操作的建议**：建议3个可以利用当前市场空白的具体书籍概念。包括一句话简介、类型、目标套路以及为什么现在是正确的时机。
 
-Be specific with titles, author names, and data. Write 600+ words.`,
+具体说明书名、作者名和数据。写600字以上。`,
   },
   {
-    label: 'Manuscript quality audit scorecard',
+    label: '手稿质量审计记分卡',
     enabled: true,
-    prompt: `You are a professional developmental editor who has edited 200+ published novels. Generate a comprehensive manuscript quality audit scorecard that an author can use to evaluate their completed manuscript:
+    prompt: `你是一位编辑过200多本已出版小说的专业结构编辑。生成一份全面的手稿质量审计记分卡，作者可以使用它来评估自己完成的手稿：
 
-**Prose Quality** (1-10): Sentence variety, word choice, voice consistency, show vs tell ratio, purple prose detection, opening hook strength
-- 3 diagnostic questions the author should ask themselves
+**散文质量** (1-10)：句子变化、词汇选择、声音一致性、展示与讲述的比例、华丽辞藻检测、开篇钩子强度
+- 作者应该问自己的3个诊断问题
 
-**Pacing & Structure** (1-10): Scene length variation, tension arc per act, chapter hooks & cliffhangers, dead zone detection, info-dump density, scene-sequel rhythm
-- 3 diagnostic questions
+**节奏与结构** (1-10)：场景长度变化、每幕的紧张度弧线、章节钩子与悬念、死区检测、信息倾倒密度、场景-续集节奏
+- 3个诊断问题
 
-**Dialogue** (1-10): Subtext usage, character voice distinctiveness per speaker, dialogue tag variety, realistic speech patterns, exposition through dialogue
-- 3 diagnostic questions
+**对话** (1-10)：潜台词的使用、每个说话者的角色声音独特性、对话标签变化、真实的说话模式、通过对话进行的说明
+- 3个诊断问题
 
-**Emotional Resonance** (1-10): Character vulnerability, stakes escalation, reader connection points, emotional beat frequency, catharsis delivery
-- 3 diagnostic questions
+**情感共鸣** (1-10)：角色的脆弱性、赌注的升级、读者连接点、情感节拍频率、宣泄的传递
+- 3个诊断问题
 
-**Commercial Viability** (1-10): Genre compliance, hook strength, concept clarity, target audience fit, comp title positioning, cover-worthy premise
-- 3 diagnostic questions
+**商业可行性** (1-10)：类型合规性、钩子强度、概念清晰度、目标受众契合度、对标作品定位、值得做封面的前提
+- 3个诊断问题
 
-Include a scoring interpretation guide: 40-50 = publish-ready, 30-39 = one more pass, 20-29 = needs significant revision, below 20 = developmental edit needed.
+包括一份评分解释指南：40-50 = 准备出版，30-39 = 需要再改一遍，20-29 = 需要重大修改，20以下 = 需要结构性编辑。
 
-Write 800+ words.`,
+写800字以上。`,
   },
   {
-    label: 'Backlist optimization report',
+    label: '旧书优化报告',
     enabled: true,
-    prompt: `You are a book marketing strategist specializing in indie author backlist optimization. Generate an actionable backlist optimization report:
+    prompt: `你是一位专门从事独立作者旧书优化的图书营销策略师。生成一份可操作的旧书优化报告：
 
-1. **Blurb Formulas**: Provide 3 proven blurb structures with examples for romance, thriller, and fantasy.
-2. **Amazon A+ Content Strategy**: What modules convert best? What images work? How to structure comparison charts and from-the-author sections for maximum sales lift.
-3. **Keyword Research Method**: Step-by-step process for finding high-volume, low-competition keywords.
-4. **Category Strategy**: How to select optimal BISAC categories and Amazon browse categories.
-5. **Cover Audit Checklist**: 8-point checklist for evaluating if a book cover meets current genre expectations.
-6. **Price Optimization**: When to use 99c, $2.99, $4.99, $9.99. KU vs wide distribution tradeoffs.
+1. **简介公式**：提供3个经过验证的简介结构，并附带爱情、惊悚和奇幻类型的示例。
+2. **亚马逊A+内容策略**：哪些模块转化率最高？哪些图片有效？如何构建比较图表和“来自作者”部分以最大化销售提升。
+3. **关键词研究方法**：寻找高搜索量、低竞争关键词的逐步过程。
+4. **类别策略**：如何选择最佳的BISAC类别和亚马逊浏览类别。
+5. **封面审计清单**：8点清单，用于评估书籍封面是否符合当前类型的期望。
+6. **价格优化**：何时使用0.99美元、2.99美元、4.99美元、9.99美元。Kindle Unlimited与广泛分发的权衡。
 
-Be specific with actionable steps, not vague advice. Write 700+ words.`,
+提供具体的可操作步骤，而不是模糊的建议。写700字以上。`,
   },
   {
-    label: 'Clean up project files',
+    label: '清理项目文件',
     enabled: true,
-    prompt: `You are a file organization specialist for author workspaces. Analyze the current workspace and generate a detailed cleanup report:
+    prompt: `你是一位作家工作区的文件夹整理专家。分析当前的工作区并生成一份详细的清理报告：
 
-1. **Orphaned Files**: Identify any files that don't belong to active projects (stale drafts, temp files, duplicates, old exports).
-2. **Naming Conventions**: Check if files follow consistent naming (kebab-case, dates, version numbers). Flag inconsistencies.
-3. **Project Health**: For each project directory, verify it has the expected structure (steps, output, metadata). Flag missing or empty step files.
-4. **Storage Summary**: Calculate total disk usage by project, by file type (.md, .docx, .mp3). Identify the largest files.
-5. **Recommendations**: Suggest specific cleanup actions — files to archive, rename, or delete. Prioritize by impact.
+1. **孤立文件**：找出不属于活动项目的任何文件（陈旧的草稿、临时文件、重复项、旧的导出文件）。
+2. **命名约定**：检查文件是否遵循一致的命名（短横线命名法、日期、版本号）。标记不一致的地方。
+3. **项目健康状况**：对于每个项目目录，验证它是否具有预期的结构（步骤、输出、元数据）。标记缺失或为空的步骤文件。
+4. **存储摘要**：按项目、按文件类型（.md, .docx, .mp3）计算总磁盘使用量。找出最大的文件。
+5. **建议**：建议具体的清理操作——要归档、重命名或删除的文件。按影响程度确定优先级。
 
-Be specific with file paths and sizes. Format as an actionable checklist the author can review.`,
+具体说明文件路径和大小。格式化为作者可以查看的可操作清单。`,
   },
   {
-    label: 'System health check',
+    label: '系统健康检查',
     enabled: true,
-    prompt: `You are a system diagnostics specialist for AuthorClaw, an AI-powered writing agent. Perform a comprehensive health check of the workspace and system configuration:
+    prompt: `你是一位负责AuthorClaw（一个AI驱动的写作代理）的系统诊断专家。对工作区和系统配置进行全面的健康检查：
 
-1. **Project Integrity**: Check all active and completed projects. Are there any projects stuck in "active" with no progress? Any failed steps that need attention? Any projects with missing output files?
-2. **Configuration Audit**: Review the current system configuration. Are AI providers properly configured? Are there any missing or invalid settings? Is the word count goal reasonable?
-3. **Persona Health**: List all configured personas. Check for incomplete profiles (missing genre, voice description, or bio). Suggest improvements for any weak profiles.
-4. **Workspace Disk Usage**: Estimate total workspace size. Flag any unusually large files (>10MB). Check for duplicate content across project directories.
-5. **Performance Observations**: Based on recent activity, are there patterns suggesting issues? (e.g., many failed steps, short AI responses, provider errors)
-6. **Recommendations**: Provide 3-5 specific actions the author should take to improve their AuthorClaw setup.
+1. **项目完整性**：检查所有活动和已完成的项目。是否有任何项目停留在“活动”状态但没有进展？是否有任何失败的步骤需要注意？是否有任何项目缺失输出文件？
+2. **配置审计**：审查当前的系统配置。AI提供商是否配置正确？是否有任何缺失或无效的设置？字数目标是否合理？
+3. **角色健康状况**：列出所有配置的角色。检查是否有不完整的个人资料（缺少类型、声音描述或简介）。为任何薄弱的个人资料提供改进建议。
+4. **工作区磁盘使用情况**：估计工作区总大小。标记任何异常大的文件（>10MB）。检查项目目录中是否有重复的内容。
+5. **性能观察**：根据最近的活动，是否有暗示问题的模式？（例如，许多失败的步骤、AI回复简短、提供商错误）
+6. **建议**：提供3-5个作者应采取的具体操作，以改善他们的AuthorClaw设置。
 
-Be specific and actionable. Format as a diagnostic report with severity levels (INFO, WARN, ACTION NEEDED).`,
+具体且具有可操作性。格式化为带有严重程度级别（信息、警告、需要操作）的诊断报告。`,
   },
   {
-    label: 'Book soundtrack and mood playlist',
+    label: '书籍配乐与氛围播放列表',
     enabled: true,
-    prompt: `You are a music curator who specializes in creating atmospheric soundtracks for novels and writing sessions. Generate a detailed soundtrack recommendation:
+    prompt: `你是一位专门为小说和写作过程创作氛围配乐的音乐策划人。生成一份详细的配乐推荐：
 
-1. **Writing Mood Playlist**: Suggest 10 instrumental tracks (with artist names) perfect for focused writing sessions. Organize by energy level: deep focus, moderate flow, high-intensity action scenes.
-2. **Genre-Specific Scores**: For each of these genres (romance, thriller, fantasy, sci-fi), recommend 5 film/game soundtracks that match the genre's emotional tone. Explain WHY each score works for that genre.
-3. **Scene Scoring Guide**: Create a quick-reference table matching common scene types to music moods:
-   - Love scene / confession → warm strings, piano
-   - Chase / fight → percussive, urgent
-   - Mystery / discovery → ethereal, sparse
-   - Loss / grief → minor key, solo instrument
-   - Victory / climax → full orchestra, major key
-4. **Ambient Sound Recommendations**: Suggest 5 ambient soundscapes (rain, coffee shop, forest, etc.) and when each works best during the writing process.
-5. **Spotify/YouTube Search Terms**: Provide exact search terms the author can use to find each type of playlist on streaming platforms.
+1. **写作氛围播放列表**：建议10首适合专注写作的纯音乐曲目（带有艺术家名字）。按能量级别组织：深度专注、适度流动、高强度动作场景。
+2. **特定类型的配乐**：对于以下每个类型（爱情、惊悚、奇幻、科幻），推荐5个与该类型情感基调相匹配的电影/游戏原声带。解释为什么每个配乐适合该类型。
+3. **场景配乐指南**：创建一个快速参考表，将常见的场景类型与音乐氛围相匹配：
+   - 爱情场景/表白 → 温暖的弦乐、钢琴
+   - 追逐/战斗 → 打击乐、急促
+   - 神秘/发现 → 空灵、稀疏
+   - 失去/悲伤 → 小调、独奏乐器
+   - 胜利/高潮 → 全编制管弦乐、大调
+4. **环境音推荐**：建议5种环境音效（下雨、咖啡馆、森林等），并说明每种音效在写作过程中的最佳适用场景。
+5. **Spotify/YouTube搜索词**：提供确切的搜索词，作者可以在流媒体平台上使用这些词来找到每种类型的播放列表。
 
-Be specific with artist names, album titles, and track names. Write 600+ words.`,
+具体说明艺术家名、专辑名和曲目名。写600字以上。`,
   },
 ];
